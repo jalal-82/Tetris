@@ -1,9 +1,17 @@
 package comp1110.ass2;
 
-public class Tiles {
+public class Tile {
 
-//  Tiles one = new Tiles
+    private final int width;
+    private final int height;
+    private final boolean hasWindow;
 
+
+    public Tile(int width, int height, boolean hasWindow) {
+        this.width = width;
+        this.height = height;
+        this.hasWindow = hasWindow;
+    }
 
     /**
      *
