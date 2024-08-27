@@ -60,4 +60,6 @@ public class Abilities {
                 throw new IllegalArgumentException("Unknown color: " + color);
         }
     }
+
+
 }

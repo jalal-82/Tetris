@@ -7,7 +7,6 @@ public class Player {
     private String name;
     private Score score;
     private Abilities abilities;
-    private Tracking tracking;
 
     /**
      * Constructs a new Player with the specified name.
@@ -18,7 +17,6 @@ public class Player {
         this.name = name;
         this.score = new Score();
         this.abilities = new Abilities();
-        this.tracking = new Tracking();
     }
 
     /**
@@ -48,12 +46,4 @@ public class Player {
         return abilities;
     }
 
-    /**
-     * Gets the player's tracking.
-     *
-     * @return The player's tracking.
-     */
-    public Tracking getTracking() {
-        return tracking;
-    }
 }

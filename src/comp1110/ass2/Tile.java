@@ -1,39 +1,40 @@
 package comp1110.ass2;
+import java.util.Random;
 
 public class Tile {
 
-    private final int width;
-    private final int height;
-    private final boolean hasWindow;
+    private static final String[] COLORS = {"Red", "Blue", "Purple", "Green", "Yellow", "White"};
+    private final String color;
+    private final int[][] tileMatrix;
+    private static final Random RANDOM = new Random();
 
-
-    public Tile(int width, int height, boolean hasWindow) {
-        this.width = width;
-        this.height = height;
-        this.hasWindow = hasWindow;
+    // Constructor
+    public Tile() {
+        this.color = getRandomColor();
+        this.tileMatrix = generateTile();
     }
 
-    /**
-     *
-     * @param tileShape
-     * @param gameState
-     * @return Boolean True if Valid else False
-     */
-    public boolean isValid(int[][] tileShape, int[][] gameState){
-//      implement the rule to validate a placement
+    // Method to generate a unique tile matrix
+    public int[][] generateTile() {
+        return new int[0][0];
+    }
+
+    // Method to get a random color from the available options
+    private String getRandomColor() {
+        int index = RANDOM.nextInt(COLORS.length);
+        return COLORS[index];
+    }
+
+    // Method to validate the placement of a tile in the game state
+    public boolean isValid(int[][] tileShape, int[][] gameState) {
         return false;
     }
 
-    /**
-     *
-     * @param tileSHape
-     * @param gameState
-     * @return
-     * @author
-     */
-    public int[][] placeTile(int[][] tileSHape, int[][] gameState){
-        return gameState;
+    // Method to check if a tile is unique
+    private boolean isUniqueTile(int hash) {
+        return false;
     }
+
 
 }
 
