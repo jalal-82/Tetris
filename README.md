@@ -49,8 +49,8 @@ The assignment is worth 35% of your total assessment, and it will be marked
 out of 35. The assignment consists of several deliverables:
 
 *   D2B: Initial design (2 marks). Due in your week 6 lab.
-*   D2C: First stage implementation (6 marks). Due in the mid-semester
-	teaching break (precise date to-be-announced).
+*   D2C: First stage implementation (6 marks). Due at **6pm on Friday
+	the 20th of September** (the Friday in semester week 7).
 *   D2D: Test plan and unit test (2 marks). Due in your week 8 lab.
 *   D2E: Integration test and code review (2 marks). Due in your week 9 lab.
 *   D2F: Final implementation (21 marks). Due in semester week 11.
@@ -235,16 +235,241 @@ represent and update the state of the game and enforce the game rules,
 and to connect your implementation to the GUI such that the user can
 play the game.
 
-As described in the lecture on event-driven programming, your interface
-to the GUI will consist of three main kinds of methods:
+[`GameTemplate.java`](src/comp1110/ass2/GameTemplate.java) gives you an
+example of what the main program file will look like. The `start` method
+(which replaces `main` for JavaFX applications) creates an instance of
+the `GameGUI`, which represents your interface to the GUI. You will need
+to complete this method by registering callbacks for the `gui` object.
 
-*   Methods to set what is shown in the GUI (for example, to set the
-	colour of a square in a player's building, or the list of dice
-	to show).
-*   Methods to query the state of GUI components (for example, to get
-	the id of the currently selected tile from the tile list).
-*   Methods to register callbacks that will be invoked when certain
-	events occur (for example, when the user places the selected tile).
+The public interface of the `GameGUI` class contains the following methods:
+
+*   `public GameGUI()`
+
+	Create a new instance of the GUI. This should only
+	be done once, at the beginning of the `start` method as shown in
+	[`GameTemplate.java`](src/comp1110/ass2/GameTemplate.java).
+
+*   `public void setMessage(String msg)`
+
+    Set the text in the message field (at the top of the GUI).
+
+*   `public void setAvailableTiles(List<String> tiles)`
+
+    Set the list of tiles to be shown in the tile selection (top of
+	the right-side panel). This will also clear any current selection.
+
+*   `public void clearTileSelection()`
+
+    Unselect the currently selected tile, if any. This does not change
+	which tiles are shown in the tile selector.
+
+*   `public void setAvailableDice(List<String> colours)`
+
+    Set list of dice (colours) to be shown in the dice view. This will
+	also clear any current dice selection.
+
+*   `public void clearDiceSelection()`
+
+    Unselect all currently selected dice. This does not change which
+	dice are shown in the dice view.
+
+*   `public List<Integer> getSelectedDice()`
+
+    Returns a list of indices of the currently selected dice. The dice
+	are indexed from 0 to the number of dice shown - 1, from left to
+	right.
+
+*   `public void setFacadeSquare(int player, int x, int y, String colour, boolean window)`
+
+	Set a square a player's building view to show the specified colour
+	and window.
+
+	Use colour = `"White"` and window = `false` to make a square appear
+	empty.
+	
+	Parameters:
+	* `player` The player whose building should be updated (from 0 to
+	number of players - 1).
+    * `x` The x position (column) of the square. Columns are indexed 0 to 4,
+	from left to right.
+    * `y` The y position (row) of the square. Rows are indexed 0 to 8, from
+	the bottom to the top.
+    * `colour` The colour to show. This must be one of the strings `"Red"`,
+	`"Blue"`, `"Purple"`, `"Green"`, `"Yellow"`, `"Gray"`, or `"White"`.
+	The colour can be abbreviated to the initial letter only.
+    * `window` `true` if the square should show a window, `false` if it
+	should not.
+
+*   `public void setRowCoA(int y, boolean highlightOn)`
+
+    Set the highlight status of the coat-of-arms next to a row.
+
+	Parameters:
+	* `y` The row index. This must be one of the numbers `1`, `3` or `5`.
+    * `highlightOn` Whether the CoA should be highlighted (shown in gold
+	colour) or not (shown in black).
+
+*   `public void setColumnCoA(int x, boolean highlightOn)`
+
+    Set the highlight status of the coat-of-arms above a column.
+
+	Parameters:
+	* `x` The column index. This must be one of the numbers `1` or `3`.
+    * `highlightOn` Whether the CoA should be highlighted or not.
+
+*   `public void setTrackInfo(int player, String colour, int nMarked, int nBonusAvailable, int nAbilityAvailable, int nBonusToNext, int nAbilityToNext)`
+
+    Update the information to be shown for one of a player's ability tracks.
+	
+	Parameters:
+    * `player` The player whose ability track should be updated (0 to number of players - 1).
+    * `colour` The colour of the track. Must be one of "Red", "Blue", "Purple", "Green" or "Yellow".
+    * `nMarked` Number to be shown in the "X" column.
+    * `nBonusAvailable` Number to show in the "Avail/+" column.
+    * `nAbilityAvailable` Number to show in the "Avail/star" column.
+    * `nBonusToNext` Number to show in the "Next/+" column.
+    * `nAbilityToNext` Number to show in the "Next/star" column.
+
+*   `public void clearTrackSelection()`
+    Clear track selection.
+
+*   `public List<Integer> getSelectedTracks()`
+    Returns a list of indices of the currently selected track(s).
+	Tracks are indexed 0-4, from Red to Yellow.
+
+*   `public void endGame(int[] finalScores)`
+    End the current game. This will bring up the end of game screen
+	(in the lower right corner), which shows the final scores and offers
+	the choice to quit or play again.
+
+*   `public int getSelectedPlayer()`
+    Returns the index of the player whose score sheet is currently being
+	shown in the left part of the GUI. The index ranges from 0 to number
+	of players - 1.
+
+*   `public void setAvailableActions(List<String> actions)`
+	Set the list of possible player actions to appear when the "Action..."
+	menu button is pressed. The handler associated with these actions is
+	set using `setOnGameAction`.
+
+*   `public void setControlPlayer(int i)`
+    Set the text on the Confirm and Pass buttons to indicate that the
+	current decision belongs to player `i`.
+
+    // register event callbacks
+
+*   `public void setOnStartGame(BiConsumer<Integer, boolean[]> handler)`
+    Set the event handler to be called when a new game is started.
+    The handler will receive two arguments: the number of players (an
+	integer) and an array of boolean values, of the same length as the
+	number of players, indicating which players should be AI controlled.
+	If your game does not have an AI, you can ignore the second argument.
+	Note: The `BiConsumer` functional interface is defined in the
+	`java.util.function` package.
+
+*   `public void setOnTileSelected(Consumer<String> handler)`
+    Set the event handler to be called when the user selects a tile
+	(from the list at the top of the right right panel). The handler will
+	receive one argument, which is the name of the tile.
+
+	The selected tile will also be displayed as a "candidate" (outline)
+    on the building display of the currently selected player's score sheet.
+
+	Note: The `Consumer` functional interface is defined in the
+	`java.util.function` package.
+
+*   `public void setOnTilePlaced(Consumer<Placement> handler)`
+    Set the event handler to be called when the user confirms placement
+	of a selected tile. The handler will receive one argument, which is
+	an object of type `Placement` that contains all the details of the
+	intended placement. Details of the `Placement` class are described
+	further below.
+
+*   `public void setOnDiceSelectionChanged(IntConsumer handler)`
+    Set the event handler to be called when the user changes the selection
+	of any die in the dice diplay. The event handler will receive one
+	argument, which is the index of of the die whose selection status has
+	changed. This event only informs the handler that a dies selection has
+    changed, not whether the die is now selected or unselected. You can
+	use the `getSelectedDice()` method to get the indices of currently
+	selected dice.
+
+*   `public void setOnTrackSelectionChanged(IntConsumer handler)`
+    Set the event handler to be called when the user changes the selection
+	(checkbox) of any of the ability tracks. The event handler will
+	receive one argument, which is the index (0-4) of the track whose
+	selection status has changed. This event only informs the handler that
+	a selection has changed, not whether the track is now selected or
+	unselected. You can use the `getSelectedTracks()` method to get the
+	indices of currently selected tracks.
+
+*   `public void setOnConfirm(Consumer<String> handler)`
+    Set the event handler to be called when the "Confirm" button is pressed
+	in any situation except when it is pressed to confirm a tile placement
+	(this will generate a call to the tile placed event handler instead).
+    The event handler will receive one argument, which is the current label
+	of the button.
+
+*   `public void setOnPass(Consumer<String> handler)`
+    Set the event handler to be called when the "Pass" button is pressed.
+	The event handler will receive one argument, which is the current label
+	of the button.
+
+*   `public void setOnGameAction(Consumer<String> handler)`
+    Set the event handler to be called when an item from the "Action"
+    menu button is selected. The event handler will receive one argument,
+    which is the label of the menu item. The list of available actions
+	is set with `setAvailableActions`.
+
+### Tile placements
+
+A tile placement consists of five pieces of information:
+
+*   The tile _name_. The names of the different tiles are shown in the
+	image below:
+
+	![facade sheet with tile names](assets/tile-names.png)
+
+	Note that the blue, green and yellow size 4 tiles each have a "left"
+	and a "right" version, but the red, green and purple do not.
+
+*   The placement column (x coordinate). The columns are index 0 to 4,
+	from left to right.
+
+*   The placement row (y coordinate). The rows are index 0 to 8, from
+	the bottom to the top of the building.
+	
+	The position of the placement (x,y coordinate) refer to the square
+	that is the lower left corner of the tile's rectangular bounding
+	box at its specified rotation.
+
+*   A rotation. The rotation is an integer from 0 to 3. Rotation 0 is
+	the tile as shown in the facade sheet (image above). Each increment
+	means a clockwise rotation by 90 degrees, that is, a rotation of 1
+	means the tile is turned on its right side, a rotation of 2 means the
+	tile is upside-down, and a rotation of 3 means the tile is turned on
+	its left side.
+	
+*   The window arrangement. This is an array of boolean values, of the
+	same length as the size of the tile. The squares that make up each
+	tile are numbered, from 1 to the size, by column in order from left
+	to right, and in order from bottom to top within each column. Each
+	value in the array represents if a window is present on the
+	corresponding square of the tile.
+
+The `Placement` class has the public methods to retrieve each of these
+pieces of information:
+
+*   `public String getTileName()`
+*   `public int getX()`
+*   `public int getY()`
+*   `public int getRotation()`
+*   `public boolean getWindow(int i)`
+
+Note that `getWindow` does not return the array, but the value at the
+specified index in it.
+
+Examples of tile placements are shown in the D2C section below.
 
 ## Requirements and evaluation criteria
 
@@ -294,8 +519,8 @@ D2B is a project deliverable: the design will be marked for the group
 as a whole, and all group members will receive the same mark for it.
 
 It is perfectly fine to change your design later in the semester. The
-goal of this deliverable is to demonstrate that you have thought about
-the design before you start coding.
+goal of this deliverable is to demonstrate that you have carefully
+thought about the design before you start coding.
 
 ### D2C and D2F
 
@@ -313,14 +538,89 @@ information about the implementation where it is needed.
 
 #### Evaluation criteria for D2C
 
-Specific criteria for D2C will be provided closer to the due date.
+At this stage, we want to see that you have taken steps towards turning
+your design into a working implementation. Specifically, at this stage
+you should have constructors for all your classes, so that you can create
+instances of the game and set up test cases. You should also create test
+methods for at least two test cases, that test the functionality of some
+(significant) part of your code:
+
+1.  Create an instance of the game for two players, set the available
+	dice to three red, one blue and one white. Test your code for
+	checking if the current player can select the red size 3 tile
+	(should be allowed), the red size 4 tile (should be allowed) and
+	the blue size 3 tile (should not be allowed).
+
+2.  Create an instance of the game for two players, and add two tiles
+	to the first player's building, as shown in the examples below. The
+	two tile placements are:
+
+	*   tile = "B3", x = 0, y = 0, rotation = 1, windows = [true, false, true];	and
+	*   tile = "G4L", x = 3, y = 0, rotation = 0, windows = [true, false, true, true].
+
+	Test your code for checking valid tile placement with the following
+	examples:
+
+	*   ![placement example 1](assets/placement-case-1-small.png)
+		tile = "Y3", x = 1, y = 0, rotation = 0 (not valid)
+
+	*   ![placement example 2](assets/placement-case-2-small.png)
+		tile = "Y3", x = 1, y = 0, rotation = 3 (valid)
+
+	*   ![placement example 3](assets/placement-case-3-small.png)
+		tile = "Y3", x = 2, y = 0, rotation = 3 (not valid)
+
+	*   ![placement example 4](assets/placement-case-4-small.png)
+		tile = "Y3", x = 2, y = 0, rotation = 1 (valid)
+
+	*   ![placement example 5](assets/placement-case-5-small.png)
+		tile = "Y3", x = 1, y = 1, rotation = 3 (not valid)
+
+You should write your test methods in a dedicated test class, called
+`D2CTest`.
+
+Note: Your tests should **not** interact with the GUI (i.e., should
+not create the visual display for the test cases), but should
+construct instances of your internal representation of the correponding
+game state.
+
+You can of course create more examples than the two specified above.
+Generally, tests should be for a non-trivial functionality in a
+non-trivial situation.
+
+The evaluation criteria are as follows:
+
+*   All required admin files are correctly filled in, committed and
+	pushed before the deadline.
+
+*   The project compiles ("build" CI test passes), and runs without
+	error on CSIT lab computers.
+
+*   All classes have constructors. (These should be "real"
+	constructors, that create usable instances of the classes; not
+	just empty placeholders.)
+
+*   The test methods are runnable. (Your implementation may not pass
+	the tests that you have defined at this point, if you have not
+	yet completed the implementation of the functionality that they
+	are testing, but you should at least be able to create the test
+	scenarios.)
+
+*   The test methods are clearly documented. For each, you should
+	describe the test situation (for example, as described in the
+	examples above), describe what method(s) are being tested, and
+	the expected result.
+
+*   The test methods are correct, in the sense that they construct
+	and test the scenarios described above.
 
 #### Evaluation criteria for D2F
 
 *   All required admin files are correctly filled in, committed and
 	pushed before the deadline.
 
-*   The project compiles and runs on the CSIT lab computers.
+*   The project compiles ("build" CI test passes), and runs without
+	error on CSIT lab computers.
 
 *   The game is playable, and follows the game rules.
 
