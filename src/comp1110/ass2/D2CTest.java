@@ -33,7 +33,7 @@ public class D2CTest {
      * Zhening
      *
      * ToDo
-     * Create a method in Dice which validates dice can be selected and create test cases
+     * Create a method in Dice which validates tile can be selected and create test cases
      *
      * Assuming Tile placement is given for this task
      * gameState.board -> [[0,0,0,0,0],[0,0,0,0]] or
