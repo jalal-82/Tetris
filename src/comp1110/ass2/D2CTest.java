@@ -5,8 +5,8 @@ public class D2CTest {
     Player P1 = new Player();
     Player P2 = new Player();
 
-    String[] D1 = {"Red","Red","Red","Blue","White"};
-    String[] D2 = {"Red","Red","Red","Blue","White"};
+    String[] D1 = {"Blue","BLue","Red","Blue","White"};
+    String[] D2 = {"Green","Green","Green","Green","White"};
 
     Score S1 = new Score();
     Score S2 = new Score();
@@ -36,10 +36,10 @@ public class D2CTest {
      * Create a method in Dice which validates tile can be selected and create test cases
      *
      * Assuming Tile placement is given for this task
-     * gameState.board -> [[0,0,0,0,0],[0,0,0,0]] or
-     * {red:1,2,blue:3,4}
+     * gameState.board -> [[0,0,0,0,0],[0,0,0,0,0],[],[],[]]
      *
-     * ToDO
+     *
+     * ToDo
      * Write backend code to validate the tile placement in the gameState class
      * Tile = "R2"
      * confusing bit -Jalal

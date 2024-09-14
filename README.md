@@ -431,7 +431,7 @@ A tile placement consists of five pieces of information:
 	![facade sheet with tile names](assets/tile-names.png)
 
 	Note that the blue, green and yellow size 4 tiles each have a "left"
-	and a "right" version, but the red, green and purple do not.
+	and a "right" version, but the red and purple do not.
 
 *   The placement column (x coordinate). The columns are index 0 to 4,
 	from left to right.
@@ -581,7 +581,7 @@ You should write your test methods in a dedicated test class, called
 
 Note: Your tests should **not** interact with the GUI (i.e., should
 not create the visual display for the test cases), but should
-construct instances of your internal representation of the correponding
+construct instances of your internal representation of the corresponding
 game state.
 
 You can of course create more examples than the two specified above.
