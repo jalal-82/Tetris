@@ -2,49 +2,53 @@ package comp1110.ass2;
 
 public class D2CTest {
 
-    Player P1 = new Player();
-    Player P2 = new Player();
 
-    String[] D1 = {"Blue","BLue","Red","Blue","White"};
-    String[] D2 = {"Green","Green","Green","Green","White"};
 
-    Score S1 = new Score();
-    Score S2 = new Score();
+//  test isValidSelection
+    public static void main(String[] args) {
+        Player P1 = new Player();
+        Player P2 = new Player();
 
-    Abilities A1 = new Abilities();
-    Abilities A2 = new Abilities();
 
-    Bonus B1 = new Bonus("Red",2);
-    Bonus B2 = new Bonus("Blue",1);
+        Dices D1 = new Dices();
+        D1.applyPresetDiceD2CP1();
 
-    GameState G1 = new GameState(P1,D1,S1,A1,B1);
-    GameState G2 = new GameState(P2,D2,S2,A2,B2);
+        Dices D2 = new Dices();
 
-    /**
-     * Test your code for
-     * checking if the current player can select the red size 3 tile
-     * (should be allowed), the red size 4 tile (should be allowed) and
-     * the blue size 3 tile (should not be allowed).
-     * Assert equal stuff
-     *
-     * ToDo
-     * Create Dices class that initiates 5 random colours to a string[]
-     * Think of way on how to generate the tiles based on the dices
-     * Zhening
-     *
-     * ToDo
-     * Create a method in Dice which validates tile can be selected and create test cases
-     *
-     * Assuming Tile placement is given for this task
-     * gameState.board -> [[0,0,0,0,0],[0,0,0,0,0],[],[],[]]
-     *
-     *
-     * ToDo
-     * Write backend code to validate the tile placement in the gameState class
-     * Tile = "R2"
-     * confusing bit -Jalal
-     *
-     */
+        Tile T1 = new Tile(D1);
+        Tile T2 = new Tile(D2);
+
+        Score S1 = new Score();
+        Score S2 = new Score();
+
+//   Abilities and Bonus are irrelevant for D2C, they are just a preqisite for GameState Object
+        Abilities A1 = new Abilities();
+        Abilities A2 = new Abilities();
+
+        Bonus B1 = new Bonus("Red",2);
+        Bonus B2 = new Bonus("Blue",1);
+
+
+        GameState G1 = new GameState(P1,D1,T1,S1,A1,B1);
+        GameState G2 = new GameState(P2,D2,T2,S2,A2,B2);
+/**
+ *
+      WE should generate Tiles here (only the names in String format is what we need)
+      T1.generateTiles(); should be called by itself when we did Tile T1 = new Tile(D1);
+      this should generate something like ["R2","R3",2 more will be random]
+
+      Then we need to forcefully place B3 and G4l as D2C suggest.
+    2 methods)
+      we could do is Play 3 rounds on the board right here, make three method like applyPresetDiceD2CP1
+        we call them R1,R2,R3 then get their tiles and apply it board
+        OR
+        we create a method in gameState class called D2CGameBoard or something
+        which just puts the tiles by replacing '.' with G,GW,B and BW
+
+        once we have the board, we just apply the R3 with 3 windows and test it
+ */
+
+    }
 
 
 }

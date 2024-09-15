@@ -6,23 +6,25 @@ package comp1110.ass2;
  */
 public class GameState {
 
-    private final String[] dice;
+    private final Dices dice;
     private char[][] gameBoard;
     private Player player ;
     private Score score;
     private Abilities abilities;
     private Bonus bonus;
+    private Tile tile;
 
     /**
      * Constructor for GameState.
      * Initializes an empty board with default values
      */
-    public GameState(Player player, String[] dice, Score score, Abilities abilities, Bonus bonus) {
+    public GameState(Player player, Dices dice, Tile tile, Score score, Abilities abilities, Bonus bonus) {
         this.player = player;
         this.dice = dice;
         this.score = score;
         this.abilities = abilities;
         this.bonus = bonus;
+        this.tile = tile;
         gameBoard = new char[9][5];
         initializeBoard();
     }

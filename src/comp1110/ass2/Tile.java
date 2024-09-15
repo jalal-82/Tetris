@@ -21,7 +21,6 @@ public class Tile {
             return false;
     }
 
-//   Jalal's version
     private Map<String, List<char[][]>> allTiles;
     private Map<String, Integer> tileCounts;  // Stores the count of each color tile
     private String[] tiles;  // Stores the generated tiles
@@ -105,8 +104,6 @@ public class Tile {
 
 
         }
-
-
         generateTiles(dice.getAllDice());
     }
 
@@ -127,10 +124,7 @@ public class Tile {
         }
     }
 
-
-
     public int[][] generateTiles(String[] Dices) {
-
         return new int[0][0];
     }
 
