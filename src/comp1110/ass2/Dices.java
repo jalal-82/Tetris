@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class Dices {
@@ -22,14 +24,13 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         }
     }
 
-    public void applyPresetDiceD2CP1() {
-        rolledDice[0] = "B";
-        rolledDice[1] = "B";
-        rolledDice[2] = "B";
-        rolledDice[3] = "R";
-        rolledDice[4] = "W";
+    public void applyPresetDiceD2CP1(String a, String b ,String c ,String d ,String e) {
+        rolledDice[0] = a;
+        rolledDice[1] = b;
+        rolledDice[2] = c;
+        rolledDice[3] = d;
+        rolledDice[4] = e;
     }
-
     // Method to return all rolled dice
     public String[] getAllDice() {
         return rolledDice;
@@ -38,19 +39,7 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     public static void main(String[] args) {
         Dices D1 = new Dices();
         String[] diceRoll = D1.getAllDice();
-
-        // Print random dice roll
-        System.out.println("Player 1 Random Dice Roll:");
-        for (String die : diceRoll) {
-            System.out.print(die + " ");
-        }
-
-        // Apply preset dice roll
-        D1.applyPresetDiceD2CP1();
-        diceRoll = D1.getAllDice();
-
-        // Print preset dice roll
-        System.out.println("\nPlayer 1 Preset Dice Roll:");
+        System.out.println("Player 1 Dice Roll:");
         for (String die : diceRoll) {
             System.out.print(die + " ");
         }
