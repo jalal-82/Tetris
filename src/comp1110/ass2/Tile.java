@@ -4,7 +4,22 @@ import java.util.*;
 public class Tile {
 
 
+    //Hunter
+    public boolean isValidSelection(Dices dice, String tileName) {
+        String[] rolledDice = dice.getAllDice();
+        int diceOfTileColour = 0;
 
+        for (int i = 0; i < rolledDice.length; i++) {
+            if (tileName.startsWith(rolledDice[i]) || Objects.equals(rolledDice[i], "W"))
+                diceOfTileColour++;
+
+        }
+        String tileSize = tileName.replaceAll("[A-Z]", "");
+        if (diceOfTileColour >= Integer.parseInt(tileSize))
+            return true;
+        else
+            return false;
+    }
 
 //   Jalal's version
     private Map<String, List<char[][]>> allTiles;
@@ -157,10 +172,11 @@ public class Tile {
     public static void main(String[] args) {
         Dices D1 = new Dices();
 
-
+        System.out.println(Arrays.toString(D1.getAllDice()));
         Tile T1 = new Tile(D1);
 
-        T1.printTile("R4");
+
+        System.out.println(T1.isValidSelection(D1, "R2"));
     }
 }
 

@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class Dices {
 //    Jalal's implementation
-private static final String[] COLORS = {"Red", "Blue", "Purple", "Green", "Yellow"};
+private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     private String[] rolledDice;
     private Random random;
 
