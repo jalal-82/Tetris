@@ -149,10 +149,52 @@ public class Tile {
         allTiles.get(key).add(windowArr);
     }
 
+    // Eileen's getmax method
+    public int getmaxIndex(int[] arr, int n){
+        if(n==1) {return 0;}
+        int nx = getmaxIndex(arr, n-1);
+        if (arr[n-1] < arr[nx]) {
+            return nx;
+        }
+        return n-1;
+    }
 
-    public int[][] generateTiles(String[] Dices) {
+    // Eileen's Version
+    public String[] generateTiles(String[] Dices) {
+        String[] result = new String[4]; // 4 tiles on screen
+        String[] color = {"R", "B", "P", "G", "Y", "W"};
+        int[] colorsNum = {0,0,0,0,0,0}; // number dice of "Red", "Blue", "Purple", "Green", "Yellow", or "White"
+        for (String s : Dices) {
+            switch(s) {
+                case "R": colorsNum[0] += 1;
+                case "B": colorsNum[1] += 1;
+                case "P": colorsNum[2] += 1;
+                case "G": colorsNum[3] += 1;
+                case "Y": colorsNum[4] += 1;
+                case "W": colorsNum[5] += 1;
+            }
+        }
+        int ite = 0;
+        while (ite<4) { // as we only need 4 tiles
+            int curMax = getmaxIndex(colorsNum, colorsNum.length);
+            int cur = colorsNum[curMax];
+            if (cur==0) {break;}
+            if (cur>1){
+                for (int i=2; i<=cur, i++){
+                    result[ite] = color[curMax]+String.valueOf(i) // get all tiles in one color
+                    ite++;
+                }
+            }
+            colorsNum[curMax] = 0;
+        }
+        Random rand = new Random();
+        while (ite<4) {
+            int y = rand.nextInt(allTiles.keySet().toArray().length);
+            result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
+            ite++;
+        }
 
-        return new int[0][0];
+        return result;
     }
 
 
