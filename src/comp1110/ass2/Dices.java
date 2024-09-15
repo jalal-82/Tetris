@@ -24,6 +24,13 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         }
     }
 
+    public void applyPresetDiceD2CP1(String a, String b ,String c ,String d ,String e) {
+        rolledDice[0] = a;
+        rolledDice[1] = b;
+        rolledDice[2] = c;
+        rolledDice[3] = d;
+        rolledDice[4] = e;
+    }
     // Method to return all rolled dice
     public String[] getAllDice() {
         return rolledDice;
