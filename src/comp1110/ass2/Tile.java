@@ -3,47 +3,11 @@ import java.util.*;
 
 public class Tile {
 
-//    private static final String[] COLORS = {"Red", "Blue", "Purple", "Green", "Yellow", "White"};
-//    private final String color;
-//    private final int[][] tileMatrix;
-//    private final String name;
-//    private final int size;
 
 
-    // Constructor
-    //updated to included name and size - Hunter
-    //later we could add a method to extract all this info from the name
-//    public Tile(String name, String color, int size) {
-//        this.color = color;
-//        this.name = name;
-//        this.size = size;
-//        this.tileMatrix = generateTile();
-//    }
-
-    // Method to generate a unique tile matrix
-//  what I want is something like this function looks at our 5 dice colours
-//  make some dictionary so if we have 3 blue 1 red 1 green, then {Blue:3,Green,:1,Red:1}
-//  based on this dictionary we can make a possible dice lise, so B3,B2 are only possible,
-//  and we can give them two random ones to make up other 2.
-
-
-
-    //Hunter
-//    public boolean isValidSelection(Dices dice) {
-//        // I assume maybe later available die will be stored elsewhere in a variable, and we won't need the dice parameter
-//        int availableDice = 0;
-//        for(String x:dice.getAvailableDie()){
-//            if(x.equals(this.color) || x.equals("White"))
-//                availableDice++;
-//        }
-//        if (availableDice >= this.size)
-//            return true;
-//        else
-//            return false;
-//    }
 
 //   Jalal's version
-    private Map<String, int[][]> allTiles;
+    private Map<String, List<char[][]>> allTiles;
     private Map<String, Integer> tileCounts;  // Stores the count of each color tile
     private String[] tiles;  // Stores the generated tiles
     private Random random;
@@ -52,7 +16,7 @@ public class Tile {
     public Tile(Dices dice) {
         tileCounts = new HashMap<>();
         random = new Random();
-        Map<String, List<char[][]>> allTiles = new HashMap<>();
+        allTiles = new HashMap<>();
         {
             allTiles.put("R2", new ArrayList<>());
             allTiles.get("R2").add(new char[][] { {'R', ' '}, {'R', ' '} });
@@ -123,9 +87,29 @@ public class Tile {
 
             allTiles.put("Y5", new ArrayList<>());
             allTiles.get("Y5").add(new char[][] { {' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '} });
+
+
         }
 
+
         generateTiles(dice.getAllDice());
+    }
+
+    public void printTile(String key) {
+        List<char[][]> tiles = allTiles.get(key);
+        if (tiles != null) {
+            for (char[][] tile : tiles) {
+                for (int i = 0; i < tile.length; i++) {
+                    for (int j = 0; j < tile[i].length; j++) {
+                        System.out.print(tile[i][j] + " ");
+                    }
+                    System.out.println(); // Move to the next line after each row
+                }
+                System.out.println(); // Add an extra line between different tiles if there are multiple
+            }
+        } else {
+            System.out.println("No tile found for key: " + key);
+        }
     }
 
 
@@ -171,6 +155,12 @@ public class Tile {
     }
 
     public static void main(String[] args) {
+        Dices D1 = new Dices();
+
+
+        Tile T1 = new Tile(D1);
+
+        T1.printTile("R4");
     }
 }
 
