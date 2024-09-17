@@ -94,7 +94,7 @@ public class jalalTest {
         for (int i = 0; i < tileRows; i++) {
             for (int j = 0; j < tileCols; j++) {
                 if (tile[i][j] != ' ' && board[row + i][col + j] != '.') {
-                    return false; // Conflict detected
+                    return false; // Conflict detected only if the tile space is not empty
                 }
             }
         }
