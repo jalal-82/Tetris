@@ -4,9 +4,6 @@ import java.util.*;
 public class Tile {
 
 
-    //Hunter
-
-
 //   Jalal's version
     private Map<String, List<char[][]>> allTiles;
     private Map<String, Integer> tileCounts;  // Stores the count of each color tile
@@ -56,25 +53,25 @@ public class Tile {
             allTiles.get("R4").add(new char[][] { {'R', 'R'}, {'R', 'R'} });
 
             allTiles.put("B4L", new ArrayList<>());
-            allTiles.get("B4L").add(new char[][] {{' ', 'B', ' '}, {' ', 'B', ' '}, {'B', 'B', ' '} });
+            allTiles.get("B4L").add(new char[][] {{' ', 'B'}, {' ', 'B'}, {'B', 'B'} });
 
             allTiles.put("B4R", new ArrayList<>());
-            allTiles.get("B4R").add(new char[][] {{' ', 'B', ' '}, {' ', 'B', ' '}, {' ', 'B', 'B'} });
+            allTiles.get("B4R").add(new char[][] {{'B', ' '}, {'B', ' '}, {'B', 'B'} });
 
             allTiles.put("P4", new ArrayList<>());
             allTiles.get("P4").add(new char[][] { {'P'}, {'P'}, {'P'}, {'P'} });
 
             allTiles.put("G4L", new ArrayList<>());
-            allTiles.get("G4L").add(new char[][] { {' ', 'G', ' '}, {'G', 'G', ' '}, {' ', 'G', ' '} });
+            allTiles.get("G4L").add(new char[][] { {' ', 'G'}, {'G', 'G'}, {' ', 'G'} });
 
             allTiles.put("G4R", new ArrayList<>());
-            allTiles.get("G4R").add(new char[][] { {' ', 'G', ' '}, {' ', 'G', 'G'}, {' ', 'G', ' '} });
+            allTiles.get("G4R").add(new char[][] { {'G', ' '}, {'G', 'G'}, {'G', ' '} });
 
             allTiles.put("Y4L", new ArrayList<>());
-            allTiles.get("Y4L").add(new char[][] { {' ', 'Y', ' '}, {'Y', 'Y', ' '}, {'Y', ' ', ' '} });
+            allTiles.get("Y4L").add(new char[][] { {' ', 'Y'}, {'Y', 'Y'}, {'Y', ' '} });
 
             allTiles.put("Y4R", new ArrayList<>());
-            allTiles.get("Y4R").add(new char[][] { {' ', 'Y', ' '}, {' ', 'Y', 'Y'}, {' ', ' ', 'Y'} });
+            allTiles.get("Y4R").add(new char[][] { {'Y', ' '}, {'Y', 'Y'}, {' ', 'Y'} });
 
             allTiles.put("R5", new ArrayList<>());
             allTiles.get("R5").add(new char[][] { {' ', 'R', 'R'}, {'R', 'R', 'R'} });
@@ -96,7 +93,6 @@ public class Tile {
 
 
     public boolean isValidSelection(String tileName) {
-        // First, check if the tile is in the generated tiles
         for (String generatedTile : generatedTiles) {
             if (generatedTile.equals(tileName)) {
                 return true;
@@ -127,17 +123,6 @@ public class Tile {
             }
         }
         allTiles.get(key).add(windowArr);
-    }
-
-    // Eileen's getmax method
-    private int getmaxIndex(int[] arr, int n) {
-        int maxIndex = 0;
-        for (int i = 1; i < n; i++) {
-            if (arr[i] > arr[maxIndex]) {
-                maxIndex = i;
-            }
-        }
-        return maxIndex;
     }
 
     // Eileen's Version
@@ -195,7 +180,26 @@ public class Tile {
         return result;
     }
 
-    public char[][] rotateTile(char[][] tile, int rotation) {
+    private int getmaxIndex(int[] arr, int n) {
+        int maxIndex = 0;
+        for (int i = 1; i < n; i++) {
+            if (arr[i] > arr[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
+
+
+    public void rotateTile(String key, int rotation) {
+        // Fetch the first tile in the list corresponding to the given key
+        List<char[][]> tiles = allTiles.get(key);
+        if (tiles == null || tiles.isEmpty()) {
+            System.out.println("Tile not found for key: " + key);
+            return;
+        }
+
+        char[][] tile = tiles.get(0);  // Get the original tile
         int rows = tile.length;
         int cols = tile[0].length;
         char[][] rotatedTile;
@@ -226,10 +230,11 @@ public class Tile {
                 }
             }
         }
-        return rotatedTile;
+
+        // Replace the old tile with the rotated one
+        tiles.set(0, rotatedTile);  // Update the first tile in the list with the rotated version
     }
 
-//    create Get allTiles function
     public Map<String, List<char[][]>> getAllTiles() {
         return new HashMap<>(allTiles);
     }
@@ -256,18 +261,6 @@ public class Tile {
         }
     }
 
-
-    public static void main(String[] args) {
-        Dices D1 = new Dices();
-
-        //System.out.println(Arrays.toString(D1.getAllDice()));
-        Tile T1 = new Tile(D1);
-        char[][] tile = new char[][] { {'R', ' '}, {'R', ' '} };
-        boolean[] windows = {true, true};
-        T1.applyWindows("R2", windows);
-        T1.printTile("R2");
-
-    }
 }
 
 
