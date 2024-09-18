@@ -4,15 +4,13 @@ import java.util.*;
 public class Tile {
 
 
-    //Hunter
-
-
 //   Jalal's version
     private Map<String, List<char[][]>> allTiles;
     private Map<String, Integer> tileCounts;  // Stores the count of each color tile
     private String[] tiles;  // Stores the generated tiles
     private Random random;
     private String[] dice;
+    private String[] generatedTiles;
 
     // Constructor that takes a Dice object and generates tiles based on the dice roll
     public Tile(Dices dice) {
@@ -55,25 +53,25 @@ public class Tile {
             allTiles.get("R4").add(new char[][] { {'R', 'R'}, {'R', 'R'} });
 
             allTiles.put("B4L", new ArrayList<>());
-            allTiles.get("B4L").add(new char[][] {{' ', 'B', ' '}, {' ', 'B', ' '}, {'B', 'B', ' '} });
+            allTiles.get("B4L").add(new char[][] {{' ', 'B'}, {' ', 'B'}, {'B', 'B'} });
 
             allTiles.put("B4R", new ArrayList<>());
-            allTiles.get("B4R").add(new char[][] {{' ', 'B', ' '}, {' ', 'B', ' '}, {' ', 'B', 'B'} });
+            allTiles.get("B4R").add(new char[][] {{'B', ' '}, {'B', ' '}, {'B', 'B'} });
 
             allTiles.put("P4", new ArrayList<>());
             allTiles.get("P4").add(new char[][] { {'P'}, {'P'}, {'P'}, {'P'} });
 
             allTiles.put("G4L", new ArrayList<>());
-            allTiles.get("G4L").add(new char[][] { {' ', 'G', ' '}, {'G', 'G', ' '}, {' ', 'G', ' '} });
+            allTiles.get("G4L").add(new char[][] { {' ', 'G'}, {'G', 'G'}, {' ', 'G'} });
 
             allTiles.put("G4R", new ArrayList<>());
-            allTiles.get("G4R").add(new char[][] { {' ', 'G', ' '}, {' ', 'G', 'G'}, {' ', 'G', ' '} });
+            allTiles.get("G4R").add(new char[][] { {'G', ' '}, {'G', 'G'}, {'G', ' '} });
 
             allTiles.put("Y4L", new ArrayList<>());
-            allTiles.get("Y4L").add(new char[][] { {' ', 'Y', ' '}, {'Y', 'Y', ' '}, {'Y', ' ', ' '} });
+            allTiles.get("Y4L").add(new char[][] { {' ', 'Y'}, {'Y', 'Y'}, {'Y', ' '} });
 
             allTiles.put("Y4R", new ArrayList<>());
-            allTiles.get("Y4R").add(new char[][] { {' ', 'Y', ' '}, {' ', 'Y', 'Y'}, {' ', ' ', 'Y'} });
+            allTiles.get("Y4R").add(new char[][] { {'Y', ' '}, {'Y', 'Y'}, {' ', 'Y'} });
 
             allTiles.put("R5", new ArrayList<>());
             allTiles.get("R5").add(new char[][] { {' ', 'R', 'R'}, {'R', 'R', 'R'} });
@@ -89,44 +87,22 @@ public class Tile {
 
             allTiles.put("Y5", new ArrayList<>());
             allTiles.get("Y5").add(new char[][] { {' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '} });
-
-
         }
-
-
-        generateTiles(dice.getAllDice());
+        this.generatedTiles = generateTiles(dice);
     }
 
-    public void printTile(String key) {
-        List<char[][]> tiles = allTiles.get(key);
-        if (tiles != null) {
-            for (char[][] tile : tiles) {
-                for (int i = 0; i < tile.length; i++) {
-                    for (int j = 0; j < tile[i].length; j++) {
-                        System.out.print(tile[i][j] + " ");
-                    }
-                    System.out.println();
-                }
-                System.out.println();
-            }
-        }
-    }
 
     public boolean isValidSelection(String tileName) {
-
-        int diceOfTileColour = 0;
-
-        for (int i = 0; i < dice.length; i++) {
-            if (tileName.startsWith(dice[i]) || Objects.equals(dice[i], "W"))
-                diceOfTileColour++;
-
+        for (String generatedTile : generatedTiles) {
+            if (generatedTile.equals(tileName)) {
+                return true;
+            }
         }
-        String tileSize = tileName.replaceAll("[A-Z]", "");
-        if (diceOfTileColour >= Integer.parseInt(tileSize))
-            return true;
-        else
-            return false;
+
+        // If the tile is not in the generated tiles, return false
+        return false;
     }
+
     // adds a new char[][] to the list mapped to the key. I feel like this should work, will be easy modify later if not
     public void applyWindows(String key, boolean[] windows) {
         char[][] tileArr = allTiles.get(key).get(0);
@@ -149,46 +125,53 @@ public class Tile {
         allTiles.get(key).add(windowArr);
     }
 
-    // Eileen's getmax method
-    public int getmaxIndex(int[] arr, int n){
-        if(n==1) {return 0;}
-        int nx = getmaxIndex(arr, n-1);
-        if (arr[n-1] < arr[nx]) {
-            return nx;
-        }
-        return n-1;
-    }
-
     // Eileen's Version
-    public String[] generateTiles(String[] Dices) {
+    public String[] generateTiles(Dices rolledDices) {
         String[] result = new String[4]; // 4 tiles on screen
-        String[] color = {"R", "B", "P", "G", "Y", "W"};
-        int[] colorsNum = {0,0,0,0,0,0}; // number dice of "Red", "Blue", "Purple", "Green", "Yellow", or "White"
-        for (String s : Dices) {
-            switch(s) {
-                case "R": colorsNum[0] += 1;
-                case "B": colorsNum[1] += 1;
-                case "P": colorsNum[2] += 1;
-                case "G": colorsNum[3] += 1;
-                case "Y": colorsNum[4] += 1;
-                case "W": colorsNum[5] += 1;
-            }
-        }
-        int ite = 0;
-        while (ite<4) { // as we only need 4 tiles
-            int curMax = getmaxIndex(colorsNum, colorsNum.length);
-            int cur = colorsNum[curMax];
-            if (cur==0) {break;}
-            if (cur>1){
-                for (int i=2; i<=cur, i++){
-                    result[ite] = color[curMax]+String.valueOf(i) // get all tiles in one color
-                    ite++;
+        String[] color = {"R", "B", "P", "G", "Y"};
+        int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
+        int wildCount = 0; // Count of wild (White) dice
+
+        String[] dices = rolledDices.getAllDice();
+
+        for (String s : dices) {
+            if (s.equals("W")) {
+                wildCount++;
+            } else {
+                for (int i = 0; i < color.length; i++) {
+                    if (s.equals(color[i])) {
+                        colorsNum[i]++;
+                        break;
+                    }
                 }
             }
-            colorsNum[curMax] = 0;
         }
+
+        int ite = 0;
+        while (ite < 4 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
+            int curMax = getmaxIndex(colorsNum, colorsNum.length);
+            int cur = colorsNum[curMax] + wildCount;
+
+            if (cur > 1) {
+                for (int i = 2; i <= cur && ite < 4; i++) {
+                    result[ite] = color[curMax] + i;
+                    ite++;
+                    if (colorsNum[curMax] > 0) {
+                        colorsNum[curMax]--;
+                    } else {
+                        wildCount--;
+                    }
+                }
+            }
+
+            if (colorsNum[curMax] == 0) {
+                colorsNum[curMax] = -1; // Mark as processed
+            }
+        }
+
+        // Fill remaining slots with random tiles if needed
         Random rand = new Random();
-        while (ite<4) {
+        while (ite < 4) {
             int y = rand.nextInt(allTiles.keySet().toArray().length);
             result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
             ite++;
@@ -197,8 +180,26 @@ public class Tile {
         return result;
     }
 
+    private int getmaxIndex(int[] arr, int n) {
+        int maxIndex = 0;
+        for (int i = 1; i < n; i++) {
+            if (arr[i] > arr[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
 
-    public static char[][] rotateTile(char[][] tile, int rotation) {
+
+    public void rotateTile(String key, int rotation) {
+        // Fetch the first tile in the list corresponding to the given key
+        List<char[][]> tiles = allTiles.get(key);
+        if (tiles == null || tiles.isEmpty()) {
+            System.out.println("Tile not found for key: " + key);
+            return;
+        }
+
+        char[][] tile = tiles.get(0);  // Get the original tile
         int rows = tile.length;
         int cols = tile[0].length;
         char[][] rotatedTile;
@@ -229,22 +230,37 @@ public class Tile {
                 }
             }
         }
-        return rotatedTile;
+
+        // Replace the old tile with the rotated one
+        tiles.set(0, rotatedTile);  // Update the first tile in the list with the rotated version
     }
 
-    public static void main(String[] args) {
-        Dices D1 = new Dices();
-
-        //System.out.println(Arrays.toString(D1.getAllDice()));
-        Tile T1 = new Tile(D1);
-        char[][] tile = new char[][] { {'R', ' '}, {'R', ' '} };
-        boolean[] windows = {true, true};
-        T1.applyWindows("R2", windows);
-        T1.printTile("R2");
-
-
-
+    public Map<String, List<char[][]>> getAllTiles() {
+        return new HashMap<>(allTiles);
     }
+
+    public void printTile(String key) {
+        List<char[][]> tiles = allTiles.get(key);
+        if (tiles != null) {
+            for (char[][] tile : tiles) {
+                for (int i = 0; i < tile.length; i++) {
+                    for (int j = 0; j < tile[i].length; j++) {
+                        System.out.print(tile[i][j] + " ");
+                    }
+                    System.out.println();
+                }
+                System.out.println();
+            }
+        }
+    }
+
+    public void printGeneratedTiles() {
+        System.out.println("Generated Tiles:");
+        for (String tile : generatedTiles) {
+            System.out.println(tile);
+        }
+    }
+
 }
 
 
