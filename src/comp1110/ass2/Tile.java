@@ -102,27 +102,26 @@ public class Tile {
         // If the tile is not in the generated tiles, return false
         return false;
     }
-
-    // adds a new char[][] to the list mapped to the key. I feel like this should work, will be easy modify later if not
+    /* increments the value for each tile char where there should be a window
+    'R' becomes 'S'
+    'B' becomes 'C'
+    'P' becomes 'Q'
+    'G' becomes 'H'
+    'Y' becomes 'Z'
+    'W' becomes 'X'
+     */
     public void applyWindows(String key, boolean[] windows) {
         char[][] tileArr = allTiles.get(key).get(0);
-        //creates a clone so to not alter original
-        char[][] windowArr = new char[tileArr.length][];
+        int squareCounter = 0; // keeps count of all the squares so as it is easily referenced with the windows input
         for (int i = 0; i < tileArr.length; i++) {
-            windowArr[i] = tileArr[i].clone();
-        }
-        int squareCounter = 0;
-        for (int i = 0; i < windowArr.length; i++) {
-            for (int j = 0; j < windowArr[i].length; j++) {
-                if (!String.valueOf(windowArr[i][j]).equals(" "))
+            for (int j = 0; j < tileArr[i].length; j++) {
+                if (!String.valueOf(tileArr[i][j]).equals(" ")) // checks if the element is equal to the colour (i.e. there is a square in the matrix)
                     squareCounter++;
-                if (!String.valueOf(windowArr[i][j]).equals(" ") && windows[squareCounter - 1])
-                    windowArr[i][j] = 'W';
-                else
-                    windowArr[i][j] = ' ';
+                if (!String.valueOf(tileArr[i][j]).equals(" ") && windows[squareCounter - 1])
+                    tileArr[i][j]++;
             }
         }
-        allTiles.get(key).add(windowArr);
+
     }
 
     // Eileen's Version

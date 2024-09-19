@@ -36,10 +36,10 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
 
     public static void main(String[] args) {
         Dices D1 = new Dices();
-        String[] diceRoll = D1.getAllDice();
-        System.out.println("Player 1 Dice Roll:");
-        for (String die : diceRoll) {
-            System.out.print(die + " ");
-        }
+        Tile T1 = new Tile(D1);
+        T1.printTile("R2");
+        boolean[] windows = {true, false};
+        T1.applyWindows("R2", windows);
+        T1.printTile("R2");
     }
 }
