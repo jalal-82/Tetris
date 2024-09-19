@@ -3,18 +3,18 @@ import java.util.*;
 
 public class Tile {
 
-
-//   Jalal's version
     private Map<String, List<char[][]>> allTiles;
-    private Map<String, Integer> tileCounts;  // Stores the count of each color tile
     private String[] tiles;  // Stores the generated tiles
     private Random random;
     private String[] dice;
     private String[] generatedTiles;
 
-    // Constructor that takes a Dice object and generates tiles based on the dice roll
+    /**
+     * Constructor that initializes the Tile object. It generates all the possible tiles and
+     * also generates tiles based on the provided dice roll.
+     * @param dice The Dice object used to determine which tiles will be generated.
+     */
     public Tile(Dices dice) {
-        tileCounts = new HashMap<>();
         random = new Random();
         allTiles = new HashMap<>();
         this.dice = dice.getAllDice();
@@ -91,7 +91,12 @@ public class Tile {
         this.generatedTiles = generateTiles(dice);
     }
 
-
+    /**
+     * Checks whether the given tile is a valid selection from the set of generated tiles.
+     * @param tileName The name of the tile to check (e.g., "R2", "B3").
+     * @return true if the tile is a valid selection, false otherwise.
+     * Author:
+     */
     public boolean isValidSelection(String tileName) {
         for (String generatedTile : generatedTiles) {
             if (generatedTile.equals(tileName)) {
@@ -102,13 +107,13 @@ public class Tile {
         // If the tile is not in the generated tiles, return false
         return false;
     }
-    /* increments the value for each tile char where there should be a window
-    'R' becomes 'S'
-    'B' becomes 'C'
-    'P' becomes 'Q'
-    'G' becomes 'H'
-    'Y' becomes 'Z'
-    'W' becomes 'X'
+
+    /**
+     * Applies windows to a tile, incrementing the values for any position that should have a window.
+     * 'R' becomes 'S', 'B' becomes 'C', 'P' becomes 'Q', 'G' becomes 'H', 'Y' becomes 'Z'.
+     * @param key The key for the tile to modify.
+     * @param windows A boolean array where each true element represents the presence of a window.
+     * Author:
      */
     public void applyWindows(String key, boolean[] windows) {
         char[][] tileArr = allTiles.get(key).get(0);
@@ -124,7 +129,12 @@ public class Tile {
 
     }
 
-    // Eileen's Version
+    /**
+     * Generates tiles based on the provided dice rolls. Takes into account colors and wild dice.
+     * @param rolledDices The dice rolls that determine the available tiles.
+     * @return A String array of the selected tiles.
+     * Author: Eileen
+     */
     public String[] generateTiles(Dices rolledDices) {
         String[] result = new String[4]; // 4 tiles on screen
         String[] color = {"R", "B", "P", "G", "Y"};
@@ -179,6 +189,13 @@ public class Tile {
         return result;
     }
 
+    /**
+     * Finds the index of the maximum value in an array.
+     * @param arr The array to search.
+     * @param n The size of the array.
+     * @return The index of the maximum value.
+     * Author: Eileen
+     */
     private int getmaxIndex(int[] arr, int n) {
         int maxIndex = 0;
         for (int i = 1; i < n; i++) {
@@ -189,7 +206,12 @@ public class Tile {
         return maxIndex;
     }
 
-
+    /**
+     * Rotates a tile by 0, 90, 180, or 270 degrees clockwise.
+     * @param key The key for the tile to rotate.
+     * @param rotation The number of 90-degree clockwise rotations (0 to 3).
+     * Author:
+     */
     public void rotateTile(String key, int rotation) {
         // Fetch the first tile in the list corresponding to the given key
         List<char[][]> tiles = allTiles.get(key);
@@ -234,10 +256,20 @@ public class Tile {
         tiles.set(0, rotatedTile);  // Update the first tile in the list with the rotated version
     }
 
+    /**
+     * Returns all tiles in the game.
+     * @return A copy of the map containing all tiles.
+     * Author:
+     */
     public Map<String, List<char[][]>> getAllTiles() {
         return new HashMap<>(allTiles);
     }
 
+    /**
+     * Prints the tile with the given key.
+     * @param key The key of the tile to print.
+     * Author:
+     */
     public void printTile(String key) {
         List<char[][]> tiles = allTiles.get(key);
         if (tiles != null) {
@@ -253,6 +285,10 @@ public class Tile {
         }
     }
 
+    /**
+     * Prints the currently generated tiles.
+     * Author:
+     */
     public void printGeneratedTiles() {
         System.out.println("Generated Tiles:");
         for (String tile : generatedTiles) {

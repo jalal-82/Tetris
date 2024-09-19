@@ -4,6 +4,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+
 public class D2CTest {
     Player P1;
     Dices D1;
@@ -75,11 +76,13 @@ public class D2CTest {
         assertEquals(res,false);
     }
 
+//    For Tile Y3, windows aren't applied as it doesn't affect placement Validation.
+
     @Test
     public void isTileY3PlacementValid1(){
         if (T1.getAllTiles().containsKey("Y3") && !T1.getAllTiles().get("Y3").isEmpty()) {
             T1.rotateTile("Y3", 0);
-            boolean isValid = G1.isTilePlacementValid(G1.getGameBoard(),"Y3",0,0);
+            boolean isValid = G1.isTilePlacementValid(G1.getGameBoard(),"Y3",0,1);
             assertEquals(isValid,false);
         }
     }

@@ -10,6 +10,16 @@ public class GameState {
     private Bonus bonus;
     private Tile tiles;
 
+    /**
+     * Constructor for the GameState class.
+     *
+     * @param player     The player object representing the current player.
+     * @param dice       The dice object used in the game.
+     * @param tiles      The tiles available in the game.
+     * @param score      The score object to track player's score.
+     * @param abilities  The abilities object representing player's abilities.
+     * @param bonus      The bonus object representing any bonus in the game.
+     */
     public GameState(Player player, Dices dice, Tile tiles, Score score, Abilities abilities, Bonus bonus) {
         this.player = player;
         this.dice = dice;
@@ -21,6 +31,10 @@ public class GameState {
         initializeBoard();
     }
 
+    /**
+     * Initializes the game board by filling it with '.' characters.
+     * This represents an empty board with no tiles placed.
+     */
     private void initializeBoard() {
         for (int i = 0; i < gameBoard.length; i++) {
             for (int j = 0; j < gameBoard[i].length; j++) {
@@ -29,7 +43,16 @@ public class GameState {
         }
     }
 
-    public boolean isTilePlacementValid(char[][] board, String tileName, int row, int col) {
+    /**
+     * Checks if a tile placement is valid based on its position, overlap, and support.
+     *
+     * @param board     The current game board.
+     * @param tileName  The name of the tile to place.
+     * @param col       The column where the tile is to be placed.
+     * @param row       The row where the tile is to be placed.
+     * @return          True if the tile placement is valid, false otherwise.
+     */
+    public boolean isTilePlacementValid(char[][] board, String tileName, int col, int row) {
         char[][] tile = tiles.getAllTiles().get(tileName).get(0);
         int tileRows = tile.length;
         int tileCols = tile[0].length;
@@ -71,6 +94,13 @@ public class GameState {
         return hasSupport;  // Tile placement is valid only if it has support
     }
 
+    /**
+     * Places a tile on the game board at the specified row and column.
+     *
+     * @param tileName  The name of the tile to place.
+     * @param row       The row where the tile will be placed.
+     * @param col       The column where the tile will be placed.
+     */
     public void placeTile(String tileName, int row, int col) {
         if (!isTilePlacementValid(gameBoard, tileName, row, col)) {
             System.out.println("Tile placement is invalid");
@@ -94,10 +124,35 @@ public class GameState {
         }
     }
 
+    /**
+     * Places a tile on the game board with a specified rotation and applied windows.
+     *
+     * @param tileName  The name of the tile to place.
+     * @param col       The column where the tile will be placed.
+     * @param row       The row where the tile will be placed.
+     * @param rotation  The degree of rotation to apply to the tile (0-3 for 0, 90, 180, 270 degrees).
+     * @param windows   Boolean array indicating which windows to apply to the tile.
+     */
+    public void placeTileWithRotationWindows(String tileName, int col, int row, int rotation, boolean[] windows){
+        tiles.rotateTile(tileName,rotation);
+        tiles.applyWindows(tileName,windows);
+        placeTile(tileName,row,col);
+    }
+
+    /**
+     * Returns the current state of the game board.
+     *
+     * @return  A 2D character array representing the current game board.
+     */
     public char[][] getGameBoard() {
         return gameBoard;
     }
 
+    /**
+     * Prints the current game board to the console.
+     *
+     * @param board  A 2D character array representing the game board to print.
+     */
     public void printBoard(char[][] board) {
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
@@ -108,6 +163,11 @@ public class GameState {
         }
     }
 
+    /**
+     * Prints a tile to the console.
+     *
+     * @param tile  A 2D character array representing the tile to print.
+     */
     public static void printTile(char[][] tile) {
         for (int i = 0; i < tile.length; i++) {
             for (int j = 0; j < tile[0].length; j++) {
@@ -116,5 +176,21 @@ public class GameState {
             }
             System.out.println();
         }
+    }
+
+    public static void main(String[] args) {
+        Player P1 = new Player();
+        Dices D1 = new Dices();
+        D1.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
+        Tile T1 = new Tile(D1);
+        Score S1 = new Score();
+        Abilities A1 = new Abilities();
+        Bonus B1 = new Bonus("Red", 2);
+        GameState G1 = new GameState(P1, D1, T1, S1, A1, B1);
+
+        boolean[] wind = {true,false,true};
+        G1.placeTileWithRotationWindows("B3",0,0,1,wind);
+        boolean[] wind2 = {true, false, true, true};
+        G1.placeTileWithRotationWindows("G4L",3,0,0,wind2);
     }
 }

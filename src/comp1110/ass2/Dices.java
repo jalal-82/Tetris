@@ -3,25 +3,41 @@ package comp1110.ass2;
 import java.util.Random;
 
 public class Dices {
-//    Jalal's implementation
 private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     private String[] rolledDice;
     private Random random;
 
-    // Constructor generates 5 random dice colors
+    /**
+     * Constructor that generates 5 random dice colors upon object creation.
+     * Initializes the rolledDice array and Random object, then rolls 5 dice.
+     * Author:
+     */
     public Dices() {
         rolledDice = new String[5];
         random = new Random();
         rollDice();
     }
 
-    // Method to randomly roll 5 dice and store them in rolledDice
+    /**
+     * Rolls 5 random dice by selecting colors randomly from the COLORS array.
+     * Stores the rolled colors into the rolledDice array.
+     * Author:
+     */
     private void rollDice() {
         for (int i = 0; i < 5; i++) {
             rolledDice[i] = COLORS[random.nextInt(COLORS.length)];
         }
     }
 
+    /**
+     * Applies preset dice values, setting the rolled dice to the specified colors.
+     * @param a The color for the first dice.
+     * @param b The color for the second dice.
+     * @param c The color for the third dice.
+     * @param d The color for the fourth dice.
+     * @param e The color for the fifth dice.
+     * Author:
+     */
     public void applyPresetDiceD2CP1(String a, String b ,String c ,String d ,String e) {
         rolledDice[0] = a;
         rolledDice[1] = b;
@@ -29,17 +45,14 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         rolledDice[3] = d;
         rolledDice[4] = e;
     }
-    // Method to return all rolled dice
+
+    /**
+     * Returns the current values of the rolled dice as a String array.
+     * @return A String array containing the values of the 5 rolled dice.
+     * Author:
+     */
     public String[] getAllDice() {
         return rolledDice;
     }
 
-    public static void main(String[] args) {
-        Dices D1 = new Dices();
-        Tile T1 = new Tile(D1);
-        T1.printTile("R2");
-        boolean[] windows = {true, false};
-        T1.applyWindows("R2", windows);
-        T1.printTile("R2");
-    }
 }
