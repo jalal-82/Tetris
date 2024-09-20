@@ -28,9 +28,7 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
             rolledDice[i] = COLORS[random.nextInt(COLORS.length)];
         }
     }
-    /*
-    * sets the dice values to the strings given as arguments
-    * */
+
     /**
      * Applies preset dice values, setting the rolled dice to the specified colors.
      * @param a The color for the first dice.
@@ -38,7 +36,7 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
      * @param c The color for the third dice.
      * @param d The color for the fourth dice.
      * @param e The color for the fifth dice.
-     * Author:
+     * Author: Hunter
      */
     public void applyPresetDiceD2CP1(String a, String b ,String c ,String d ,String e) {
         rolledDice[0] = a;

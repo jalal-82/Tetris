@@ -95,7 +95,7 @@ public class Tile {
      * Checks whether the given tile is a valid selection from the set of generated tiles.
      * @param tileName The name of the tile to check (e.g., "R2", "B3").
      * @return true if the tile is a valid selection, false otherwise.
-     * Author:
+     * Author: Hunter, Jalal
      */
     public boolean isValidSelection(String tileName) {
         for (String generatedTile : generatedTiles) {
@@ -113,7 +113,7 @@ public class Tile {
      * 'R' becomes 'S', 'B' becomes 'C', 'P' becomes 'Q', 'G' becomes 'H', 'Y' becomes 'Z'.
      * @param key The key for the tile to modify.
      * @param windows A boolean array where each true element represents the presence of a window.
-     * Author:
+     * Author: Hunter
      */
     public void applyWindows(String key, boolean[] windows) {
         char[][] tileArr = allTiles.get(key).get(0);
