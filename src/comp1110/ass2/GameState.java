@@ -1,5 +1,7 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
+
 public class GameState {
 
     private final Dices dice;
@@ -44,16 +46,14 @@ public class GameState {
     }
 
     /**
-     * Checks if a tile placement is valid based on its position, overlap, and support.
-     *
+     * Checks if a tile placement of the selected tile is valid based on its position, overlap, and support.
      * @param board     The current game board.
-     * @param tileName  The name of the tile to place.
      * @param col       The column where the tile is to be placed.
      * @param row       The row where the tile is to be placed.
      * @return          True if the tile placement is valid, false otherwise.
      */
-    public boolean isTilePlacementValid(char[][] board, String tileName, int col, int row) {
-        char[][] tile = tiles.getAllTiles().get(tileName).get(0);
+    public boolean isTilePlacementValid(char[][] board, int col, int row) {
+        char[][] tile = tiles.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
 
@@ -95,19 +95,17 @@ public class GameState {
     }
 
     /**
-     * Places a tile on the game board at the specified row and column.
-     *
-     * @param tileName  The name of the tile to place.
+     * Places the selected tile on the game board at the specified row and column.
      * @param row       The row where the tile will be placed.
      * @param col       The column where the tile will be placed.
      */
-    public void placeTile(String tileName, int row, int col) {
-        if (!isTilePlacementValid(gameBoard, tileName, row, col)) {
+    public void placeTile(int row, int col) {
+        if (!isTilePlacementValid(gameBoard, row, col)) {
             System.out.println("Tile placement is invalid");
             return;
         }
 
-        char[][] tile = tiles.getAllTiles().get(tileName).get(0);
+        char[][] tile = tiles.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
 
@@ -119,24 +117,24 @@ public class GameState {
             for (int j = 0; j < tileCols; j++) {
                 if (tile[i][j] != ' ') {  // Only place non-empty characters
                     gameBoard[adjustedRow + i][col + j] = tile[i][j];
+
                 }
             }
         }
     }
 
     /**
-     * Places a tile on the game board with a specified rotation and applied windows.
+     * Places selected tile on the game board with a specified rotation and applied windows.
      *
-     * @param tileName  The name of the tile to place.
      * @param col       The column where the tile will be placed.
      * @param row       The row where the tile will be placed.
      * @param rotation  The degree of rotation to apply to the tile (0-3 for 0, 90, 180, 270 degrees).
      * @param windows   Boolean array indicating which windows to apply to the tile.
      */
-    public void placeTileWithRotationWindows(String tileName, int col, int row, int rotation, boolean[] windows){
-        tiles.rotateTile(tileName,rotation);
-        tiles.applyWindows(tileName,windows);
-        placeTile(tileName,row,col);
+    public void placeTileWithRotationWindows(int col, int row, int rotation, boolean[] windows){
+        tiles.rotateTile(rotation);
+        tiles.applyWindows(windows);
+        placeTile(row,col);
     }
 
     /**
@@ -146,6 +144,19 @@ public class GameState {
      */
     public char[][] getGameBoard() {
         return gameBoard;
+    }
+
+    public static void startRound(GameState gameState) {
+        Dices roundDice = new Dices();
+        String[] generatedTiles = gameState.tiles.generateTiles(roundDice);
+    }
+
+    public static void playRound(GameState gameState, String selectedTile) {
+        gameState.tiles.updateSelectedTile(selectedTile);
+        //select windows
+        //select rotation
+        //select placement
+
     }
 
     /**
@@ -178,6 +189,8 @@ public class GameState {
         }
     }
 
+
+
     public static void main(String[] args) {
         Player P1 = new Player();
         Dices D1 = new Dices();
@@ -187,10 +200,7 @@ public class GameState {
         Abilities A1 = new Abilities();
         Bonus B1 = new Bonus("Red", 2);
         GameState G1 = new GameState(P1, D1, T1, S1, A1, B1);
-
-        boolean[] wind = {true,false,true};
-        G1.placeTileWithRotationWindows("B3",0,0,1,wind);
-        boolean[] wind2 = {true, false, true, true};
-        G1.placeTileWithRotationWindows("G4L",3,0,0,wind2);
+        T1.updateSelectedTile("R2");
+        printTile(T1.getSelectedTile());
     }
 }

@@ -8,6 +8,8 @@ public class Tile {
     private Random random;
     private String[] dice;
     private String[] generatedTiles;
+    //stores the tile in use so as we can rotate and apply windows without affecting the reference tile.
+    private char[][] selectedTile;
 
     /**
      * Constructor that initializes the Tile object. It generates all the possible tiles and
@@ -109,14 +111,13 @@ public class Tile {
     }
 
     /**
-     * Applies windows to a tile, incrementing the values for any position that should have a window.
+     * Applies windows to the selectedTile, incrementing the values for any position that should have a window.
      * 'R' becomes 'S', 'B' becomes 'C', 'P' becomes 'Q', 'G' becomes 'H', 'Y' becomes 'Z'.
-     * @param key The key for the tile to modify.
      * @param windows A boolean array where each true element represents the presence of a window.
      * Author: Hunter
      */
-    public void applyWindows(String key, boolean[] windows) {
-        char[][] tileArr = allTiles.get(key).get(0);
+    public void applyWindows( boolean[] windows) {
+        char[][] tileArr = selectedTile;
         int squareCounter = 0; // keeps count of all the squares so as it is easily referenced with the windows input
         for (int i = 0; i < tileArr.length; i++) {
             for (int j = 0; j < tileArr[i].length; j++) {
@@ -208,19 +209,17 @@ public class Tile {
 
     /**
      * Rotates a tile by 0, 90, 180, or 270 degrees clockwise.
-     * @param key The key for the tile to rotate.
      * @param rotation The number of 90-degree clockwise rotations (0 to 3).
      * Author:
      */
-    public void rotateTile(String key, int rotation) {
-        // Fetch the first tile in the list corresponding to the given key
-        List<char[][]> tiles = allTiles.get(key);
-        if (tiles == null || tiles.isEmpty()) {
-            System.out.println("Tile not found for key: " + key);
+    public void rotateTile(int rotation) {
+
+        char[][] tile = selectedTile;
+        if (tile == null) {
+            System.out.println("Selected tile not found");
             return;
         }
 
-        char[][] tile = tiles.get(0);  // Get the original tile
         int rows = tile.length;
         int cols = tile[0].length;
         char[][] rotatedTile;
@@ -253,7 +252,29 @@ public class Tile {
         }
 
         // Replace the old tile with the rotated one
-        tiles.set(0, rotatedTile);  // Update the first tile in the list with the rotated version
+        selectedTile = rotatedTile;  // Update the first tile in the list with the rotated version
+    }
+
+    /**
+     * Setter method for selectedTile
+     * Temporarily stores the tiles structure to allow for rotation and addition of windows without affecting allTiles
+     * @param key: key for the selectedTile
+     */
+    public void updateSelectedTile(String key) {
+        char[][] tileToBeCopied = allTiles.get(key).get(0);
+        char[][] copy = new char[tileToBeCopied.length][];
+        for (int i = 0; i < tileToBeCopied.length; i++) {
+            copy[i] = Arrays.copyOf(tileToBeCopied[i], tileToBeCopied[i].length);
+        }
+        this.selectedTile = copy;
+    }
+
+    /**
+     * getter method for selectedTile
+     * Author: Hunter
+     */
+    public char[][] getSelectedTile() {
+        return selectedTile;
     }
 
     /**
