@@ -51,11 +51,11 @@ public class D2CTest2 {
         //      Apply Tiles to Player 1's Gameboard
         if (tileOne.getAllTiles().containsKey("B3")) {
             boolean[] windows = {true, false, true};
-            gameStateOne.placeTileWithRotationWindows("B3", 0, 0, 1, windows);
+            gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
         }
         if (tileOne.getAllTiles().containsKey("G4L")) {
             boolean[] windows = {true, false, true, true};
-            gameStateOne.placeTileWithRotationWindows("G4L", 3, 0, 0, windows);
+            gameStateOne.placeTileWithRotationWindows( 3, 0, 0, windows);
         }
     }
 
@@ -80,8 +80,8 @@ public class D2CTest2 {
     @Test
     public void isTileY3PlacementValid1(){
         if (tileOne.getAllTiles().containsKey("Y3")) {
-            tileOne.rotateTile("Y3", 0);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),"Y3",1,0);
+            tileOne.rotateTile( 0);
+            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,0);
             assertEquals(isValid,false);
         }
     }
@@ -89,8 +89,8 @@ public class D2CTest2 {
     @Test
     public void isTileY3PlacementValid2(){
         if (tileOne.getAllTiles().containsKey("Y3")) {
-            tileOne.rotateTile("Y3", 3);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),"Y3",1,0);
+            tileOne.rotateTile( 3);
+            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,0);
             assertEquals(isValid,true);
         }
     }
@@ -98,8 +98,8 @@ public class D2CTest2 {
     @Test
     public void isTileY3PlacementValid3(){
         if (tileOne.getAllTiles().containsKey("Y3")) {
-            tileOne.rotateTile("Y3", 3);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),"Y3",2,0);
+            tileOne.rotateTile( 3);
+            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),2,0);
             assertEquals(isValid,false);
         }
     }
@@ -107,8 +107,8 @@ public class D2CTest2 {
     @Test
     public void isTileY3PlacementValid4(){
         if (tileOne.getAllTiles().containsKey("Y3")) {
-            tileOne.rotateTile("Y3", 1);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),"Y3",2,0);
+            tileOne.rotateTile( 1);
+            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),2,0);
             assertEquals(isValid,true);
         }
     }
@@ -116,8 +116,8 @@ public class D2CTest2 {
     @Test
     public void isTileY3PlacementValid5(){
         if (tileOne.getAllTiles().containsKey("Y3")) {
-            tileOne.rotateTile("Y3", 3);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),"Y3",1,1);
+            tileOne.rotateTile( 3);
+            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,1);
             assertEquals(isValid,false);
         }
     }
