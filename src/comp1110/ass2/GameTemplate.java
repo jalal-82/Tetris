@@ -36,7 +36,9 @@ public class GameTemplate extends Application {
 		gui.setAvailableTiles(List.of(T1.generateTiles(D1)));
 		gui.setAvailableDice(List.of(D1.getAllDice()));
 		gui.setAvailableActions(List.of("Reroll", "Give up"));
+		gui.setTrackInfo(0, "Red", A1.getTrack("red"), A1.getBonus("red"), A1.getAbility("red"),  0, 0);
 	    });
+
 
 	gui.setOnTilePlaced((p) -> {
 		G1.placeTile( p.getY(), p.getX());

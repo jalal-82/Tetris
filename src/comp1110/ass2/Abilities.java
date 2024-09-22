@@ -24,7 +24,10 @@ public class Abilities {
     private int greenTrack = 0;
     private int yellowTrack = 0;
 
-
+    /**
+     * increments the relevant track and updates the relevant abilities and bonuses
+     * @param color the color to be updated
+     */
     public void addTrack(String color) {
         switch (color.toLowerCase()) {
             case "red":
@@ -95,7 +98,40 @@ public class Abilities {
                 throw new IllegalArgumentException("Unknown color: " + color);
         }
     }
-
+    //update availability of ability once used
+    public void useAbility(String color) {
+        switch (color.toLowerCase()) {
+            case "red":
+                redAbility--;
+            case "blue":
+                blueAbility--;
+            case "purple":
+                purpleAbility--;
+            case "green":
+                greenAbility--;
+            case "yellow":
+                yellowAbility--;
+            default:
+                throw new IllegalArgumentException("Unknown color: " + color);
+        }
+    }
+    //update availability of Bonus
+    public void useBonus(String color) {
+        switch (color.toLowerCase()) {
+            case "red":
+                redBonus--;
+            case "blue":
+                blueBonus--;
+            case "purple":
+                purpleBonus--;
+            case "green":
+                greenBonus--;
+            case "yellow":
+                yellowAbility--;
+            default:
+                throw new IllegalArgumentException("Unknown color: " + color);
+        }
+    }
     public void updateBlue() {
         if (blueTrack == 1)
             blueBonus++;
@@ -162,5 +198,36 @@ public class Abilities {
         else if (yellowTrack == 7)
             yellowAbility++;
         // if == 9 update score
+    }
+
+    public int getAbility(String color) {
+        return switch (color.toLowerCase()) {
+            case "red" -> redAbility;
+            case "blue" -> blueAbility;
+            case "purple" -> purpleAbility;
+            case "green" -> greenAbility;
+            case "yellow" -> yellowAbility;
+            default -> throw new IllegalArgumentException("Unknown color: " + color);
+        };
+    }
+    public int getTrack(String color) {
+        return switch (color.toLowerCase()) {
+            case "red" -> redTrack;
+            case "blue" -> blueTrack;
+            case "purple" -> purpleTrack;
+            case "green" -> greenTrack;
+            case "yellow" -> yellowTrack;
+            default -> throw new IllegalArgumentException("Unknown color: " + color);
+        };
+    }
+    public int getBonus(String color) {
+        return switch (color.toLowerCase()) {
+            case "red" -> redBonus;
+            case "blue" -> blueBonus;
+            case "purple" -> purpleBonus;
+            case "green" -> greenBonus;
+            case "yellow" -> yellowBonus;
+            default -> throw new IllegalArgumentException("Unknown color: " + color);
+        };
     }
 }

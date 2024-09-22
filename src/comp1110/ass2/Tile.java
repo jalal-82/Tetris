@@ -157,7 +157,7 @@ public class Tile {
                 }
             }
         }
-
+        rolledDices.setColorCount(colorsNum, wildCount);
         int ite = 0;
         while (ite < 4 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
             int curMax = getmaxIndex(colorsNum, colorsNum.length);

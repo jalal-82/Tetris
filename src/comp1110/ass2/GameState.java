@@ -1,6 +1,7 @@
 package comp1110.ass2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class GameState {
 
@@ -107,6 +108,7 @@ public class GameState {
         //checks if the selectedTile is of size 4 or larger and adds it to usedTiles.
         if (tiles.getSelectedTileKey().contains("4") || tiles.getSelectedTileKey().contains("5") )
             tiles.addToUsedTiles(tiles.getSelectedTileKey());
+
         char[][] tile = tiles.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
@@ -202,7 +204,7 @@ public class GameState {
         Abilities A1 = new Abilities();
         Bonus B1 = new Bonus("Red", 2);
         GameState G1 = new GameState(P1, D1, T1, S1, A1, B1);
-        T1.updateSelectedTile("R2");
-        printTile(T1.getSelectedTile());
+        T1.generateTiles(D1);
+        System.out.println(Arrays.toString(D1.availableColors("R3")));
     }
 }
