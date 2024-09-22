@@ -4,12 +4,13 @@ import java.util.*;
 public class Tile {
 
     private Map<String, List<char[][]>> allTiles;
-    private String[] tiles;  // Stores the generated tiles
     private Random random;
     private String[] dice;
     private String[] generatedTiles;
     //stores the tile in use so as we can rotate and apply windows without affecting the reference tile.
     private char[][] selectedTile;
+    private String selectedTileKey;
+    private List<String> usedTiles;
 
     /**
      * Constructor that initializes the Tile object. It generates all the possible tiles and
@@ -190,6 +191,10 @@ public class Tile {
         return result;
     }
 
+    public void addToUsedTiles(String key) {
+        usedTiles.add(key);
+    }
+
     /**
      * Finds the index of the maximum value in an array.
      * @param arr The array to search.
@@ -267,6 +272,11 @@ public class Tile {
             copy[i] = Arrays.copyOf(tileToBeCopied[i], tileToBeCopied[i].length);
         }
         this.selectedTile = copy;
+        this.selectedTileKey = key;
+    }
+
+    public String getSelectedTileKey() {
+        return selectedTileKey;
     }
 
     /**

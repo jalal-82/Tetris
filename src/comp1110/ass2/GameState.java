@@ -104,7 +104,9 @@ public class GameState {
             System.out.println("Tile placement is invalid");
             return;
         }
-
+        //checks if the selectedTile is of size 4 or larger and adds it to usedTiles.
+        if (tiles.getSelectedTileKey().contains("4") || tiles.getSelectedTileKey().contains("5") )
+            tiles.addToUsedTiles(tiles.getSelectedTileKey());
         char[][] tile = tiles.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
