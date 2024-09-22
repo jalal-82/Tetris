@@ -10,7 +10,7 @@ public class Tile {
     //stores the tile in use so as we can rotate and apply windows without affecting the reference tile.
     private char[][] selectedTile;
     private String selectedTileKey;
-    private List<String> usedTiles;
+    private List<String> usedTiles; //Can maybe use this as a means of tracking which larger tiles have been used ??
 
     /**
      * Constructor that initializes the Tile object. It generates all the possible tiles and
