@@ -164,6 +164,11 @@ public class GameState {
 
     }
 
+    public static void updateScore(Score playerScore,GameState gameState){
+        playerScore.addPoints(gameState.getGameBoard());
+    }
+
+
     /**
      * Prints the current game board to the console.
      *

@@ -215,7 +215,7 @@ public class Tile {
     /**
      * Rotates a tile by 0, 90, 180, or 270 degrees clockwise.
      * @param rotation The number of 90-degree clockwise rotations (0 to 3).
-     * Author:
+     * Author: Jalal
      */
     public void rotateTile(int rotation) {
 

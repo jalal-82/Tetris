@@ -98,6 +98,7 @@ public class Abilities {
                 throw new IllegalArgumentException("Unknown color: " + color);
         }
     }
+
     //update availability of ability once used
     public void useAbility(String color) {
         switch (color.toLowerCase()) {
@@ -115,6 +116,7 @@ public class Abilities {
                 throw new IllegalArgumentException("Unknown color: " + color);
         }
     }
+
     //update availability of Bonus
     public void useBonus(String color) {
         switch (color.toLowerCase()) {
@@ -132,6 +134,7 @@ public class Abilities {
                 throw new IllegalArgumentException("Unknown color: " + color);
         }
     }
+
     public void updateBlue() {
         if (blueTrack == 1)
             blueBonus++;
@@ -145,6 +148,7 @@ public class Abilities {
             blueBonus++;
         // if == 9 update score
     }
+
     public void updateRed() {
         if (redTrack == 1)
             redBonus++;
@@ -160,6 +164,7 @@ public class Abilities {
             redAbility++;
         // if == 9 update score
     }
+
     public void updatePurple() {
         if (purpleTrack == 1)
             purpleBonus++;
@@ -173,6 +178,7 @@ public class Abilities {
             purpleAbility++;
         // if == 9 update score
     }
+
     public void updateGreen() {
         if (greenTrack == 1)
             greenBonus++;
@@ -186,6 +192,7 @@ public class Abilities {
             greenAbility++;
         // if == 9 update score
     }
+
     public void updateYellow() {
         if (yellowTrack == 1)
             yellowBonus++;
@@ -210,6 +217,7 @@ public class Abilities {
             default -> throw new IllegalArgumentException("Unknown color: " + color);
         };
     }
+
     public int getTrack(String color) {
         return switch (color.toLowerCase()) {
             case "red" -> redTrack;
@@ -220,6 +228,7 @@ public class Abilities {
             default -> throw new IllegalArgumentException("Unknown color: " + color);
         };
     }
+
     public int getBonus(String color) {
         return switch (color.toLowerCase()) {
             case "red" -> redBonus;

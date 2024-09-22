@@ -76,6 +76,7 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         }
         this.availableColors = availableColours.toArray(new String[0]);
     }
+
     public String[] getAvailableColors() {
         return availableColors;
     }
