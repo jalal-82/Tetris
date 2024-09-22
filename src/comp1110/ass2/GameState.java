@@ -108,7 +108,8 @@ public class GameState {
         //checks if the selectedTile is of size 4 or larger and adds it to usedTiles.
         if (tiles.getSelectedTileKey().contains("4") || tiles.getSelectedTileKey().contains("5") )
             tiles.addToUsedTiles(tiles.getSelectedTileKey());
-
+        //sets the available colors to be used by the other players
+        dice.setAvailableColors(tiles.getSelectedTileKey());
         char[][] tile = tiles.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
@@ -198,13 +199,16 @@ public class GameState {
     public static void main(String[] args) {
         Player P1 = new Player();
         Dices D1 = new Dices();
-        D1.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
+        D1.applyPresetDiceD2CP1("R", "B", "R", "B", "W");
         Tile T1 = new Tile(D1);
         Score S1 = new Score();
         Abilities A1 = new Abilities();
         Bonus B1 = new Bonus("Red", 2);
         GameState G1 = new GameState(P1, D1, T1, S1, A1, B1);
         T1.generateTiles(D1);
-        System.out.println(Arrays.toString(D1.availableColors("R3")));
+        T1.updateSelectedTile("B3");
+        T1.rotateTile(1);
+        G1.placeTile(0, 0);
+        System.out.println(Arrays.toString(D1.getAvailableColors()));
     }
 }

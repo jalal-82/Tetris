@@ -9,6 +9,7 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     private String[] rolledDice;
     private int[] colorCount = {0, 0, 0, 0, 0, 0};
     private Random random;
+    private String[] availableColors;
 
     /**
      * Constructor that generates 5 random dice colors upon object creation.
@@ -48,9 +49,9 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     /**
      * intended for use after a tile has been placed. calculates the dice leftover for other players to use towards their ability track
      * @param key key value of the tile being placed
-     * @return String[] containing the colors (represented by the capital first letter) available for choice
+     * sets availableColours
      */
-    public String[] availableColors(String key) {
+    public void setAvailableColors(String key) {
         char color = key.charAt(0);
         int totalDiceUsed = key.charAt(1) - '0';
         int index = 0;
@@ -73,7 +74,10 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
                 availableColours.add(COLORS[i]);
 
         }
-        return availableColours.toArray(new String[0]);
+        this.availableColors = availableColours.toArray(new String[0]);
+    }
+    public String[] getAvailableColors() {
+        return availableColors;
     }
 
     public int[] getColorCount() {
