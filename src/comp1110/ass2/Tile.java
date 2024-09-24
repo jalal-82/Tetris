@@ -91,7 +91,9 @@ public class Tile {
             allTiles.put("Y5", new ArrayList<>());
             allTiles.get("Y5").add(new char[][] { {' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '} });
         }
+        System.out.println("allTile good");
         this.generatedTiles = generateTiles(dice);
+        System.out.println("geneTiles good");
     }
 
     /**
@@ -144,8 +146,9 @@ public class Tile {
         int wildCount = 0; // Count of wild (White) dice
 
         String[] dices = rolledDices.getAllDice();
-
+        System.out.println("GenerateTiles: Entering Loop ");
         for (String s : dices) {
+            System.out.println("Inside Loop: "+s);
             if (s.equals("W")) {
                 wildCount++;
             } else {
@@ -285,6 +288,10 @@ public class Tile {
      */
     public char[][] getSelectedTile() {
         return selectedTile;
+    }
+
+    public String[] getGeneratedTiles(){
+        return generatedTiles;
     }
 
     /**

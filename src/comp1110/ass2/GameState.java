@@ -55,6 +55,12 @@ public class GameState {
      */
     public boolean isTilePlacementValid(char[][] board, int col, int row) {
         char[][] tile = tiles.getSelectedTile();
+
+        if (tile == null) {
+            System.out.println("Error: No tile is selected.");
+            return false;
+        }
+
         int tileRows = tile.length;
         int tileCols = tile[0].length;
 
@@ -149,6 +155,18 @@ public class GameState {
      */
     public char[][] getGameBoard() {
         return gameBoard;
+    }
+
+    public String[] getTiles() {
+        return tiles.generateTiles(dice);
+    }
+
+    public String[] getDice() {
+        return dice.getAllDice();
+    }
+
+    public int getAbilities(String colour) {
+        return abilities.getAbility(colour);
     }
 
     public static void startRound(GameState gameState) {
