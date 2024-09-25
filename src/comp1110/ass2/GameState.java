@@ -108,7 +108,7 @@ public class GameState {
      */
     public void placeTile(int row, int col) {
         if (!isTilePlacementValid(gameBoard, row, col)) {
-            System.out.println("Tile placement is invalid");
+            System.out.println(tiles.getSelectedTileKey() + " placement is invalid");
             return;
         }
         //checks if the selectedTile is of size 4 or larger and adds it to usedTiles.
