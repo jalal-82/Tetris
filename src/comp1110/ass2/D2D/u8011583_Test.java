@@ -14,13 +14,7 @@ public class u8011583_Test {
     Bonus bonusOne;
     GameState gameStateOne;
 
-    Player playerTwo;
     Dices diceTwo;
-    Tile tileTwo;
-    Score scoreTwo;
-    Abilities abilitiesTwo;
-    Bonus bonusTwo;
-    GameState gameStateTwo;
 
 
     @BeforeEach
@@ -35,16 +29,8 @@ public class u8011583_Test {
         abilitiesOne = new Abilities();
         bonusOne = new Bonus("Red", 2);
         gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne, abilitiesOne, bonusOne);
-
-//      Create Game Instance for Player 2
-        playerTwo = new Player();
         diceTwo = new Dices();
-        tileTwo = new Tile(diceTwo);
-        scoreTwo = new Score();
-        abilitiesTwo = new Abilities();
-        bonusTwo = new Bonus("Blue", 2);
-        gameStateTwo = new GameState(playerTwo, diceTwo, tileTwo, scoreTwo, abilitiesTwo, bonusTwo);
-
+//
     }
     //tests the ability for the setter method to override existing value
     @Test

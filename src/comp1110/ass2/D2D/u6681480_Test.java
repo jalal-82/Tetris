@@ -4,12 +4,13 @@ import comp1110.ass2.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+//
+//import static org.junit.Assert.assertFalse;
+//import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class u6681480_Test {
 
@@ -75,7 +76,7 @@ public class u6681480_Test {
     }
 
     // This test case evaluate the applyWindows() method under Tile class.
-    // It checks the value of variable selectedTile after calling the 
+    // It checks the value of variable selectedTile after calling the
     // method.
     // It succeeds because the method correctly updates the selectedTile.
     @Test
@@ -87,7 +88,7 @@ public class u6681480_Test {
     }
 
     // This test case evaluate the rotateTile() method under Tile class.
-    // It checks the value of variable selectedTile after calling the 
+    // It checks the value of variable selectedTile after calling the
     // method.
     // It succeeds because the method correctly rotates the selectedTile.
     @Test
