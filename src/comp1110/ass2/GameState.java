@@ -53,7 +53,7 @@ public class GameState {
      * @param row       The row where the tile is to be placed.
      * @return          True if the tile placement is valid, false otherwise.
      */
-    public boolean isTilePlacementValid(char[][] board, int col, int row) {
+    public boolean isTilePlacementValid(char[][] board, int row, int col) {
         char[][] tile = tiles.getSelectedTile();
 
         if (tile == null) {
@@ -66,7 +66,6 @@ public class GameState {
 
         // Convert the row index to match the new orientation (bottom to top)
         int adjustedRow = board.length - (row + tileRows);
-
         // Check if the tile fits within the board boundaries (row and col)
         if (adjustedRow < 0 || col + tileCols > board[0].length) {
             return false;
@@ -98,8 +97,9 @@ public class GameState {
             }
         }
 
-        return hasSupport;  // Tile placement is valid only if it has support
+        return hasSupport;
     }
+
 
     /**
      * Places the selected tile on the game board at the specified row and column.

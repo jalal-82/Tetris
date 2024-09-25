@@ -18,7 +18,7 @@ public class u7480662_Test {
 
     @BeforeEach
     public void setup() {
-//      Create game Instance for Player 1
+//        Create game Instance for one player
         playerOne = new Player();
         diceOne = new Dices();
         tileOne = new Tile(diceOne);
@@ -30,75 +30,142 @@ public class u7480662_Test {
 
     @Test
     public void CompleteRowNoWindows(){
-//       Apply tile P5 with no windowsto fill a row
+//       This test case simulates applying a tile "P5" to fill a row without any windows.
+//       It checks if the scoring is correctly computed for a completed row with no windows.
+//       The expected score is 1 point for completing the row.
         diceOne.applyPresetDiceD2CP1("P","P","P","P","P");
         tileOne.updateSelectedTile("P5");
-        boolean[] windows = {false,false,false,false,false};
-        gameStateOne.placeTileWithRotationWindows(0,0,0,windows);
+        boolean[] windows = {false, false, false, false, false};
+        gameStateOne.placeTileWithRotationWindows(0, 0, 0, windows);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();
-        assertEquals(1,res);
+        assertEquals(1, res);
     }
 
     @Test
     public void CompleteRowWithWindows(){
-//       Apply tile P5 with windows to fill a row
+//       This test case simulates applying a tile "P5" to fill a row, but with all tiles having windows.
+//       It checks if the score is correctly doubled when windows are present in all positions of a completed row.
+//       The expected score is 2 points for completing the row with windows.
         diceOne.applyPresetDiceD2CP1("P","P","P","P","P");
         tileOne.updateSelectedTile("P5");
-        boolean[] windows = {true,true,true,true,true};
-        gameStateOne.placeTileWithRotationWindows(0,0,0,windows);
-
+        boolean[] windows = {true, true, true, true, true};
+        gameStateOne.placeTileWithRotationWindows(0, 0, 0, windows);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();
-        assertEquals(2,res);
+        assertEquals(2, res);
     }
 
     @Test
     public void CompleteColoumWithWindows(){
-//       Fill a coloum of windows of different colours
-        diceOne.applyPresetDiceD2CP1("R","R","R","R","P");
+//       This test case simulates filling a column with tiles of different colors, all having windows.
+//       It tests if the score is correctly calculated for completing the column with windows.
+//       The expected score is 4 points for completing the column with windows.
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
-        boolean[] windows = {true,true,true,true};
-        gameStateOne.placeTileWithRotationWindows(0,0,1,windows);
+        boolean[] windows = {true, true, true, true};
+        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
 
-        diceOne.applyPresetDiceD2CP1("R","R","R","R","P");
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
-        boolean[] windowsTwo = {true,true,true,true};
-        gameStateOne.placeTileWithRotationWindows(0,2,1,windowsTwo);
+        boolean[] windowsTwo = {true, true, true, true};
+        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
 
-        diceOne.applyPresetDiceD2CP1("P","P","P","P","P");
+        diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
-        boolean[] windowsThree = {true,true,true,true,true};
-        gameStateOne.placeTileWithRotationWindows(0,4,1,windowsThree);
+        boolean[] windowsThree = {true, true, true, true, true};
+        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();
-        assertEquals(4,res);
+        assertEquals(4, res);
     }
 
     @Test
     public void CompleteColoumWithNoWindows(){
-//       Fill a coloum of windows of different colours
-        diceOne.applyPresetDiceD2CP1("R","R","R","R","P");
+//       This test case simulates filling a column with tiles of different colors, without any windows.
+//       It checks if the score is correctly calculated when no windows are present in the completed column.
+//       The expected score is 2 points for completing the column without windows.
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
-        boolean[] windows = {false,false,false,false};
-        gameStateOne.placeTileWithRotationWindows(0,0,1,windows);
+        boolean[] windows = {false, false, false, false};
+        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
 
-        diceOne.applyPresetDiceD2CP1("R","R","R","R","P");
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
-        boolean[] windowsTwo = {false,false,false,false};
-        gameStateOne.placeTileWithRotationWindows(0,2,1,windowsTwo);
+        boolean[] windowsTwo = {false, false, false, false};
+        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
 
-        diceOne.applyPresetDiceD2CP1("P","P","P","P","P");
+        diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
-        boolean[] windowsThree = {false,false,false,false,false};
-        gameStateOne.placeTileWithRotationWindows(0,4,1,windowsThree);
+        boolean[] windowsThree = {false, false, false, false, false};
+        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();
-        assertEquals(2,res);
+        assertEquals(2, res);
+    }
+
+    @Test
+    public void CompleteColoumAndRow(){
+//       This test case simulates completing both a row and a column with tiles that have no windows.
+//       It checks if the scoring system works when both row and column are completed without windows.
+//       The expected score is 3 points (2 for the column and 1 for the row).
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
+        tileOne.updateSelectedTile("R4");
+        boolean[] windows = {false, false, false, false};
+        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
+
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
+        tileOne.updateSelectedTile("R4");
+        boolean[] windowsTwo = {false, false, false, false};
+        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
+
+        diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
+        tileOne.updateSelectedTile("P5");
+        boolean[] windowsThree = {false, false, false, false, false};
+        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
+
+        diceOne.applyPresetDiceD2CP1("P", "P", "P", "R", "P");
+        tileOne.updateSelectedTile("P3");
+        boolean[] windowsFour = {false, false, false};
+        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsFour);
+
+        scoreOne.addPoints(gameStateOne.getGameBoard());
+        int res = scoreOne.getScore();
+        assertEquals(3, res);
+    }
+
+    @Test
+    public void CompleteColoumAndRowWithWindows(){
+//       This test case simulates completing both a row and a column with tiles that have windows.
+//       It checks if the scoring system correctly handles the doubled score when both the row and column have windows.
+//       The expected score is 6 points (4 for the column and 2 for the row).
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
+        tileOne.updateSelectedTile("R4");
+        boolean[] windows = {true, true, true, true};
+        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
+
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
+        tileOne.updateSelectedTile("R4");
+        boolean[] windowsTwo = {true, true, true, true};
+        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
+
+        diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
+        tileOne.updateSelectedTile("P5");
+        boolean[] windowsThree = {true, true, true, true, true};
+        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
+
+        diceOne.applyPresetDiceD2CP1("P", "P", "P", "R", "P");
+        tileOne.updateSelectedTile("P3");
+        boolean[] windowsFour = {true, true, true};
+        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsFour);
+
+        scoreOne.addPoints(gameStateOne.getGameBoard());
+        int res = scoreOne.getScore();
+        assertEquals(6, res);
     }
 
 }
