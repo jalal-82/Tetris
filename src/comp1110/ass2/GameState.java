@@ -112,8 +112,8 @@ public class GameState {
             return;
         }
         //checks if the selectedTile is of size 4 or larger and adds it to usedTiles.
-        if (tiles.getSelectedTileKey().contains("4") || tiles.getSelectedTileKey().contains("5") )
-            tiles.addToUsedTiles(tiles.getSelectedTileKey());
+//        if (tiles.getSelectedTileKey().contains("4") || tiles.getSelectedTileKey().contains("5") )
+//            tiles.addToUsedTiles(tiles.getSelectedTileKey());
         //sets the available colors to be used by the other players
         dice.setAvailableColors(tiles.getSelectedTileKey());
         char[][] tile = tiles.getSelectedTile();
@@ -220,18 +220,33 @@ public class GameState {
 
 
     public static void main(String[] args) {
-        Player P1 = new Player();
-        Dices D1 = new Dices();
-        D1.applyPresetDiceD2CP1("R", "B", "R", "B", "W");
-        Tile T1 = new Tile(D1);
-        Score S1 = new Score();
-        Abilities A1 = new Abilities();
-        Bonus B1 = new Bonus("Red", 2);
-        GameState G1 = new GameState(P1, D1, T1, S1, A1, B1);
-        T1.generateTiles(D1);
-        T1.updateSelectedTile("B3");
-        T1.rotateTile(1);
-        G1.placeTile(0, 0);
-        System.out.println(Arrays.toString(D1.getAvailableColors()));
+        Player playerOne = new Player();
+        Dices diceOne = new Dices();
+        diceOne.applyPresetDiceD2CP1( "B",  "B","G",  "Y",  "P");
+        Tile tileOne = new Tile(diceOne);
+        Score scoreOne = new Score();
+        Abilities abilitiesOne = new Abilities();
+        Bonus bonusOne = new Bonus( "Red",  2);
+        GameState gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne, abilitiesOne, bonusOne);
+        tileOne.generateTiles(diceOne);
+
+//        tileOne.updateSelectedTile( "R3");
+//        boolean[] windows = {false, false, false};
+//        gameStateOne.placeTileWithRotationWindows( 0,  0,  1, windows);
+//
+//        diceOne.applyPresetDiceD2CP1( "R",  "R",  "R",  "R",  "W");
+//        tileOne.updateSelectedTile( "R4");
+//        boolean[] windows2 = {false, false, false, false};
+//        gameStateOne.placeTileWithRotationWindows( 2,  0,  0, windows2);
+//
+//        diceOne.applyPresetDiceD2CP1( "R", "R", "R", "R", "W");
+//        tileOne.updateSelectedTile( "R2");
+//        boolean[] windows3 = {false, false, false, false};
+//        gameStateOne.placeTileWithRotationWindows( 2, 2,  0, windows3);
+//
+//        gameStateOne.printBoard(gameStateOne.getGameBoard());
+
+
+
     }
 }

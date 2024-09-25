@@ -139,7 +139,7 @@ public class Tile {
      * @return A String array of the selected tiles.
      * Author: Eileen
      */
-    public String[] generateTiles(Dices rolledDices) {
+    public String[] generateTiles(Dices rolledDices)                                                                                                                                                                                                   {
         String[] result = new String[4]; // 4 tiles on screen
         String[] color = {"R", "B", "P", "G", "Y"};
         int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
@@ -176,6 +176,10 @@ public class Tile {
                         wildCount--;
                     }
                 }
+            } else {//else clause in case all colours have a total of one. (generates tiles of size 2)
+                result[ite] = color[curMax] + 2;
+                ite++;
+                colorsNum[curMax]--;
             }
 
             if (colorsNum[curMax] == 0) {
@@ -194,9 +198,9 @@ public class Tile {
         return result;
     }
 
-    public void addToUsedTiles(String key) {
-        usedTiles.add(key);
-    }
+//    public void addToUsedTiles(String key) {
+//        usedTiles.add(key);
+//    }
 
     /**
      * Finds the index of the maximum value in an array.
@@ -260,7 +264,7 @@ public class Tile {
         }
 
         // Replace the old tile with the rotated one
-        selectedTile = rotatedTile;  // Update the first tile in the list with the rotated version
+        selectedTile = rotatedTile;  // Update selectedTile with the rotated version
     }
 
     /**
