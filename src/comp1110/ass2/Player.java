@@ -17,7 +17,6 @@ public class Player {
     }
 
 
-
     /**
      * Gets the player's score.
      *
