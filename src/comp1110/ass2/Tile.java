@@ -139,7 +139,7 @@ public class Tile {
      * @return A String array of the selected tiles.
      * Author: Eileen
      */
-    public String[] generateTiles(Dices rolledDices) {
+    public String[] generateTiles(Dices rolledDices)                                                                                                                                                                                                   {
         String[] result = new String[4]; // 4 tiles on screen
         String[] color = {"R", "B", "P", "G", "Y"};
         int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
@@ -260,7 +260,7 @@ public class Tile {
         }
 
         // Replace the old tile with the rotated one
-        selectedTile = rotatedTile;  // Update the first tile in the list with the rotated version
+        selectedTile = rotatedTile;  // Update selectedTile with the rotated version
     }
 
     /**
