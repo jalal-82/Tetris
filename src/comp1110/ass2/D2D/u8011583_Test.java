@@ -64,7 +64,23 @@ public class u8011583_Test {
     }
 
     @Test
-    public void generateTilesTest() {
+    public void trackTest() {
+        assertEquals(abilitiesOne.getTrack("Red"), 0);
+        abilitiesOne.addTrack("Red");
+        assertEquals(abilitiesOne.getTrack("Red"), 1);
+        for (int i = 0; i < 11; i++) {
+            abilitiesOne.addTrack("Red");
+        }
+        assertEquals(abilitiesOne.getTrack("Red"), 9);
+    }
 
+    @Test
+    public void hasAbilityTest() {
+        assertFalse(abilitiesOne.hasAbility("Blue"));
+        for (int i = 0; i < 3; i++) {
+            abilitiesOne.addTrack("Blue");
+
+        }
+        assertTrue(abilitiesOne.hasAbility("Blue"));
     }
 }

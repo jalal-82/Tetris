@@ -176,6 +176,10 @@ public class Tile {
                         wildCount--;
                     }
                 }
+            } else {//else clause in case all colours have a total of one. (generates tiles of size 2)
+                result[ite] = color[curMax] + 2;
+                ite++;
+                colorsNum[curMax]--;
             }
 
             if (colorsNum[curMax] == 0) {
@@ -194,9 +198,9 @@ public class Tile {
         return result;
     }
 
-    public void addToUsedTiles(String key) {
-        usedTiles.add(key);
-    }
+//    public void addToUsedTiles(String key) {
+//        usedTiles.add(key);
+//    }
 
     /**
      * Finds the index of the maximum value in an array.

@@ -29,24 +29,45 @@ public class Abilities {
      * @param color the color to be updated
      */
     public void addTrack(String color) {
+        int track;
         switch (color.toLowerCase()) {
             case "red":
+                if (redTrack == 9) {
+                    System.out.println("Track limit reached");
+                    break;
+                }
                 redTrack++;
                 updateRed();
                 break;
             case "blue":
+                if (blueTrack == 9) {
+                    System.out.println("Track limit reached");
+                    break;
+                }
                 blueTrack++;
                 updateBlue();
                 break;
             case "purple":
+                if (purpleTrack == 9) {
+                    System.out.println("Track limit reached");
+                    break;
+                }
                 purpleTrack++;
                 updatePurple();
                 break;
             case "green":
+                if (greenTrack == 9) {
+                    System.out.println("Track limit reached");
+                    break;
+                }
                 greenTrack++;
                 updateGreen();
                 break;
             case "yellow":
+                if (yellowTrack == 9) {
+                    System.out.println("Track limit reached");
+                    break;
+                }
                 yellowTrack++;
                 updateYellow();
                 break;
@@ -61,20 +82,14 @@ public class Abilities {
      * @return True if the ability is unlocked, false otherwise.
      */
     public boolean hasAbility(String color) {
-        switch (color.toLowerCase()) {
-            case "red":
-                return redAbility > 0;
-            case "blue":
-                return blueAbility > 0;
-            case "purple":
-                return purpleAbility > 0;
-            case "green":
-                return greenAbility > 0;
-            case "yellow":
-                return yellowAbility > 0;
-            default:
-                throw new IllegalArgumentException("Unknown color: " + color);
-        }
+        return switch (color.toLowerCase()) {
+            case "red" -> redAbility > 0;
+            case "blue" -> blueAbility > 0;
+            case "purple" -> purpleAbility > 0;
+            case "green" -> greenAbility > 0;
+            case "yellow" -> yellowAbility > 0;
+            default -> throw new IllegalArgumentException("Unknown color: " + color);
+        };
     }
     /**
      * Checks if the specified bonus is available.
@@ -83,20 +98,14 @@ public class Abilities {
      * @return True if the bonus is available, false otherwise.
      */
     public boolean hasBonus(String color) {
-        switch (color.toLowerCase()) {
-            case "red":
-                return redBonus > 0;
-            case "blue":
-                return blueBonus > 0;
-            case "purple":
-                return purpleBonus > 0;
-            case "green":
-                return greenBonus > 0;
-            case "yellow":
-                return yellowBonus > 0;
-            default:
-                throw new IllegalArgumentException("Unknown color: " + color);
-        }
+        return switch (color.toLowerCase()) {
+            case "red" -> redBonus > 0;
+            case "blue" -> blueBonus > 0;
+            case "purple" -> purpleBonus > 0;
+            case "green" -> greenBonus > 0;
+            case "yellow" -> yellowBonus > 0;
+            default -> throw new IllegalArgumentException("Unknown color: " + color);
+        };
     }
 
     //update availability of ability once used
