@@ -10,16 +10,12 @@ public class D2CTest {
     Dices D1;
     Tile T1;
     Score S1;
-    Abilities A1;
-    Bonus B1;
     GameState G1;
 
     Player P2;
     Dices D2;
     Tile T2;
     Score S2;
-    Abilities A2;
-    Bonus B2;
     GameState G2;
 
 
@@ -32,18 +28,15 @@ public class D2CTest {
         D1.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
         T1 = new Tile(D1);
         S1 = new Score();
-        A1 = new Abilities();
-        B1 = new Bonus("Red", 2);
-        G1 = new GameState(P1, D1, T1, S1, A1, B1);
+
+        G1 = new GameState(P1, D1, T1, S1);
 
 //      Create Game Instance for Player 2
         P2 = new Player();
         D2 = new Dices();
         T2 = new Tile(D1);
         S2 = new Score();
-        A2 = new Abilities();
-        B2 = new Bonus("Blue", 2);
-        G2 = new GameState(P2, D2, T2, S2, A2, B2);
+        G2 = new GameState(P2, D2, T2, S2);
 
 //      Apply Tiles to Player 1's Gameboard
 

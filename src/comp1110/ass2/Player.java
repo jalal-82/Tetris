@@ -5,7 +5,6 @@ package comp1110.ass2;
  */
 public class Player {
     private Score score;
-    private Abilities abilities;
 
     /**
      * Constructs a new Player
@@ -13,7 +12,6 @@ public class Player {
      */
     public Player() {
         this.score = new Score();
-        this.abilities = new Abilities();
     }
 
 
@@ -31,8 +29,5 @@ public class Player {
      *
      * @return The player's abilities.
      */
-    public Abilities getAbilities() {
-        return abilities;
-    }
 
 }

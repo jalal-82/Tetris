@@ -103,4 +103,12 @@ public class Score {
     public int getScore() {
         return score;
     }
+
+    /**
+     * adds two to the score
+     * intended for use by track classes
+     */
+    public void addTwoToScore() {
+        this.score += 2;
+    }
 }

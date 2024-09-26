@@ -12,8 +12,6 @@ public class u7480662_Test {
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;
-    Abilities abilitiesOne;
-    Bonus bonusOne;
     GameState gameStateOne;
 
     @BeforeEach
@@ -23,9 +21,7 @@ public class u7480662_Test {
         diceOne = new Dices();
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
-        abilitiesOne = new Abilities();
-        bonusOne = new Bonus("Red", 2);
-        gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne, abilitiesOne, bonusOne);
+        gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne);
     }
 
     @Test

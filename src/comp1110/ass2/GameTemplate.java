@@ -31,11 +31,9 @@ public class GameTemplate extends Application {
 			System.out.println(Arrays.deepToString(tile.getGeneratedTiles()));
 			System.out.println();
 			Score score = new Score();
-			Abilities abilities = new Abilities();
-			Bonus bonus = new Bonus("Red", 2);
 
 			// Create a new GameState for each player and add to the list
-			gameStates.add(new GameState(player, dices, tile, score, abilities, bonus));
+			gameStates.add(new GameState(player, dices, tile, score));
 		}
 
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
@@ -50,11 +48,6 @@ public class GameTemplate extends Application {
 			gui.setAvailableTiles(List.of(currentState.getTiles()));
 			gui.setAvailableDice(List.of(currentState.getDice()));
 			gui.setAvailableActions(List.of("Reroll", "Give up"));
-			gui.setTrackInfo(0, "Red",
-					currentState.getAbilities("red"),
-					currentState.getAbilities("blue"),
-					currentState.getAbilities("red"),
-					0, 0);
 
 		});
 

@@ -14,16 +14,12 @@ public class D2CTest2 {
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;
-    Abilities abilitiesOne;
-    Bonus bonusOne;
     GameState gameStateOne;
 
     Player playerTwo;
     Dices dicesTwo;
     Tile tileTwo;
     Score scoreTwo;
-    Abilities abilitiesTwo;
-    Bonus bonusTwo;
     GameState gameStateTwo;
 
     @BeforeEach
@@ -35,18 +31,14 @@ public class D2CTest2 {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
-        abilitiesOne = new Abilities();
-        bonusOne = new Bonus("Red", 2);
-        gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne, abilitiesOne, bonusOne);
+        gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne);
 
 //      Create Game Instance for Player 2
         playerTwo = new Player();
         dicesTwo = new Dices();
         tileTwo = new Tile(dicesTwo);
         scoreTwo = new Score();
-        abilitiesTwo = new Abilities();
-        bonusTwo = new Bonus("Blue", 2);
-        gameStateTwo = new GameState(playerTwo, dicesTwo, tileTwo, scoreTwo, abilitiesTwo, bonusTwo);
+        gameStateTwo = new GameState(playerTwo, dicesTwo, tileTwo, scoreTwo);
 
         //      Apply Tiles to Player 1's Gameboard
         if (tileOne.getAllTiles().containsKey("B3")) {
