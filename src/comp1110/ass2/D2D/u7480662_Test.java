@@ -4,28 +4,25 @@ import comp1110.ass2.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class u7480662_Test {
 
-    Player playerOne;
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;
     Abilities abilitiesOne;
-    Bonus bonusOne;
     GameState gameStateOne;
 
     @BeforeEach
     public void setup() {
 //        Create game Instance for one player
-        playerOne = new Player();
         diceOne = new Dices();
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
         abilitiesOne = new Abilities();
-        bonusOne = new Bonus("Red", 2);
-        gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne, abilitiesOne, bonusOne);
+        gameStateOne = new GameState(diceOne, tileOne, scoreOne, abilitiesOne);
     }
 
     @Test
@@ -46,7 +43,7 @@ public class u7480662_Test {
     @Test
     public void CompleteRowWithWindows(){
 //       This test case simulates applying a tile "P5" to fill a row, but with all tiles having windows.
-//       It checks if the score is correctly doubled when windows are present in all positions of a completed row.
+//       It checks if the score is correctly increased when windows are present in all positions of a completed row.
 //       The expected score is 2 points for completing the row with windows.
         diceOne.applyPresetDiceD2CP1("P","P","P","P","P");
         tileOne.updateSelectedTile("P5");

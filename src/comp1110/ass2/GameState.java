@@ -7,28 +7,22 @@ public class GameState {
 
     private final Dices dice;
     private char[][] gameBoard;
-    private Player player;
     private Score score;
     private Abilities abilities;
-    private Bonus bonus;
     private Tile tiles;
 
     /**
      * Constructor for the GameState class.
      *
-     * @param player     The player object representing the current player.
      * @param dice       The dice object used in the game.
      * @param tiles      The tiles available in the game.
      * @param score      The score object to track player's score.
      * @param abilities  The abilities object representing player's abilities.
-     * @param bonus      The bonus object representing any bonus in the game.
      */
-    public GameState(Player player, Dices dice, Tile tiles, Score score, Abilities abilities, Bonus bonus) {
-        this.player = player;
+    public GameState(Dices dice, Tile tiles, Score score, Abilities abilities) {
         this.dice = dice;
         this.score = score;
         this.abilities = abilities;
-        this.bonus = bonus;
         this.tiles = tiles;
         gameBoard = new char[9][5];
         initializeBoard();
@@ -217,36 +211,4 @@ public class GameState {
         }
     }
 
-
-
-    public static void main(String[] args) {
-        Player playerOne = new Player();
-        Dices diceOne = new Dices();
-        diceOne.applyPresetDiceD2CP1( "B",  "B","G",  "Y",  "P");
-        Tile tileOne = new Tile(diceOne);
-        Score scoreOne = new Score();
-        Abilities abilitiesOne = new Abilities();
-        Bonus bonusOne = new Bonus( "Red",  2);
-        GameState gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne, abilitiesOne, bonusOne);
-        tileOne.generateTiles(diceOne);
-
-//        tileOne.updateSelectedTile( "R3");
-//        boolean[] windows = {false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 0,  0,  1, windows);
-//
-//        diceOne.applyPresetDiceD2CP1( "R",  "R",  "R",  "R",  "W");
-//        tileOne.updateSelectedTile( "R4");
-//        boolean[] windows2 = {false, false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 2,  0,  0, windows2);
-//
-//        diceOne.applyPresetDiceD2CP1( "R", "R", "R", "R", "W");
-//        tileOne.updateSelectedTile( "R2");
-//        boolean[] windows3 = {false, false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 2, 2,  0, windows3);
-//
-//        gameStateOne.printBoard(gameStateOne.getGameBoard());
-
-
-
-    }
 }

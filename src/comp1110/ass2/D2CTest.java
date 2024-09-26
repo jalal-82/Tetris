@@ -6,128 +6,112 @@ import static org.junit.jupiter.api.Assertions.*;
 
 
 public class D2CTest {
-    Player P1;
-    Dices D1;
-    Tile T1;
-    Score S1;
-    Abilities A1;
-    Bonus B1;
-    GameState G1;
+    Dices diceOne;
+    Tile tileOne;
+    Score scoreOne;
+    Abilities abilitiesOne;
+    GameState gameStateOne;
 
-    Player P2;
-    Dices D2;
-    Tile T2;
-    Score S2;
-    Abilities A2;
-    Bonus B2;
-    GameState G2;
+    Dices dicesTwo;
+    Tile tileTwo;
+    Score scoreTwo;
+    Abilities abilitiesTwo;
+    GameState gameStateTwo;
 
 
     @BeforeEach
     public void setup(){
 
 //      Create game Instance for Player 1
-        P1 = new Player();
-        D1 = new Dices();
-        D1.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
-        T1 = new Tile(D1);
-        S1 = new Score();
-        A1 = new Abilities();
-        B1 = new Bonus("Red", 2);
-        G1 = new GameState(P1, D1, T1, S1, A1, B1);
+        diceOne = new Dices();
+        diceOne.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
+        tileOne = new Tile(diceOne);
+        scoreOne = new Score();
+        abilitiesOne = new Abilities();
+        gameStateOne = new GameState(diceOne, tileOne, scoreOne, abilitiesOne);
 
 //      Create Game Instance for Player 2
-        P2 = new Player();
-        D2 = new Dices();
-        T2 = new Tile(D1);
-        S2 = new Score();
-        A2 = new Abilities();
-        B2 = new Bonus("Blue", 2);
-        G2 = new GameState(P2, D2, T2, S2, A2, B2);
+        dicesTwo = new Dices();
+        tileTwo = new Tile(dicesTwo);
+        scoreTwo = new Score();
+        abilitiesTwo = new Abilities();
+        gameStateTwo = new GameState(dicesTwo, tileTwo, scoreTwo, abilitiesTwo);
 
 //      Apply Tiles to Player 1's Gameboard
-
 //      B3 (rotataion = 1 (90 degrees))
-        if (T1.getAllTiles().containsKey("B3") && !T1.getAllTiles().get("B3").isEmpty()) {
-            T1.updateSelectedTile("B3");
-            T1.rotateTile( 1);
+        tileOne.updateSelectedTile("B3");
+        boolean[] windows = {true, false, true};
+        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
 
-            G1.placeTile( 0, 0);
-        }
 
 //      G4L (No rotation)
-        if (T1.getAllTiles().containsKey("G4L") && !T1.getAllTiles().get("G4L").isEmpty()) {
-            T1.updateSelectedTile("G4L");
-            G1.placeTile( 0, 3);
-        }
+        tileOne.updateSelectedTile("G4L");
+        boolean[] windowsTwo = {true, false, true, true};
+        gameStateOne.placeTileWithRotationWindows( 3, 0, 0, windowsTwo);
+
     }
+
     @Test
     public void selectR3(){
-        boolean res = T1.isValidSelection("R3");
+        boolean res = tileOne.isValidSelection("R3");
         assertEquals(res,true);
     }
 
     @Test
     public void selectR4(){
-        boolean res = T1.isValidSelection("R4");
+        boolean res = tileOne.isValidSelection("R4");
         assertEquals(res,true);
     }
 
     @Test
     public void selectB3(){
-        boolean res = T1.isValidSelection("B3");
+        boolean res = tileOne.isValidSelection("B3");
         assertEquals(res,false);
     }
 
 //    For Tile Y3, windows aren't applied as it doesn't affect placement Validation.
-
     @Test
     public void isTileY3PlacementValid1(){
-        if (T1.getAllTiles().containsKey("Y3") && !T1.getAllTiles().get("Y3").isEmpty()) {
-            T1.updateSelectedTile("Y3");
-            T1.rotateTile( 0);
-            boolean isValid = G1.isTilePlacementValid(G1.getGameBoard(),0,1);
-            assertEquals(isValid,false);
-        }
+        tileOne.updateSelectedTile("Y3");
+        tileOne.rotateTile( 0);
+        boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,0);
+        assertEquals(isValid,false);
+
     }
 
     @Test
     public void isTileY3PlacementValid2(){
-        if (T1.getAllTiles().containsKey("Y3") && !T1.getAllTiles().get("Y3").isEmpty()) {
-            T1.updateSelectedTile("Y3");
-            T1.rotateTile( 3);
-            boolean isValid1 = G1.isTilePlacementValid(G1.getGameBoard(),0,1);
-            assertEquals(isValid1,true);
-        }
+        tileOne.updateSelectedTile("Y3");
+        tileOne.rotateTile( 3);
+        boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,0);
+
+        assertEquals(isValid,true);
     }
 
     @Test
     public void isTileY3PlacementValid3(){
-        if (T1.getAllTiles().containsKey("Y3") && !T1.getAllTiles().get("Y3").isEmpty()) {
-            T1.updateSelectedTile("Y3");
-            T1.rotateTile( 3);
-            boolean isValid1 = G1.isTilePlacementValid(G1.getGameBoard(),0,2);
-            assertEquals(isValid1,false);
-        }
+        tileOne.updateSelectedTile("Y3");
+        tileOne.rotateTile( 3);
+        boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),2,0);
+        assertEquals(isValid,false);
     }
 
     @Test
     public void isTileY3PlacementValid4(){
-        if (T1.getAllTiles().containsKey("Y3") && !T1.getAllTiles().get("Y3").isEmpty()) {
-            T1.updateSelectedTile("Y3");
-            T1.rotateTile( 1);
-            boolean isValid1 = G1.isTilePlacementValid(G1.getGameBoard(),0,2);
-            assertEquals(isValid1,true);
-        }
+        tileOne.updateSelectedTile("Y3");
+        tileOne.rotateTile( 1);
+        tileOne.printTile("Y3");
+        boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),2,0);
+
+        assertEquals(isValid,true);
     }
 
     @Test
     public void isTileY3PlacementValid5(){
-        if (T1.getAllTiles().containsKey("Y3") && !T1.getAllTiles().get("Y3").isEmpty()) {
-            T1.updateSelectedTile("Y3");
-            T1.rotateTile( 3);
-            boolean isValid1 = G1.isTilePlacementValid(G1.getGameBoard(),1,1);
-            assertEquals(isValid1,false);
-        }
+        tileOne.updateSelectedTile("Y3");
+        tileOne.rotateTile( 3);
+        boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,1);
+
+        assertEquals(isValid,false);
     }
 }

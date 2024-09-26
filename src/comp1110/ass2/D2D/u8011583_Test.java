@@ -6,12 +6,10 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class u8011583_Test {
-    Player playerOne;
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;
     Abilities abilitiesOne;
-    Bonus bonusOne;
     GameState gameStateOne;
 
     Dices diceTwo;
@@ -21,14 +19,12 @@ public class u8011583_Test {
     public void setup() {
 
 //      Create game Instance for Player 1
-        playerOne = new Player();
         diceOne = new Dices();
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
         abilitiesOne = new Abilities();
-        bonusOne = new Bonus("Red", 2);
-        gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne, abilitiesOne, bonusOne);
+        gameStateOne = new GameState(diceOne, tileOne, scoreOne, abilitiesOne);
         diceTwo = new Dices();
 //
     }

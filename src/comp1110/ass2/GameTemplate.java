@@ -23,19 +23,14 @@ public class GameTemplate extends Application {
 
 		// Initialize game states for 2 players
 		for (int i = 0; i < 4; i++) {
-			System.out.println(i);
-			Player player = new Player();
 			Dices dices = new Dices();
-			System.out.println(Arrays.deepToString(dices.getAllDice()));
 			Tile tile = new Tile(dices);
-			System.out.println(Arrays.deepToString(tile.getGeneratedTiles()));
 			System.out.println();
 			Score score = new Score();
 			Abilities abilities = new Abilities();
-			Bonus bonus = new Bonus("Red", 2);
 
 			// Create a new GameState for each player and add to the list
-			gameStates.add(new GameState(player, dices, tile, score, abilities, bonus));
+			gameStates.add(new GameState(dices, tile, score, abilities));
 		}
 
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
@@ -55,18 +50,14 @@ public class GameTemplate extends Application {
 					currentState.getAbilities("blue"),
 					currentState.getAbilities("red"),
 					0, 0);
-
 		});
 
+	gui.setOnTilePlaced((p) -> {
+		gameStates.get(0).placeTile(p.getY(), p.getX());
+		//update bonuses from windows?
+		updateGUIState();
+	});
 
-
-
-//	gui.setOnTilePlaced((p) -> {
-//		gameStates.placeTile(p.getY(), p.getX());
-//		//update bonuses from windows?
-//		updateGUIState();
-//	});
-//
 //	gui.setOnDiceSelectionChanged((i) -> {
 //		gui.setMessage("dice selection: " + gui.getSelectedDice());
 //	    });
@@ -97,23 +88,23 @@ public class GameTemplate extends Application {
 
 
     }
-//	private void updateGUIState() {
-//		char[][] board = .getGameBoard();
-//		for (int y = 0; y < board.length; y++) {
-//			for (int x = 0; x < board[y].length; x++) {
-//				char c = board[y][x];
-//				if (c != '.') {
-//					//to extract colour value from c, decrement if it is representing a window
-//					if (c == 'S' || c == 'C' || c == 'Q' || c == 'H' || c == 'Z')
-//						c--;
-//					String color = String.valueOf(c);
-//					// adjust y-coordinate for GUI
-//					int guiY = board.length - 1 - y;
-//					gui.setFacadeSquare(0, x, guiY, color, true);
-//				}
-//			}
-//		}
-//}
+	private void updateGUIState() {
+		char[][] board = gameStates.get(0).getGameBoard();
+		for (int y = 0; y < board.length; y++) {
+			for (int x = 0; x < board[y].length; x++) {
+				char c = board[y][x];
+				if (c != '.') {
+					//to extract colour value from c, decrement if it is representing a window
+					if (c == 'S' || c == 'C' || c == 'Q' || c == 'H' || c == 'Z')
+						c--;
+					String color = String.valueOf(c);
+					// adjust y-coordinate for GUI
+					int guiY = board.length - 1 - y;
+					gui.setFacadeSquare(0, x, guiY, color, true);
+				}
+			}
+		}
+}
 }
 
 
