@@ -4,12 +4,7 @@ import comp1110.ass2.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-//
-//import static org.junit.Assert.assertFalse;
-//import static org.junit.Assert.assertTrue;
-import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class u6681480_Test {
@@ -46,19 +41,21 @@ public class u6681480_Test {
 
     // This test case evaluate the isValidSelection() method under Tile class.
     // Given dice: ("R", "R", "R", "W", "P").
-    // It succeeds because the method correctly identify the given tile
-    // is vaild.
+    // It succeeds because the method correctly identify the given tile is vaild.
     @Test
     public void isValidSelectionTest() {
         assertTrue(tile.isValidSelection("R3"));
     }
+    @Test
+    public void isValidSelectionTest2() {
+        assertTrue(tile.isValidSelection("R4"));
+    }
 
     // This test case evaluate the isValidSelection() method under Tile class.
     // Given dice: ("R", "R", "R", "W", "P").
-    // It succeeds because the method correctly identifies the given tile
-    // is invaild.
+    // It succeeds because the method correctly identifies the given tile is invaild.
     @Test
-    public void isValidSelectionTest2() {
+    public void isValidSelectionTest3() {
         assertFalse(tile.isValidSelection("Y2"));
     }
 

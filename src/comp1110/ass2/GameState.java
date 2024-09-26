@@ -7,23 +7,34 @@ public class GameState {
 
     private final Dices dice;
     private char[][] gameBoard;
+    private Player player;
     private Score score;
-    private Abilities abilities;
     private Tile tiles;
+    protected Track redTrack;
+    protected Track blueTrack;
+    protected Track greenTrack;
+    protected Track yellowTrack;
+    protected Track purpleTrack;
+
 
     /**
      * Constructor for the GameState class.
      *
+     * @param player     The player object representing the current player.
      * @param dice       The dice object used in the game.
      * @param tiles      The tiles available in the game.
      * @param score      The score object to track player's score.
-     * @param abilities  The abilities object representing player's abilities.
      */
-    public GameState(Dices dice, Tile tiles, Score score, Abilities abilities) {
+    public GameState(Player player, Dices dice, Tile tiles, Score score) {
+        this.player = player;
         this.dice = dice;
         this.score = score;
-        this.abilities = abilities;
         this.tiles = tiles;
+        this.redTrack = new RedTrack(score);
+        this.blueTrack = new BlueTrack(score);
+        this.greenTrack = new GreenTrack(score);
+        this.yellowTrack = new YellowTrack(score);
+        this.purpleTrack = new PurpleTrack(score);
         gameBoard = new char[9][5];
         initializeBoard();
     }
@@ -159,9 +170,6 @@ public class GameState {
         return dice.getAllDice();
     }
 
-    public int getAbilities(String colour) {
-        return abilities.getAbility(colour);
-    }
 
     public static void startRound(GameState gameState) {
         Dices roundDice = new Dices();
@@ -175,6 +183,16 @@ public class GameState {
         //select placement
 
     }
+//    public void addTrack(String trackColour) {
+//        switch (trackColour.toLowerCase()) {
+//            case "red" -> redTrack.addTrack();
+//            case "blue" -> blueTrack.addTrack();
+//            case "purple" -> purpleTrack.addTrack();
+//            case "green" -> greenTrack.addTrack();
+//            case "yellow" -> yellowTrack.addTrack();
+//            default -> throw new IllegalArgumentException("Unknown color: " + trackColour);
+//        }
+//    }
 
     public static void updateScore(Score playerScore,GameState gameState){
         playerScore.addPoints(gameState.getGameBoard());
@@ -211,4 +229,34 @@ public class GameState {
         }
     }
 
+
+
+    public static void main(String[] args) {
+        Player playerOne = new Player();
+        Dices diceOne = new Dices();
+        diceOne.applyPresetDiceD2CP1( "B",  "B","G",  "Y",  "P");
+        Tile tileOne = new Tile(diceOne);
+        Score scoreOne = new Score();
+        GameState gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne);
+        tileOne.generateTiles(diceOne);
+
+//        tileOne.updateSelectedTile( "R3");
+//        boolean[] windows = {false, false, false};
+//        gameStateOne.placeTileWithRotationWindows( 0,  0,  1, windows);
+//
+//        diceOne.applyPresetDiceD2CP1( "R",  "R",  "R",  "R",  "W");
+//        tileOne.updateSelectedTile( "R4");
+//        boolean[] windows2 = {false, false, false, false};
+//        gameStateOne.placeTileWithRotationWindows( 2,  0,  0, windows2);
+//
+//        diceOne.applyPresetDiceD2CP1( "R", "R", "R", "R", "W");
+//        tileOne.updateSelectedTile( "R2");
+//        boolean[] windows3 = {false, false, false, false};
+//        gameStateOne.placeTileWithRotationWindows( 2, 2,  0, windows3);
+//
+//        gameStateOne.printBoard(gameStateOne.getGameBoard());
+
+
+
+    }
 }
