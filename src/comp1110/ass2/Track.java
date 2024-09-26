@@ -1,5 +1,9 @@
 package comp1110.ass2;
 
+/**
+ * abstract class that defines all the variables in methods for a given track
+ * intended to be implemented by subclasses representing each colour
+ */
 public abstract class Track {
     private int ability = 0;
     private int bonus = 0;
@@ -8,11 +12,22 @@ public abstract class Track {
     public Track(Score score) {
         this.score = score;
     }
+
+    /**
+     * checks ability is available and then decrements it
+     * specifics will need to be added.
+     */
     public void useAbility() {
-        this.ability--;
+        if (this.ability > 0)
+            this.ability--;
+        else
+            System.out.println("no ability available");
     }
     public void useBonus() {
-        this.bonus--;
+        if (this.bonus > 0)
+            this.bonus--;
+        else
+            System.out.println("no bonus available");
     }
     public abstract void update();
     public int getTrack() {
