@@ -300,22 +300,34 @@ The public interface of the `GameGUI` class contains the following methods:
     * `window` `true` if the square should show a window, `false` if it
 	should not.
 
-*   `public void setRowCoA(int y, boolean highlightOn)`
+*   `public void setRowCoA(int player, int y, boolean highlightOn)`
 
-    Set the highlight status of the coat-of-arms next to a row.
+    Set the highlight status of the coat-of-arms next to a row in one
+	player's building.
 
 	Parameters:
+	* `player` The player whose building should be updated (from 0 to number of players - 1).
 	* `y` The row index. This must be one of the numbers `1`, `3` or `5`.
     * `highlightOn` Whether the CoA should be highlighted (shown in gold
 	colour) or not (shown in black).
 
-*   `public void setColumnCoA(int x, boolean highlightOn)`
+*   `public void setColumnCoA(int player, int x, boolean highlightOn)`
 
-    Set the highlight status of the coat-of-arms above a column.
+    Set the highlight status of the coat-of-arms above a column in one
+	player's building.
 
 	Parameters:
+	* `player` The player whose building should be updated (from 0 to number of players - 1).
 	* `x` The column index. This must be one of the numbers `1` or `3`.
     * `highlightOn` Whether the CoA should be highlighted or not.
+
+*   `public void setScore(int player, int score)`
+
+	Set the score shown on one of the player's score sheet.
+
+	Parameters:
+    * `player` The player whose score should be updated (0 to number of players - 1).
+    * `score` The new score.
 
 *   `public void setTrackInfo(int player, String colour, int nMarked, int nBonusAvailable, int nAbilityAvailable, int nBonusToNext, int nAbilityToNext)`
 
@@ -331,34 +343,39 @@ The public interface of the `GameGUI` class contains the following methods:
     * `nAbilityToNext` Number to show in the "Next/star" column.
 
 *   `public void clearTrackSelection()`
+
     Clear track selection.
 
 *   `public List<Integer> getSelectedTracks()`
+
     Returns a list of indices of the currently selected track(s).
 	Tracks are indexed 0-4, from Red to Yellow.
 
 *   `public void endGame(int[] finalScores)`
+
     End the current game. This will bring up the end of game screen
 	(in the lower right corner), which shows the final scores and offers
 	the choice to quit or play again.
 
 *   `public int getSelectedPlayer()`
+
     Returns the index of the player whose score sheet is currently being
 	shown in the left part of the GUI. The index ranges from 0 to number
 	of players - 1.
 
 *   `public void setAvailableActions(List<String> actions)`
+
 	Set the list of possible player actions to appear when the "Action..."
 	menu button is pressed. The handler associated with these actions is
 	set using `setOnGameAction`.
 
 *   `public void setControlPlayer(int i)`
+
     Set the text on the Confirm and Pass buttons to indicate that the
 	current decision belongs to player `i`.
 
-    // register event callbacks
-
 *   `public void setOnStartGame(BiConsumer<Integer, boolean[]> handler)`
+
     Set the event handler to be called when a new game is started.
     The handler will receive two arguments: the number of players (an
 	integer) and an array of boolean values, of the same length as the
@@ -368,6 +385,7 @@ The public interface of the `GameGUI` class contains the following methods:
 	`java.util.function` package.
 
 *   `public void setOnTileSelected(Consumer<String> handler)`
+
     Set the event handler to be called when the user selects a tile
 	(from the list at the top of the right right panel). The handler will
 	receive one argument, which is the name of the tile.
@@ -379,6 +397,7 @@ The public interface of the `GameGUI` class contains the following methods:
 	`java.util.function` package.
 
 *   `public void setOnTilePlaced(Consumer<Placement> handler)`
+
     Set the event handler to be called when the user confirms placement
 	of a selected tile. The handler will receive one argument, which is
 	an object of type `Placement` that contains all the details of the
@@ -386,6 +405,7 @@ The public interface of the `GameGUI` class contains the following methods:
 	further below.
 
 *   `public void setOnDiceSelectionChanged(IntConsumer handler)`
+
     Set the event handler to be called when the user changes the selection
 	of any die in the dice diplay. The event handler will receive one
 	argument, which is the index of of the die whose selection status has
@@ -395,6 +415,7 @@ The public interface of the `GameGUI` class contains the following methods:
 	selected dice.
 
 *   `public void setOnTrackSelectionChanged(IntConsumer handler)`
+
     Set the event handler to be called when the user changes the selection
 	(checkbox) of any of the ability tracks. The event handler will
 	receive one argument, which is the index (0-4) of the track whose
@@ -404,6 +425,7 @@ The public interface of the `GameGUI` class contains the following methods:
 	indices of currently selected tracks.
 
 *   `public void setOnConfirm(Consumer<String> handler)`
+
     Set the event handler to be called when the "Confirm" button is pressed
 	in any situation except when it is pressed to confirm a tile placement
 	(this will generate a call to the tile placed event handler instead).
@@ -411,11 +433,13 @@ The public interface of the `GameGUI` class contains the following methods:
 	of the button.
 
 *   `public void setOnPass(Consumer<String> handler)`
+
     Set the event handler to be called when the "Pass" button is pressed.
 	The event handler will receive one argument, which is the current label
 	of the button.
 
 *   `public void setOnGameAction(Consumer<String> handler)`
+
     Set the event handler to be called when an item from the "Action"
     menu button is selected. The event handler will receive one argument,
     which is the label of the menu item. The list of available actions
@@ -432,6 +456,11 @@ A tile placement consists of five pieces of information:
 
 	Note that the blue, green and yellow size 4 tiles each have a "left"
 	and a "right" version, but the red and purple do not.
+
+	In addition to these, there are two special tile names:
+
+	-   `S1X` represents a 1x1 tile without a window
+	-   `S1O` represents a 1x1 tile with a window
 
 *   The placement column (x coordinate). The columns are index 0 to 4,
 	from left to right.
@@ -453,8 +482,10 @@ A tile placement consists of five pieces of information:
 *   The window arrangement. This is an array of boolean values, of the
 	same length as the size of the tile. The squares that make up each
 	tile are numbered, from 1 to the size, by column in order from left
-	to right, and in order from bottom to top within each column. Each
-	value in the array represents if a window is present on the
+	to right, and in order from bottom to top within each column, when
+	the tile is its original orientation (as in the image above). When
+	the tile is rotated, the numbering of the squares rotates along with
+	it. Each value in the array represents if a window is present on the
 	corresponding square of the tile.
 
 The `Placement` class has the public methods to retrieve each of these
@@ -795,6 +826,11 @@ java --module-path ${PATH_TO_FX} --add-modules=javafx.base,javafx.controls -jar 
 
 Your game should run, creating a new window.
 
+Note: If the `PATH_TO_FX` variable is not set in your shell (only in IntelliJ),
+you may need to replace the expression `${PATH_TO_FX}` with the actual path
+to where JavaFX is installed. On the CSIT lab computers, this is in
+`/usr/local/openjfx/lib`.
+
 If you run into troubles with these steps, you can start over by doing
 steps 1 and 2 and then using the "-" sign to delete the artifact. Also
 see IntelliJ documentation on how to build a JAR.
@@ -818,7 +854,9 @@ for D2E (`admin/E-originality.yml`) before the deadline.
 
 Each group member will be required to present to their tutor a part of
 the project code that they have written themselves, and answer questions
-on their design and implementation choices.
+on their design and implementation choices. The tutor will select an
+appropriate code section (from those you have written). This code should
+_not_ be a test; it should be a part of your implementation of the game.
 
 ### D2G
 

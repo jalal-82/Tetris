@@ -145,17 +145,26 @@ public class GameGUI extends BorderPane {
         // header.setAlignment(Pos.CENTER);
         controls.add(header, 0, 0, 2, 1);
         GridPane.setHalignment(header, HPos.CENTER);
+	for (int i = 0; (i < finalScores.length) && (i < 4); i++) {
+	    Text player_i = new Text("Player" + Integer.toString(i));
+	    controls.add(player_i, 0, 1 + i, 1, 1);
+	    GridPane.setHalignment(player_i, HPos.LEFT);
+	    Text score_i = new Text(Integer.toString(finalScores[i]));
+	    controls.add(score_i, 1, 1 + i, 1, 1);
+	    GridPane.setHalignment(score_i, HPos.RIGHT);
+	}
         Button b_again = new Button("Play again");
         b_again.setOnAction(e -> {
 		control_view.getChildren().clear();
 		control_view.getChildren().add(game_setup_controls);
 		showState();
 	    });
-        controls.add(b_again, 0, 1, 2, 1);
+	int n = Math.min(finalScores.length, 4);
+        controls.add(b_again, 0, n + 1, 2, 1);
         GridPane.setHalignment(b_again, HPos.CENTER);
         Button b_quit = new Button("Quit");
         b_quit.setOnAction(e -> Platform.exit());
-        controls.add(b_quit, 0, 2, 2, 1);
+        controls.add(b_quit, 0, n + 2, 2, 1);
         GridPane.setHalignment(b_quit, HPos.CENTER);
         return controls;
     }
@@ -319,6 +328,7 @@ public class GameGUI extends BorderPane {
 	library_view.setOnSelectionChanged((tile) -> {
 		if (tile != null) {
 		    candidate = new Placement(tile, library_view.getItemSize(tile), 0, 0, 0);
+		    if (tile.equals("S1O")) candidate.setNoBrick();
 		    candidate_index = player_selector.getSelectionModel().getSelectedIndex();
 		}
 		else {
@@ -443,22 +453,33 @@ public class GameGUI extends BorderPane {
 
     /**
      * Toggle display status of the coat-of-arms next to a row.
+     * @param player The player whose building should be updated
+     *        (0 to number of players - 1).
      * @param y The row index. Note that this must be one of 1, 3 or 5.
      * @param highlightOn Whether the CoA should be highlighted (shown
      *        in gold colour) or not (shown in black).
      */
-    public void setRowCoA(int y, boolean highlightOn) {
-	building_view.setRowCoA(y, highlightOn);
+    public void setRowCoA(int player, int y, boolean highlightOn) {
+	building_view.setRowCoA(player, y, highlightOn);
     }
 
     /**
      * Toggle display status of the coat-of-arms on top of a column
+     * @param player The player whose building should be updated
+     *        (0 to number of players - 1).
      * @param y The row index. Note that this must be one of 1 or 3.
      * @param highlightOn Whether the CoA should be highlighted (shown
      *        in gold colour) or not (shown in black).
      */
-    public void setColumnCoA(int x, boolean highlightOn) {
-	building_view.setColumnCoA(x, highlightOn);
+    public void setColumnCoA(int player, int x, boolean highlightOn) {
+	building_view.setColumnCoA(player, x, highlightOn);
+    }
+
+    /**
+     * Set the score shown for one of the players.
+     */
+    public void setScore(int player, int score) {
+        player_view.setScore(player, score);
     }
 
     /**
