@@ -132,6 +132,30 @@ public class Tile {
     }
 
     /**
+     * applyWindows method without parameter will randomly generate
+     * one square that has NO window.
+     * Author: Eileen
+     */
+    public void applyWindows() { // @Eileen: now we set c++ to window, and 1 tile only has 1 "window"
+        char[][] tileArr = selectedTile;
+        random = new Random();
+        int row=0, col=0;
+        for (int i = 0; i < tileArr.length; i++) {
+            for (int j = 0; j < tileArr[i].length; j++) {
+                if (!String.valueOf(tileArr[i][j]).equals(" ") && random.nextBoolean()) { // @Eileen: not empty char
+                    tileArr[i][j]++;
+                    return;
+                } else if (!String.valueOf(tileArr[i][j]).equals(" ")) {
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+        // in case no random windows
+        tileArr[row][col]++;
+    }
+
+    /**
      * Generates tiles based on the provided dice rolls. Takes into account colors and wild dice.
      * @param rolledDices The dice rolls that determine the available tiles.
      * @return A String array of the selected tiles.
