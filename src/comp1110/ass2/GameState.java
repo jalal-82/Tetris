@@ -105,7 +105,9 @@ public class GameState {
         return hasSupport;
     }
 
-
+    public void updateSelectedTile(String tile) {
+        this.tiles.updateSelectedTile(tile);
+    }
     /**
      * Places the selected tile on the game board at the specified row and column.
      * @param row       The row where the tile will be placed.

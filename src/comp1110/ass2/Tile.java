@@ -269,6 +269,8 @@ public class Tile {
      * @param key: key for the selectedTile
      */
     public void updateSelectedTile(String key) {
+        if (allTiles.get(key) == null)
+            return;
         char[][] tileToBeCopied = allTiles.get(key).get(0);
         char[][] copy = new char[tileToBeCopied.length][];
         for (int i = 0; i < tileToBeCopied.length; i++) {

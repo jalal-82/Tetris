@@ -16,25 +16,11 @@ public class GameTemplate extends Application {
 
     GameGUI gui;
 	List<GameState> gameStates;
-
+	GameState currentState;//variable for easy reference to the currentState
 	public void start(Stage stage) throws Exception {
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
 
-		// Initialize game states for 2 players
-		for (int i = 0; i < 4; i++) {
-			System.out.println(i);
-			Player player = new Player();
-			Dices dices = new Dices();
-			System.out.println(Arrays.deepToString(dices.getAllDice()));
-			Tile tile = new Tile(dices);
-			System.out.println(Arrays.deepToString(tile.getGeneratedTiles()));
-			System.out.println();
-			Score score = new Score();
-
-			// Create a new GameState for each player and add to the list
-			gameStates.add(new GameState(player, dices, tile, score));
-		}
 
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
 
@@ -42,8 +28,22 @@ public class GameTemplate extends Application {
 	// callback, for the start-of-game event).
 
 		gui.setOnStartGame((np, isAI) -> {
+			// Initialize game states for np players
+			for (int i = 0; i < np; i++) {
+				System.out.println(i);
+				Player player = new Player();
+				Dices dices = new Dices();
+				System.out.println(Arrays.deepToString(dices.getAllDice()));
+				Tile tile = new Tile(dices);
+				System.out.println(Arrays.deepToString(tile.getGeneratedTiles()));
+				System.out.println();
+				Score score = new Score();
+
+				// Create a new GameState for each player and add to the list
+				gameStates.add(new GameState(player, dices, tile, score));
+			}
+			currentState = gameStates.get(0);//sets the currentState to Player one
 			gui.setMessage("Start new game with " + np + " players");
-			GameState currentState = gameStates.get(0);
 //			System.out.println(currentState);
 			gui.setAvailableTiles(List.of(currentState.getTiles()));
 			gui.setAvailableDice(List.of(currentState.getDice()));
@@ -53,12 +53,12 @@ public class GameTemplate extends Application {
 
 
 
-
-//	gui.setOnTilePlaced((p) -> {
-//		gameStates.placeTile(p.getY(), p.getX());
-//		//update bonuses from windows?
-//		updateGUIState();
-//	});
+	//places the tile on the board in our backend logic then updates the gui
+	gui.setOnTilePlaced((p) -> {
+		gameStates.get(0).placeTile(p.getY(), p.getX());
+		//update bonuses from windows?
+		updateGUIState();
+	});
 //
 //	gui.setOnDiceSelectionChanged((i) -> {
 //		gui.setMessage("dice selection: " + gui.getSelectedDice());
@@ -67,7 +67,10 @@ public class GameTemplate extends Application {
 //	gui.setOnTrackSelectionChanged((i) -> {
 //		gui.setMessage("track selection: " + gui.getSelectedTracks());
 //	    });
-//
+	// updates the selected tile when a tile is selected in the gui
+	gui.setOnTileSelected(tileName -> {
+		currentState.updateSelectedTile(tileName);
+	});
 	gui.setOnGameAction((s) -> {
 		gui.setMessage("action: " + s);
 		if (s.equals("Give up")) {
@@ -90,23 +93,26 @@ public class GameTemplate extends Application {
 
 
     }
-//	private void updateGUIState() {
-//		char[][] board = .getGameBoard();
-//		for (int y = 0; y < board.length; y++) {
-//			for (int x = 0; x < board[y].length; x++) {
-//				char c = board[y][x];
-//				if (c != '.') {
-//					//to extract colour value from c, decrement if it is representing a window
-//					if (c == 'S' || c == 'C' || c == 'Q' || c == 'H' || c == 'Z')
-//						c--;
-//					String color = String.valueOf(c);
-//					// adjust y-coordinate for GUI
-//					int guiY = board.length - 1 - y;
-//					gui.setFacadeSquare(0, x, guiY, color, true);
-//				}
-//			}
-//		}
-//}
+	//method to update the gui
+	//so far it just updates the gameboard
+	//ie sets a square wherever it one should be
+	private void updateGUIState() {
+		char[][] board = gameStates.get(0).getGameBoard();
+		for (int y = 0; y < board.length; y++) {
+			for (int x = 0; x < board[y].length; x++) {
+				char c = board[y][x];
+				if (c != '.') {
+					//to extract colour value from c, decrement if it is representing a window
+					if (c == 'S' || c == 'C' || c == 'Q' || c == 'H' || c == 'Z')
+						c--;
+					String color = String.valueOf(c);
+					// adjust y-coordinate for GUI
+					int guiY = board.length - 1 - y;
+					gui.setFacadeSquare(0, x, guiY, color, true);
+				}
+			}
+		}
+}
 }
 
 
