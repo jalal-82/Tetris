@@ -47,7 +47,7 @@ public class D2CTest2 {
         }
         if (tileOne.getAllTiles().containsKey("G4L")) {
             boolean[] windows = {true, false, true, true};
-            gameStateOne.placeTileWithRotationWindows( 3, 0, 0, windows);
+            gameStateOne.placeTileWithRotationWindows( 0, 3, 0, windows);
         }
     }
 

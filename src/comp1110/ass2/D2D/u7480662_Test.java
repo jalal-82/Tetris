@@ -67,12 +67,12 @@ public class u7480662_Test {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
+        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {true, true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
+        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();
@@ -92,12 +92,12 @@ public class u7480662_Test {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
+        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {false, false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
+        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();
@@ -117,17 +117,17 @@ public class u7480662_Test {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
+        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {false, false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
+        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "R", "P");
         tileOne.updateSelectedTile("P3");
         boolean[] windowsFour = {false, false, false};
-        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsFour);
+        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();
@@ -147,17 +147,17 @@ public class u7480662_Test {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsTwo);
+        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {true, true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 4, 1, windowsThree);
+        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "R", "P");
         tileOne.updateSelectedTile("P3");
         boolean[] windowsFour = {true, true, true};
-        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsFour);
+        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
 
         scoreOne.addPoints(gameStateOne.getGameBoard());
         int res = scoreOne.getScore();

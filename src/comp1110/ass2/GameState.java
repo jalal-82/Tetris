@@ -123,7 +123,6 @@ public class GameState {
 //            tiles.addToUsedTiles(tiles.getSelectedTileKey());
         //sets the available colors to be used by the other players
         dice.setAvailableColors(tiles.getSelectedTileKey());
-        tiles.applyWindows(); // @Eileen: random window on tile
         char[][] tile = tiles.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
@@ -150,9 +149,19 @@ public class GameState {
      * @param rotation  The degree of rotation to apply to the tile (0-3 for 0, 90, 180, 270 degrees).
      * @param windows   Boolean array indicating which windows to apply to the tile.
      */
-    public void placeTileWithRotationWindows(int col, int row, int rotation, boolean[] windows){
+    public void placeTileWithRotationWindows(int row, int col, int rotation, boolean[] windows){
         tiles.rotateTile(rotation);
         tiles.applyWindows(windows);
+        placeTile(row,col);
+    }
+
+    /**
+     * place selected tile on the game board with random windows and no rotation.
+     * @param col       The column where the tile will be placed.
+     * @param row       The row where the tile will be placed.
+     */
+    public void placeTileWithRotationWindows(int row, int col){
+        tiles.applyWindows();
         placeTile(row,col);
     }
 

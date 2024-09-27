@@ -55,7 +55,11 @@ public class GameTemplate extends Application {
 
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
-		gameStates.get(0).placeTile(p.getY(), p.getX()); // @Eileen: here no windows updated
+//		gameStates.get(0).placeTile(p.getY(), p.getX()); // @Eileen: here no windows updated
+
+		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
+		// @Eileen: for more functionalities
+		gameStates.get(0).placeTileWithRotationWindows(p.getY(), p.getX());
 		//update bonuses from windows?
 		updateGUIState();
 	});
@@ -101,18 +105,16 @@ public class GameTemplate extends Application {
 		for (int y = 0; y < board.length; y++) { // @Eileen: y is gameboard row
 			for (int x = 0; x < board[y].length; x++) { // @Eileen: x is gameboard column
 				char c = board[y][x];
-				boolean isWindow = false;
+				boolean isWindow = false; // @Eileen: default is not a window
 				if (c != '.') {
 					//to extract colour value from c, decrement if it is representing a window
-					if (c == 'S' || c == 'C' || c == 'Q' || c == 'H' || c == 'Z') {// @Eileen: This is identifying windows on tile
+					if (c == 'S' || c == 'C' || c == 'Q' || c == 'H' || c == 'Z') { // @Eileen: This is identifying windows on tile
 						c--;
 						isWindow = true; // @Eileen: This is a window
-						System.out.println("Test windows");
 					}
 					String color = String.valueOf(c);
 					// adjust y-coordinate for GUI
 					int guiY = board.length - 1 - y;
-					System.out.println("Test update");
 					gui.setFacadeSquare(0, x, guiY, color, !isWindow);
 				}
 			}
