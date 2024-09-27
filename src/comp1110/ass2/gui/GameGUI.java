@@ -206,6 +206,10 @@ public class GameGUI extends BorderPane {
         // }
         controls.add(b_colour_change, 0, 0);
         current_player_controls = controls;
+        // @Eileen: custom rotate button
+        Button b_rotate = new Button("Rotate");
+        controls.add(b_rotate, 0, 3);
+
     }
 
     private void showState() {
