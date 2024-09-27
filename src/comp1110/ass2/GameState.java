@@ -123,7 +123,6 @@ public class GameState {
 //            tiles.addToUsedTiles(tiles.getSelectedTileKey());
         //sets the available colors to be used by the other players
         dice.setAvailableColors(tiles.getSelectedTileKey());
-        tiles.applyWindows(); // @Eileen: random window on tile
         char[][] tile = tiles.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
