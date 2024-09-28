@@ -17,6 +17,7 @@ public class GreenTrack extends Track {
             addAbility();
         else if (getTrack() == 8)
             addAbility();
-        //updatescore
+        else if (getTrack() == 9)
+            updateScore();
     }
 }

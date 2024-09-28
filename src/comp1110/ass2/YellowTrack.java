@@ -17,6 +17,7 @@ public class YellowTrack extends Track {
             addAbility();
         else if (getTrack() == 7)
             addAbility();
-        //updatescore
+        else if (getTrack() == 9)
+            updateScore();
     }
 }

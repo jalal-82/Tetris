@@ -105,7 +105,9 @@ public class GameState {
         return hasSupport;
     }
 
-
+    public void updateSelectedTile(String tile) {
+        this.tiles.updateSelectedTile(tile);
+    }
     /**
      * Places the selected tile on the game board at the specified row and column.
      * @param row       The row where the tile will be placed.
@@ -147,9 +149,19 @@ public class GameState {
      * @param rotation  The degree of rotation to apply to the tile (0-3 for 0, 90, 180, 270 degrees).
      * @param windows   Boolean array indicating which windows to apply to the tile.
      */
-    public void placeTileWithRotationWindows(int col, int row, int rotation, boolean[] windows){
+    public void placeTileWithRotationWindows(int row, int col, int rotation, boolean[] windows){
         tiles.rotateTile(rotation);
         tiles.applyWindows(windows);
+        placeTile(row,col);
+    }
+
+    /**
+     * place selected tile on the game board with random windows and no rotation.
+     * @param col       The column where the tile will be placed.
+     * @param row       The row where the tile will be placed.
+     */
+    public void placeTileWithRotationWindows(int row, int col){
+        tiles.applyWindows();
         placeTile(row,col);
     }
 
