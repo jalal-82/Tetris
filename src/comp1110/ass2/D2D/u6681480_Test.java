@@ -79,7 +79,7 @@ public class u6681480_Test {
     @Test
     public void applyWindowsTest() {
         tile.updateSelectedTile("R3");
-        tile.applyWindows(new boolean[] {true,true,false});
+        tile.applyWindows(new boolean[] {true,true,false});;
         char[][] result = new char[][] {{' ', 'S'}, {'S', 'R'}};
         assertArrayEquals(result, tile.getSelectedTile());
     }
