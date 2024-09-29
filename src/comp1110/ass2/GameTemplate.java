@@ -56,7 +56,7 @@ public class GameTemplate extends Application {
 
 		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
 		// @Eileen: for more functionalities
-		gameStates.get(0).placeTileWithRotationWindows(p.getY(), p.getX());
+		gameStates.get(0).placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 		//update bonuses from windows?
 		updateGUIState();
 	});
@@ -112,7 +112,7 @@ public class GameTemplate extends Application {
 					String color = String.valueOf(c);
 					// adjust y-coordinate for GUI
 					int guiY = board.length - 1 - y;
-					gui.setFacadeSquare(0, x, guiY, color, !isWindow);
+					gui.setFacadeSquare(0, x, guiY, color, isWindow);
 				}
 			}
 		}

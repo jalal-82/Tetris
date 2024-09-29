@@ -143,8 +143,8 @@ public class GameState {
      * @param windows   Boolean array indicating which windows to apply to the tile.
      */
     public void placeTileWithRotationWindows(int row, int col, int rotation, boolean[] windows){
-        tiles.rotateTile(rotation);
         tiles.applyWindows(windows);
+        tiles.rotateTile(rotation);
         placeTile(row,col);
     }
 

@@ -120,15 +120,16 @@ public class Tile {
     public void applyWindows( boolean[] windows) {
         char[][] tileArr = selectedTile;
         int squareCounter = 0; // keeps count of all the squares so as it is easily referenced with the windows input
-        for (int i = 0; i < tileArr.length; i++) {
-            for (int j = 0; j < tileArr[i].length; j++) {
-                if (!String.valueOf(tileArr[i][j]).equals(" ")) // checks if the element is equal to the colour (i.e. there is a square in the matrix)
+        int rowL = tileArr.length;
+        int colL = tileArr[0].length;
+        for (int c = 0; c < colL; c++) { // @Eileen: change the tile-read sequence to match the gui order
+            for (int i = rowL-1; i >= 0; i--) {
+                if (!String.valueOf(tileArr[i][c]).equals(" ")) // checks if the element is equal to the colour (i.e. there is a square in the matrix)
                     squareCounter++;
-                if (!String.valueOf(tileArr[i][j]).equals(" ") && windows[squareCounter - 1])
-                    tileArr[i][j]++;
+                if (!String.valueOf(tileArr[i][c]).equals(" ") && windows[squareCounter - 1])
+                    tileArr[i][c]++;
             }
         }
-
     }
 
     /**
@@ -153,6 +154,52 @@ public class Tile {
         }
         // in case no random windows
         tileArr[row][col]++;
+    }
+
+    /**
+     * This method negate all element in a
+     * boolean list.
+     * NOTE: abandoned method, just keep it in case for now
+     * @param list a boolean list
+     * @return negated boolean list
+     * @author Eileen
+     */
+    public boolean[] negateBList(boolean[] list) {
+        int size = list.length;
+        boolean[] result = new boolean[size];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = !list[i];
+        }
+        return result;
+    }
+
+    /**
+     * This method flip the tile array 90 degree anticlockwise
+     * to match with the GUI setting.
+     * NOTE: abandoned method, just keep it in case for now
+     * @param tile
+     * @return flipped tile
+     * @author Eileen
+     */
+    public static char[][] flipTile(char[][] tile) {
+        int row = tile.length;
+        System.out.println("row is " + row);
+        int col = tile[0].length;
+        System.out.println("col is "+col);
+        char[][] result = new char[row][col];
+        int c = col;
+        int r = row;
+        for (char[] chars : tile) {
+            for (char aChar : chars) {
+                result[r-1][col-c] = aChar;
+                r--;
+                if (r==0){
+                    r = row;
+                    c--;
+                }
+            }
+        }
+        return result;
     }
 
     /**
