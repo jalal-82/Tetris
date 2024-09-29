@@ -1,13 +1,8 @@
 package comp1110.ass2;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class GameState {
 
     private final Dices dice;
     private char[][] gameBoard;
-    private Player player;
     private Score score;
     private Tile tiles;
     protected Track redTrack;
@@ -20,13 +15,11 @@ public class GameState {
     /**
      * Constructor for the GameState class.
      *
-     * @param player     The player object representing the current player.
      * @param dice       The dice object used in the game.
      * @param tiles      The tiles available in the game.
      * @param score      The score object to track player's score.
      */
-    public GameState(Player player, Dices dice, Tile tiles, Score score) {
-        this.player = player;
+    public GameState(Dices dice, Tile tiles, Score score) {
         this.dice = dice;
         this.score = score;
         this.tiles = tiles;
@@ -239,36 +232,5 @@ public class GameState {
             }
             System.out.println();
         }
-    }
-
-
-
-    public static void main(String[] args) {
-        Player playerOne = new Player();
-        Dices diceOne = new Dices();
-        diceOne.applyPresetDiceD2CP1( "B",  "B","G",  "Y",  "P");
-        Tile tileOne = new Tile(diceOne);
-        Score scoreOne = new Score();
-        GameState gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne);
-        tileOne.generateTiles(diceOne);
-
-//        tileOne.updateSelectedTile( "R3");
-//        boolean[] windows = {false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 0,  0,  1, windows);
-//
-//        diceOne.applyPresetDiceD2CP1( "R",  "R",  "R",  "R",  "W");
-//        tileOne.updateSelectedTile( "R4");
-//        boolean[] windows2 = {false, false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 2,  0,  0, windows2);
-//
-//        diceOne.applyPresetDiceD2CP1( "R", "R", "R", "R", "W");
-//        tileOne.updateSelectedTile( "R2");
-//        boolean[] windows3 = {false, false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 2, 2,  0, windows3);
-//
-//        gameStateOne.printBoard(gameStateOne.getGameBoard());
-
-
-
     }
 }

@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class u7480662_Test {
 
-    Player playerOne;
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;
@@ -17,11 +16,10 @@ public class u7480662_Test {
     @BeforeEach
     public void setup() {
 //        Create game Instance for one player
-        playerOne = new Player();
         diceOne = new Dices();
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
-        gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne);
+        gameStateOne = new GameState(diceOne, tileOne, scoreOne);
     }
 
     @Test

@@ -31,17 +31,14 @@ public class GameTemplate extends Application {
 			// Initialize game states for np players
 			for (int i = 0; i < np; i++) {
 				System.out.println(i);
-				Player player = new Player();
 				Dices dices = new Dices();
-				System.out.println(Arrays.deepToString(dices.getAllDice()));
 				Tile tile = new Tile(dices);
-				System.out.println(Arrays.deepToString(tile.getGeneratedTiles()));
-				System.out.println();
 				Score score = new Score();
 
 				// Create a new GameState for each player and add to the list
-				gameStates.add(new GameState(player, dices, tile, score));
+				gameStates.add(new GameState(dices, tile, score));
 			}
+
 			currentState = gameStates.get(0);//sets the currentState to Player one
 			gui.setMessage("Start new game with " + np + " players");
 //			System.out.println(currentState);
