@@ -120,15 +120,86 @@ public class Tile {
     public void applyWindows( boolean[] windows) {
         char[][] tileArr = selectedTile;
         int squareCounter = 0; // keeps count of all the squares so as it is easily referenced with the windows input
-        for (int i = 0; i < tileArr.length; i++) {
-            for (int j = 0; j < tileArr[i].length; j++) {
-                if (!String.valueOf(tileArr[i][j]).equals(" ")) // checks if the element is equal to the colour (i.e. there is a square in the matrix)
+        int rowL = tileArr.length;
+        int colL = tileArr[0].length;
+        for (int c = 0; c < colL; c++) { // @Eileen: change the tile-read sequence to match the gui order
+            for (int i = rowL-1; i >= 0; i--) {
+                if (!String.valueOf(tileArr[i][c]).equals(" ")) // checks if the element is equal to the colour (i.e. there is a square in the matrix)
                     squareCounter++;
-                if (!String.valueOf(tileArr[i][j]).equals(" ") && windows[squareCounter - 1])
-                    tileArr[i][j]++;
+                if (!String.valueOf(tileArr[i][c]).equals(" ") && windows[squareCounter - 1])
+                    tileArr[i][c]++;
             }
         }
+    }
 
+    /**
+     * applyWindows method without parameter will randomly generate
+     * one square that has NO window.
+     * Author: Eileen
+     */
+    public void applyWindows() { // @Eileen: now we set c++ to window, and 1 tile only has 1 "window"
+        char[][] tileArr = selectedTile;
+        random = new Random();
+        int row=0, col=0;
+        for (int i = 0; i < tileArr.length; i++) {
+            for (int j = 0; j < tileArr[i].length; j++) {
+                if (!String.valueOf(tileArr[i][j]).equals(" ") && random.nextBoolean()) { // @Eileen: not empty char
+                    tileArr[i][j]++;
+                    return;
+                } else if (!String.valueOf(tileArr[i][j]).equals(" ")) {
+                    row = i;
+                    col = j;
+                }
+            }
+        }
+        // in case no random windows
+        tileArr[row][col]++;
+    }
+
+    /**
+     * This method negate all element in a
+     * boolean list.
+     * NOTE: abandoned method, just keep it in case for now
+     * @param list a boolean list
+     * @return negated boolean list
+     * @author Eileen
+     */
+    public boolean[] negateBList(boolean[] list) {
+        int size = list.length;
+        boolean[] result = new boolean[size];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = !list[i];
+        }
+        return result;
+    }
+
+    /**
+     * This method flip the tile array 90 degree anticlockwise
+     * to match with the GUI setting.
+     * NOTE: abandoned method, just keep it in case for now
+     * @param tile
+     * @return flipped tile
+     * @author Eileen
+     */
+    public static char[][] flipTile(char[][] tile) {
+        int row = tile.length;
+        System.out.println("row is " + row);
+        int col = tile[0].length;
+        System.out.println("col is "+col);
+        char[][] result = new char[row][col];
+        int c = col;
+        int r = row;
+        for (char[] chars : tile) {
+            for (char aChar : chars) {
+                result[r-1][col-c] = aChar;
+                r--;
+                if (r==0){
+                    r = row;
+                    c--;
+                }
+            }
+        }
+        return result;
     }
 
     /**
@@ -269,6 +340,8 @@ public class Tile {
      * @param key: key for the selectedTile
      */
     public void updateSelectedTile(String key) {
+        if (allTiles.get(key) == null)
+            return;
         char[][] tileToBeCopied = allTiles.get(key).get(0);
         char[][] copy = new char[tileToBeCopied.length][];
         for (int i = 0; i < tileToBeCopied.length; i++) {

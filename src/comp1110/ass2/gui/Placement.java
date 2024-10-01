@@ -7,7 +7,7 @@ public class Placement {
     int x;
     int y;
     int rotation;
-    boolean[] windows;
+    boolean[] windows; // @Eileen: according to given template, if set false, it's a window.
 
     Placement(String name, int size, int x, int y, int r) {
 	this.tileName = name;
@@ -38,6 +38,13 @@ public class Placement {
     public boolean getWindow(int i) {
 	return windows[i];
     }
+
+    /**
+     * This method return the windows list
+     * @return windows list
+     * @author Eileen
+     */
+    public boolean[] getWindows() { return windows;}
 
     public String toString() {
 	return "(" + tileName

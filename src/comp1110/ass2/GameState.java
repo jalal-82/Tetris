@@ -1,13 +1,8 @@
 package comp1110.ass2;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-
 public class GameState {
 
     private final Dices dice;
     private char[][] gameBoard;
-    private Player player;
     private Score score;
     private Tile tiles;
     protected Track redTrack;
@@ -20,13 +15,11 @@ public class GameState {
     /**
      * Constructor for the GameState class.
      *
-     * @param player     The player object representing the current player.
      * @param dice       The dice object used in the game.
      * @param tiles      The tiles available in the game.
      * @param score      The score object to track player's score.
      */
-    public GameState(Player player, Dices dice, Tile tiles, Score score) {
-        this.player = player;
+    public GameState(Dices dice, Tile tiles, Score score) {
         this.dice = dice;
         this.score = score;
         this.tiles = tiles;
@@ -105,7 +98,9 @@ public class GameState {
         return hasSupport;
     }
 
-
+    public void updateSelectedTile(String tile) {
+        this.tiles.updateSelectedTile(tile);
+    }
     /**
      * Places the selected tile on the game board at the specified row and column.
      * @param row       The row where the tile will be placed.
@@ -147,9 +142,19 @@ public class GameState {
      * @param rotation  The degree of rotation to apply to the tile (0-3 for 0, 90, 180, 270 degrees).
      * @param windows   Boolean array indicating which windows to apply to the tile.
      */
-    public void placeTileWithRotationWindows(int col, int row, int rotation, boolean[] windows){
-        tiles.rotateTile(rotation);
+    public void placeTileWithRotationWindows(int row, int col, int rotation, boolean[] windows){
         tiles.applyWindows(windows);
+        tiles.rotateTile(rotation);
+        placeTile(row,col);
+    }
+
+    /**
+     * place selected tile on the game board with random windows and no rotation.
+     * @param col       The column where the tile will be placed.
+     * @param row       The row where the tile will be placed.
+     */
+    public void placeTileWithRotationWindows(int row, int col){
+        tiles.applyWindows();
         placeTile(row,col);
     }
 
@@ -227,36 +232,5 @@ public class GameState {
             }
             System.out.println();
         }
-    }
-
-
-
-    public static void main(String[] args) {
-        Player playerOne = new Player();
-        Dices diceOne = new Dices();
-        diceOne.applyPresetDiceD2CP1( "B",  "B","G",  "Y",  "P");
-        Tile tileOne = new Tile(diceOne);
-        Score scoreOne = new Score();
-        GameState gameStateOne = new GameState(playerOne, diceOne, tileOne, scoreOne);
-        tileOne.generateTiles(diceOne);
-
-//        tileOne.updateSelectedTile( "R3");
-//        boolean[] windows = {false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 0,  0,  1, windows);
-//
-//        diceOne.applyPresetDiceD2CP1( "R",  "R",  "R",  "R",  "W");
-//        tileOne.updateSelectedTile( "R4");
-//        boolean[] windows2 = {false, false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 2,  0,  0, windows2);
-//
-//        diceOne.applyPresetDiceD2CP1( "R", "R", "R", "R", "W");
-//        tileOne.updateSelectedTile( "R2");
-//        boolean[] windows3 = {false, false, false, false};
-//        gameStateOne.placeTileWithRotationWindows( 2, 2,  0, windows3);
-//
-//        gameStateOne.printBoard(gameStateOne.getGameBoard());
-
-
-
     }
 }

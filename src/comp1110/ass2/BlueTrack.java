@@ -16,7 +16,8 @@ public class BlueTrack extends Track {
         else if (getTrack() == 5)
             addAbility();
         else if (getTrack() == 6)
-            addBonus();
-        //updatescore
+            addAbility();
+        else if (getTrack() == 9)
+            updateScore();
     }
 }
