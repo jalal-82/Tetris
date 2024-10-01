@@ -11,7 +11,6 @@ public class GameState {
     protected Track yellowTrack;
     protected Track purpleTrack;
 
-
     /**
      * Constructor for the GameState class.
      *
@@ -98,6 +97,10 @@ public class GameState {
         return hasSupport;
     }
 
+    /**
+     * Updates the selectedTile on the GUI
+     * @param tile
+     */
     public void updateSelectedTile(String tile) {
         this.tiles.updateSelectedTile(tile);
     }
@@ -160,50 +163,85 @@ public class GameState {
     }
 
     /**
-     * Returns the current state of the game board.
+     * Starts a new round of the game using the provided game state.
      *
+     * @param gameState The GameState object that holds the current state of the game.
+     * @author Hunter
+     */
+    public static void startRound(GameState gameState) {
+        Dices roundDice = new Dices();
+        String[] generatedTiles = gameState.tiles.generateTiles(roundDice);
+    }
+
+    /**
+     * Plays a round of the game by updating the selected tile in the game state.
+     *
+     * @param gameState The GameState object that holds the current state of the game.
+     * @param selectedTile The tile selected by the player for the round.
+     * @author Hunter
+     */
+    public static void playRound(GameState gameState, String selectedTile) {
+        gameState.tiles.updateSelectedTile(selectedTile);
+        //select windows
+        //select rotation
+        //select placement
+    }
+
+    /**
+     * Updates the score based on the current game board state.
+     *
+     * @param gameState The GameState object that holds the current state of the game.
+     * @author Hunter
+     */
+    public void updateScore(GameState gameState){
+        score.addPoints(gameState.getGameBoard());
+    }
+
+    /**
+     * Rerolls the dice in the current game state.
+     *
+     * @param gameState The GameState object that holds the current state of the game.
+     * @author Hunter
+     */
+    public void rerollDice(GameState gameState){
+        dice.rollDice();
+    }
+
+    /**
+     * Returns the current state of the game board.
      * @return  A 2D character array representing the current game board.
      */
     public char[][] getGameBoard() {
         return gameBoard;
     }
 
+    /**
+     * Retrieves the generated tiles based on the current dice state.
+     *
+     * @return An array of strings representing the generated tiles.
+     * @author Hunter
+     */
     public String[] getTiles() {
         return tiles.generateTiles(dice);
     }
 
+    /**
+     * Retrieves all the dice currently in use.
+     *
+     * @return An array of strings representing all the dice.
+     * @author Eileen
+     */
     public String[] getDice() {
         return dice.getAllDice();
     }
 
-
-    public static void startRound(GameState gameState) {
-        Dices roundDice = new Dices();
-        String[] generatedTiles = gameState.tiles.generateTiles(roundDice);
-    }
-
-    public static void playRound(GameState gameState, String selectedTile) {
-        gameState.tiles.updateSelectedTile(selectedTile);
-        //select windows
-        //select rotation
-        //select placement
-
-    }
-//    public void addTrack(String trackColour) {
-//        switch (trackColour.toLowerCase()) {
-//            case "red" -> redTrack.addTrack();
-//            case "blue" -> blueTrack.addTrack();
-//            case "purple" -> purpleTrack.addTrack();
-//            case "green" -> greenTrack.addTrack();
-//            case "yellow" -> yellowTrack.addTrack();
-//            default -> throw new IllegalArgumentException("Unknown color: " + trackColour);
-//        }
-//    }
-
-    public static void updateScore(Score playerScore,GameState gameState){
-        playerScore.addPoints(gameState.getGameBoard());
-    }
-
+    /**
+     * Retrieves the current score from the score object.
+     *
+     * @return The current score as an integer.
+     * @author Jalal
+     */
+    public int getScore() {return score.getScore();}
 
     /**
      * Prints the current game board to the console.
@@ -234,4 +272,15 @@ public class GameState {
             System.out.println();
         }
     }
+
+    //    public void addTrack(String trackColour) {
+//        switch (trackColour.toLowerCase()) {
+//            case "red" -> redTrack.addTrack();
+//            case "blue" -> blueTrack.addTrack();
+//            case "purple" -> purpleTrack.addTrack();
+//            case "green" -> greenTrack.addTrack();
+//            case "yellow" -> yellowTrack.addTrack();
+//            default -> throw new IllegalArgumentException("Unknown color: " + trackColour);
+//        }
+//    }
 }

@@ -25,9 +25,9 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     /**
      * Rolls 5 random dice by selecting colors randomly from the COLORS array.
      * Stores the rolled colors into the rolledDice array.
-     * Author:
+     * Author: Jalal
      */
-    private void rollDice() {
+    public void rollDice() {
         for (int i = 0; i < 5; i++) {
             rolledDice[i] = COLORS[random.nextInt(COLORS.length)];
         }
@@ -38,6 +38,7 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
      * used in generateTiles as these values are already calculated there
      * @param count array of integers representing the total amount for each color relative to 'COLORS'
      * @param whiteCount the total number of white die
+     * @author Eileen
      */
     public void setColorCount(int[] count, int whiteCount) {
         for (int i = 0; i < count.length; i++) {
@@ -77,14 +78,6 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         this.availableColors = availableColours.toArray(new String[0]);
     }
 
-    public String[] getAvailableColors() {
-        return availableColors;
-    }
-
-    public int[] getColorCount() {
-        return colorCount;
-    }
-
     /**
      * Applies preset dice values, setting the rolled dice to the specified colors.
      * @param a The color for the first dice.
@@ -111,5 +104,24 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         return rolledDice;
     }
 
+    /**
+     * Gets the available colors.
+     *
+     * @return An array of available colors.
+     * @author Jalal
+     */
+    public String[] getAvailableColors() {
+        return availableColors;
+    }
+
+    /**
+     * Gets the count of each color.
+     *
+     * @return An array containing the count of each color.
+     * @author Eileen
+     */
+    public int[] getColorCount() {
+        return colorCount;
+    }
 
 }

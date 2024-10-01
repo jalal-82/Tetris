@@ -21,7 +21,6 @@ public class GameTemplate extends Application {
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
 
-
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
 
 	// This is where you should set up callbacks (or at least one
@@ -49,19 +48,22 @@ public class GameTemplate extends Application {
 		});
 
 
-
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
-
 		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
+			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 			gui.setMessage(p.getTileName()+" Placement valid");
+
+//			after tile is placed, update score
+			currentState.updateScore(currentState);
+			System.out.println(currentState.getScore());
 		} else {
 			gui.setMessage(p.getTileName()+" Placement invalid");
 		}
 
 		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
 		// @Eileen: for more functionalities
-		currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+
 		//update bonuses from windows?
 		updateGUIState();
 
@@ -69,7 +71,6 @@ public class GameTemplate extends Application {
 
 
 	});
-
 
 //
 //	gui.setOnDiceSelectionChanged((i) -> {
@@ -79,20 +80,26 @@ public class GameTemplate extends Application {
 //	gui.setOnTrackSelectionChanged((i) -> {
 //		gui.setMessage("track selection: " + gui.getSelectedTracks());
 //	    });
+
 	// updates the selected tile when a tile is selected in the gui
 	gui.setOnTileSelected(tileName -> {
 		currentState.updateSelectedTile(tileName);
 	});
 
-
-
 	gui.setOnGameAction((s) -> {
 		gui.setMessage("action: " + s);
-		if (s.equals("Give up")) {
-			gui.setAvailableActions(List.of("Reroll"));
+
+		//	this works but need to implement conditions to when reroll dice can be used
+		if (s.equals("Reroll")) {
+			currentState.rerollDice(currentState);
+			gui.setAvailableDice(List.of(currentState.getDice()));
+			System.out.println("Reroll Dices clicked");
 		}
+
 		});
 //
+
+//		need to think of a process that after confirming tile, it moves to next players tab
 //	gui.setOnConfirm((s) -> {
 //		gui.setMessage("confirm: " + s);
 //	    });
@@ -106,8 +113,8 @@ public class GameTemplate extends Application {
         stage.setTitle("Copenhagen Roll & Write");
         stage.show();
 
-
     }
+
 	//method to update the gui
 	//so far it just updates the gameboard
 	//ie sets a square wherever it one should be

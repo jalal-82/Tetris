@@ -7,10 +7,9 @@ public class Tile {
     private Random random;
     private String[] dice;
     private String[] generatedTiles;
-    //stores the tile in use so as we can rotate and apply windows without affecting the reference tile.
     private char[][] selectedTile;
     private String selectedTileKey;
-    private List<String> usedTiles; //Can maybe use this as a means of tracking which larger tiles have been used ??
+    private List<String> usedTiles; // Will be used later
 
     /**
      * Constructor that initializes the Tile object. It generates all the possible tiles and
@@ -265,10 +264,6 @@ public class Tile {
         return result;
     }
 
-//    public void addToUsedTiles(String key) {
-//        usedTiles.add(key);
-//    }
-
     /**
      * Finds the index of the maximum value in an array.
      * @param arr The array to search.
@@ -338,6 +333,7 @@ public class Tile {
      * Setter method for selectedTile
      * Temporarily stores the tiles structure to allow for rotation and addition of windows without affecting allTiles
      * @param key: key for the selectedTile
+     * @author: Hunter
      */
     public void updateSelectedTile(String key) {
         if (allTiles.get(key) == null)
@@ -351,18 +347,29 @@ public class Tile {
         this.selectedTileKey = key;
     }
 
+    /**
+     * Get the key of selected tile.
+     * @return String: The key of currently selected tile.
+     * @Author: Hunter
+     */
     public String getSelectedTileKey() {
         return selectedTileKey;
     }
 
     /**
-     * getter method for selectedTile
-     * Author: Hunter
+     * Get the selected tile.
+     * @return The currently selected tile.
+     * @Author: Hunter
      */
     public char[][] getSelectedTile() {
         return selectedTile;
     }
 
+    /**
+     * Get the generated tile.
+     * @return String[] of Generated Tiles
+     * @Author: Eileen
+     */
     public String[] getGeneratedTiles(){
         return generatedTiles;
     }

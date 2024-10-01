@@ -1,4 +1,4 @@
-package comp1110.ass2.D2D;
+package comp1110.ass2.test;
 
 import comp1110.ass2.*;
 
