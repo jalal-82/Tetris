@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class u6681480_Test {
+public class GenerateTilesTest {
 
     Dices dice;
     Tile tile;

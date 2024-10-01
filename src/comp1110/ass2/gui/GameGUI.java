@@ -457,7 +457,7 @@ public class GameGUI extends BorderPane {
 
     /**
      * Toggle display status of the coat-of-arms on top of a column
-     * @param y The row index. Note that this must be one of 1 or 3.
+     * @param The row index. Note that this must be one of 1 or 3.
      * @param highlightOn Whether the CoA should be highlighted (shown
      *        in gold colour) or not (shown in black).
      */

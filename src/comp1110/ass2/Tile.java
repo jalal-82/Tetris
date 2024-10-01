@@ -209,7 +209,7 @@ public class Tile {
      * Author: Eileen
      */
     public String[] generateTiles(Dices rolledDices)                                                                                                                                                                                                   {
-        String[] result = new String[4]; // 4 tiles on screen
+        String[] result = new String[10]; // 4 tiles on screen
         String[] color = {"R", "B", "P", "G", "Y"};
         int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
         int wildCount = 0; // Count of wild (White) dice
@@ -229,12 +229,12 @@ public class Tile {
         }
         rolledDices.setColorCount(colorsNum, wildCount);
         int ite = 0;
-        while (ite < 4 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
+        while (ite < 10 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
             int curMax = getmaxIndex(colorsNum, colorsNum.length);
             int cur = colorsNum[curMax] + wildCount;
 
             if (cur > 1) {
-                for (int i = 2; i <= cur && ite < 4; i++) {
+                for (int i = 2; i <= cur && ite < 10; i++) {
                     result[ite] = color[curMax] + i;
                     ite++;
                     if (colorsNum[curMax] > 0) {
@@ -256,7 +256,7 @@ public class Tile {
 
         // Fill remaining slots with random tiles if needed
         Random rand = new Random();
-        while (ite < 4) {
+        while (ite < 10) {
             int y = rand.nextInt(allTiles.keySet().toArray().length);
             result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
             ite++;

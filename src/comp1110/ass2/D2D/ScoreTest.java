@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class u7480662_Test {
+public class ScoreTest {
 
     Dices diceOne;
     Tile tileOne;

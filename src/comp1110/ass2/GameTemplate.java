@@ -52,14 +52,25 @@ public class GameTemplate extends Application {
 
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
-//		gameStates.get(0).placeTile(p.getY(), p.getX()); // @Eileen: here no windows updated
+
+		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
+			gui.setMessage(p.getTileName()+" Placement valid");
+		} else {
+			gui.setMessage(p.getTileName()+" Placement invalid");
+		}
 
 		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
 		// @Eileen: for more functionalities
-		gameStates.get(0).placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+		currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 		//update bonuses from windows?
 		updateGUIState();
+
+
+
+
 	});
+
+
 //
 //	gui.setOnDiceSelectionChanged((i) -> {
 //		gui.setMessage("dice selection: " + gui.getSelectedDice());
@@ -72,6 +83,9 @@ public class GameTemplate extends Application {
 	gui.setOnTileSelected(tileName -> {
 		currentState.updateSelectedTile(tileName);
 	});
+
+
+
 	gui.setOnGameAction((s) -> {
 		gui.setMessage("action: " + s);
 		if (s.equals("Give up")) {
