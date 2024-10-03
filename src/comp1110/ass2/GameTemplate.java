@@ -57,18 +57,18 @@ public class GameTemplate extends Application {
 			currentState.updateScore(currentState);
 			System.out.println(currentState.getScore());
 //			use setScore to apply the new score
-
+			gui.setScore(0,currentState.getScore());
 
 //			check if CoA is completed
 			HashMap<String, List<Integer>> completedIndices = currentState.getCoA();
 			System.out.println("completed indices "+completedIndices);
 			if (completedIndices != null){
 				for (int i = 0;i<completedIndices.get("completedRows").size();i++){
-					gui.setRowCoA(i,true);
+					gui.setRowCoA(0, i,true);
 				}
 
 				for (int i = 0;i<completedIndices.get("completedCols").size();i++){
-					gui.setColumnCoA(i,true);
+					gui.setColumnCoA(0,i,true);
 				}
 			}
 
