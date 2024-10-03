@@ -17,38 +17,37 @@ public class GameTemplate extends Application {
 	GameState currentState;//variable for easy reference to the currentState
 
 	int currentPlayer = 0;
-
+	int maxPlayers = 0;
 	public void start(Stage stage) throws Exception {
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
 
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
 
-	// This is where you should set up callbacks (or at least one
-	// callback, for the start-of-game event).
 
 		gui.setOnStartGame((np, isAI) -> {
-
+			maxPlayers = np;
 			// Initialize game states for np players
-			for (int i = 0; i < np; i++) {
+
+			for (int i=0;i<np;i++){
 				Dices dices = new Dices();
 				Tile tile = new Tile(dices);
 				Score score = new Score();
 				gameStates.add(new GameState(dices, tile, score));
 			}
-
-			currentState = gameStates.get(0);//sets the currentState to Player one
+			currentState = gameStates.get(0);
 			gui.setMessage("Start new game with " + np + " players");
-//			System.out.println(currentState);
 			gui.setAvailableTiles(List.of(currentState.getTiles()));
 			gui.setAvailableDice(List.of(currentState.getDice()));
 			gui.setAvailableActions(List.of("Reroll", "Give up"));
 
+			gui.setControlPlayer(0);
 		});
 
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
-		gui.setControlPlayer(currentPlayer);
+//
+		currentState = gameStates.get(currentPlayer);
 		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
 			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 			gui.setMessage(p.getTileName()+" Placement valid");
@@ -65,20 +64,18 @@ public class GameTemplate extends Application {
 			if (!completedMap.isEmpty()){
 				List<Integer> rows = completedMap.get("completedRows");
 				for (int j=0;j<rows.size();j++){
-					gui.setRowCoA(0,rows.get(j),true);
+					gui.setRowCoA(currentPlayer,rows.get(j),true);
 					isCompleted = true;
 				}
 
 				List<Integer> cols = completedMap.get("completedCols");
 				for (int j=0;j<cols.size();j++){
-					gui.setColumnCoA(0,cols.get(j),true);
+					gui.setColumnCoA(currentPlayer,cols.get(j),true);
 					isCompleted = true;
 				}
 			}
-
-			//		after placing move to next players screen
-			currentPlayer ++;
-			currentState = gameStates.get(currentPlayer);
+			System.out.println("Board after tile for player "+currentPlayer);
+			currentState.printBoard(currentState.getGameBoard());
 
 		} else {
 			gui.setMessage(p.getTileName()+" Placement invalid");
@@ -92,6 +89,7 @@ public class GameTemplate extends Application {
 
 
 
+
 //
 	gui.setOnDiceSelectionChanged((i) -> {
 		List<Integer> selectedDice = gui.getSelectedDice();
@@ -100,7 +98,6 @@ public class GameTemplate extends Application {
 //		if red ability unlocked
 //		roll selected dices to their options
 //
-
 	    });
 //
 //	gui.setOnTrackSelectionChanged((i) -> {
@@ -112,25 +109,36 @@ public class GameTemplate extends Application {
 		currentState.updateSelectedTile(tileName);
 	});
 
-
-
 	gui.setOnGameAction((s) -> {
 		gui.setMessage("action: " + s);
 
 		//	this works but need to implement conditions to when reroll dice can be used
 		if (s.equals("Reroll")) {
-			currentState.rerollDice(currentState);
+			currentState.rerollDice();
 			gui.setAvailableDice(List.of(currentState.getDice()));
-			System.out.println("Reroll Dices clicked");
+			gui.setMessage("Reroll Dices clicked");
 		}
 
 		});
 //
 
 //		need to think of a process that after confirming tile, it moves to next players tab
-//	gui.setOnConfirm((s) -> {
-//		gui.setMessage("confirm: " + s);
-//	    });
+	gui.setOnConfirm((s) -> {
+		gui.setMessage("confirm: " + s);
+//		System.out.println("CurrentPlayer inside confirm "+currentPlayer);
+		currentPlayer++;
+		if (currentPlayer>maxPlayers-1){
+			currentPlayer=0;
+		}
+
+		currentState = gameStates.get(currentPlayer);
+		currentState.rerollDice();
+		gui.setAvailableTiles(List.of(currentState.getTiles()));
+		gui.setAvailableDice(List.of(currentState.getDice()));
+
+		gui.setControlPlayer(currentPlayer);
+
+	    });
 //
 //	gui.setOnPass((s) -> {
 //		gui.setMessage("pass: " + s);
@@ -147,7 +155,8 @@ public class GameTemplate extends Application {
 	//so far it just updates the gameboard
 	//ie sets a square wherever it one should be
 	private void updateGUIState() {
-		char[][] board = gameStates.get(0).getGameBoard();
+		System.out.println("currPlayer in updateGUI "+currentPlayer);
+		char[][] board = gameStates.get(currentPlayer).getGameBoard();
 		for (int y = 0; y < board.length; y++) { // @Eileen: y is gameboard row
 			for (int x = 0; x < board[y].length; x++) { // @Eileen: x is gameboard column
 				char c = board[y][x];
@@ -161,7 +170,7 @@ public class GameTemplate extends Application {
 					String color = String.valueOf(c);
 					// adjust y-coordinate for GUI
 					int guiY = board.length - 1 - y;
-					gui.setFacadeSquare(0, x, guiY, color, isWindow);
+					gui.setFacadeSquare(currentPlayer, x, guiY, color, isWindow);
 				}
 			}
 		}

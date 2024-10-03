@@ -204,10 +204,9 @@ public class GameState {
     /**
      * Rerolls the dice in the current game state.
      *
-     * @param gameState The GameState object that holds the current state of the game.
      * @author Hunter
      */
-    public void rerollDice(GameState gameState){
+    public void rerollDice(){
         dice.rollDice();
     }
 
