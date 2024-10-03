@@ -1,5 +1,9 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
 public class Score {
 
     private int score;
@@ -134,6 +138,41 @@ public class Score {
     }
 
     /**
+     * checks row 1,3,5 and col 1,3
+     * return 1 if row is completed, 0 is row else -1
+     * @param board
+     * @return
+     */
+    private HashMap<String, List<Integer>> isCoA(char[][] board){
+        HashMap<String, List<Integer>> res = new HashMap<>();
+        res.put("completedRows", new ArrayList<>());
+        res.put("completedCols", new ArrayList<>());
+        res.put("completedRowsWindows", new ArrayList<>());
+        res.put("completedColsWindows", new ArrayList<>());
+
+        int[] rows = {1, 3, 5};
+        int[] cols = {1, 3};
+
+        for (int i = 0; i < rows.length; i++) {
+            if (isCompleteRow(board, rows[i])) {
+                if (isAllWindowsRow(board,rows[i])){
+                    res.get("completedRowsWindows").add(rows[i]);
+                }
+                res.get("completedRows").add(rows[i]);  // Add completed row index
+            }
+        }
+        for (int i = 0; i < cols.length; i++) {
+            if (isCompleteColumn(board, cols[i])) {
+                if (isCompleteColumn(board,cols[i])){
+                    res.get("completedColsWindows").add(cols[i]);
+                }
+                res.get("completedCols").add(cols[i]);  // Add completed column index
+            }
+        }
+        return res;
+    }
+
+    /**
      * Adds two points to the score.
      * Intended for use by track classes.
      *
@@ -153,5 +192,14 @@ public class Score {
         return score;
     }
 
-
+    /**
+     * Checks for completed rows and columns of interest (CoA).
+     *
+     * @param board The game board represented as a 2D character array.
+     * @return A list of integers indicating completed rows and columns.
+     * @author Jalal
+     */
+    public HashMap<String, List<Integer>> getCoA(char[][] board) {
+        return isCoA(board);
+    }
 }

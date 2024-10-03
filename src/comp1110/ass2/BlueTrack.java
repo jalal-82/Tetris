@@ -12,18 +12,22 @@ public class BlueTrack extends Track {
      */
     @Override
     public void update() {
-        if (getTrack() == 1)
-            addBonus();
-        else if (getTrack() == 2)
-            addAbility();
-        else if (getTrack() == 4)
-            addBonus();
-        else if (getTrack() == 5)
-            addAbility();
-        else if (getTrack() == 6)
-            addAbility();
-        else if (getTrack() == 9)
-            updateScore();
+        switch (getTrack()) {
+            case 1:
+            case 4:
+                addBonus();
+                break;
+            case 2:
+            case 5:
+            case 6:
+                addAbility();
+                break;
+            case 9:
+                updateScore();
+                break;
+            default:
+                break;
+        }
     }
 
     /**

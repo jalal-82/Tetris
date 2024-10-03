@@ -1,4 +1,8 @@
 package comp1110.ass2;
+
+import java.util.HashMap;
+import java.util.List;
+
 public class GameState {
 
     private final Dices dice;
@@ -157,7 +161,7 @@ public class GameState {
      * @param col       The column where the tile will be placed.
      * @param row       The row where the tile will be placed.
      */
-    public void placeTileWithRotationWindows(int row, int col){
+    public void placeTileWithRotation(int row, int col){
         tiles.applyWindows();
         placeTile(row,col);
     }
@@ -195,6 +199,10 @@ public class GameState {
      */
     public void updateScore(GameState gameState){
         score.addPoints(gameState.getGameBoard());
+    }
+
+    public HashMap<String, List<Integer>> getCoA(){
+        return score.getCoA(gameBoard);
     }
 
     /**

@@ -9,6 +9,7 @@ import javafx.stage.Stage;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.BiConsumer;
 
@@ -34,7 +35,6 @@ public class GameTemplate extends Application {
 				Tile tile = new Tile(dices);
 				Score score = new Score();
 
-				// Create a new GameState for each player and add to the list
 				gameStates.add(new GameState(dices, tile, score));
 			}
 
@@ -47,7 +47,6 @@ public class GameTemplate extends Application {
 
 		});
 
-
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
 		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
@@ -57,25 +56,44 @@ public class GameTemplate extends Application {
 //			after tile is placed, update score
 			currentState.updateScore(currentState);
 			System.out.println(currentState.getScore());
+//			use setScore to apply the new score
+
+
+//			check if CoA is completed
+			HashMap<String, List<Integer>> completedIndices = currentState.getCoA();
+			System.out.println("completed indices "+completedIndices);
+			if (completedIndices != null){
+				for (int i = 0;i<completedIndices.get("completedRows").size();i++){
+					gui.setRowCoA(i,true);
+				}
+
+				for (int i = 0;i<completedIndices.get("completedCols").size();i++){
+					gui.setColumnCoA(i,true);
+				}
+			}
+
 		} else {
 			gui.setMessage(p.getTileName()+" Placement invalid");
 		}
 
 		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
 		// @Eileen: for more functionalities
-
 		//update bonuses from windows?
 		updateGUIState();
-
-
 
 
 	});
 
 //
-//	gui.setOnDiceSelectionChanged((i) -> {
-//		gui.setMessage("dice selection: " + gui.getSelectedDice());
-//	    });
+	gui.setOnDiceSelectionChanged((i) -> {
+		List<Integer> selectedDice = gui.getSelectedDice();
+		gui.setMessage("dice selection: " + selectedDice);
+
+//		if red ability unlocked
+//		reroll selected dices to their options
+//
+
+	    });
 //
 //	gui.setOnTrackSelectionChanged((i) -> {
 //		gui.setMessage("track selection: " + gui.getSelectedTracks());
@@ -85,6 +103,8 @@ public class GameTemplate extends Application {
 	gui.setOnTileSelected(tileName -> {
 		currentState.updateSelectedTile(tileName);
 	});
+
+
 
 	gui.setOnGameAction((s) -> {
 		gui.setMessage("action: " + s);
