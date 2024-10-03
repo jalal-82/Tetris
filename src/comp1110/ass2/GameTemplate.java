@@ -3,21 +3,21 @@ package comp1110.ass2;
 
 import comp1110.ass2.gui.*;
 import javafx.application.Application;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.BiConsumer;
 
 public class GameTemplate extends Application {
 
     GameGUI gui;
 	List<GameState> gameStates;
 	GameState currentState;//variable for easy reference to the currentState
+
+	int currentPlayer = 0;
+
 	public void start(Stage stage) throws Exception {
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
@@ -28,13 +28,12 @@ public class GameTemplate extends Application {
 	// callback, for the start-of-game event).
 
 		gui.setOnStartGame((np, isAI) -> {
+
 			// Initialize game states for np players
 			for (int i = 0; i < np; i++) {
-				System.out.println(i);
 				Dices dices = new Dices();
 				Tile tile = new Tile(dices);
 				Score score = new Score();
-
 				gameStates.add(new GameState(dices, tile, score));
 			}
 
@@ -49,40 +48,49 @@ public class GameTemplate extends Application {
 
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
+		gui.setControlPlayer(currentPlayer);
 		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
 			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 			gui.setMessage(p.getTileName()+" Placement valid");
 
 //			after tile is placed, update score
-			currentState.updateScore(currentState);
-			System.out.println(currentState.getScore());
-//			use setScore to apply the new score
-			gui.setScore(0,currentState.getScore());
+			HashMap<String, List<Integer>> completedMap = new HashMap<>();
+			currentState.updateScore(currentState,completedMap);
 
-//			check if CoA is completed
-			HashMap<String, List<Integer>> completedIndices = currentState.getCoA();
-			System.out.println("completed indices "+completedIndices);
-			if (completedIndices != null){
-				for (int i = 0;i<completedIndices.get("completedRows").size();i++){
-					gui.setRowCoA(0, i,true);
+//			use setScore to apply the new score
+			gui.setScore(currentPlayer,currentState.getScore());
+
+//			check if Coat of Arms is completed
+			boolean isCompleted = false; // this boolean will be used by hunter's abilities/track
+			if (!completedMap.isEmpty()){
+				List<Integer> rows = completedMap.get("completedRows");
+				for (int j=0;j<rows.size();j++){
+					gui.setRowCoA(0,rows.get(j),true);
+					isCompleted = true;
 				}
 
-				for (int i = 0;i<completedIndices.get("completedCols").size();i++){
-					gui.setColumnCoA(0,i,true);
+				List<Integer> cols = completedMap.get("completedCols");
+				for (int j=0;j<cols.size();j++){
+					gui.setColumnCoA(0,cols.get(j),true);
+					isCompleted = true;
 				}
 			}
+
+			//		after placing move to next players screen
+			currentPlayer ++;
+			currentState = gameStates.get(currentPlayer);
 
 		} else {
 			gui.setMessage(p.getTileName()+" Placement invalid");
 		}
-
 		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
 		// @Eileen: for more functionalities
 		//update bonuses from windows?
 		updateGUIState();
 
-
 	});
+
+
 
 //
 	gui.setOnDiceSelectionChanged((i) -> {
@@ -90,7 +98,7 @@ public class GameTemplate extends Application {
 		gui.setMessage("dice selection: " + selectedDice);
 
 //		if red ability unlocked
-//		reroll selected dices to their options
+//		roll selected dices to their options
 //
 
 	    });

@@ -197,12 +197,8 @@ public class GameState {
      * @param gameState The GameState object that holds the current state of the game.
      * @author Hunter
      */
-    public void updateScore(GameState gameState){
-        score.addPoints(gameState.getGameBoard());
-    }
-
-    public HashMap<String, List<Integer>> getCoA(){
-        return score.getCoA(gameBoard);
+    public void updateScore(GameState gameState, HashMap<String, List<Integer>> completedMap){
+        score.addPoints(gameState.getGameBoard(),completedMap);
     }
 
     /**
@@ -291,4 +287,5 @@ public class GameState {
 //            default -> throw new IllegalArgumentException("Unknown color: " + trackColour);
 //        }
 //    }
+
 }

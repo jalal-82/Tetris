@@ -1,5 +1,6 @@
 package comp1110.ass2;
 
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -31,29 +32,54 @@ public class Score {
      * @param gameBoard The game board represented as a 2D character array.
      * @author Jalal
      */
-    public void addPoints(char[][] gameBoard) {
+    public void addPoints(char[][] gameBoard, HashMap<String, List<Integer>> completedMap) {
         int rows = gameBoard.length;
         int cols = gameBoard[0].length;
+
+        completedMap.put("completedRows", new ArrayList<>());
+        completedMap.put("completedCols", new ArrayList<>());
 
         // Check each row
         for (int i = 0; i < rows; i++) {
             if (isCompleteRow(gameBoard, i)) {
+                // Add points based on whether the row is all windows
                 if (isAllWindowsRow(gameBoard, i)) {
-                    score += 2;  // All windows
+                    score += 2;
                 } else {
-                    score += 1;  // Not all windows, but complete
+                    score += 1;
                 }
+
+                switch (i) {
+                    case 7:
+                        completedMap.get("completedRows").add(1);
+                        break;
+                    case 5:
+                        completedMap.get("completedRows").add(3);
+                        break;
+                    case 3:
+                        completedMap.get("completedRows").add(5);
+                        break;
+                    default:
+                        break; // If i is not 7, 5, or 3, do nothing
+                }
+
             }
         }
 
         // Check each column
         for (int j = 0; j < cols; j++) {
             if (isCompleteColumn(gameBoard, j)) {
+                // Add points based on whether the column is all windows
                 if (isAllWindowsColumn(gameBoard, j)) {
-                    score += 4;  // All windows
+                    score += 4;
                 } else {
-                    score += 2;  // Not all windows, but complete
+                    score += 2;
                 }
+
+                if (j == 1 || j == 3) {
+                    completedMap.get("completedCols").add(j);
+                }
+
             }
         }
     }
@@ -137,40 +163,56 @@ public class Score {
         return tile == 'S' || tile == 'C' || tile == 'Q' || tile == 'H' || tile == 'Z';
     }
 
-    /**
-     * checks row 1,3,5 and col 1,3
-     * return 1 if row is completed, 0 is row else -1
-     * @param board
-     * @return
-     */
-    private HashMap<String, List<Integer>> isCoA(char[][] board){
-        HashMap<String, List<Integer>> res = new HashMap<>();
-        res.put("completedRows", new ArrayList<>());
-        res.put("completedCols", new ArrayList<>());
-        res.put("completedRowsWindows", new ArrayList<>());
-        res.put("completedColsWindows", new ArrayList<>());
-
-        int[] rows = {1, 3, 5};
-        int[] cols = {1, 3};
-
-        for (int i = 0; i < rows.length; i++) {
-            if (isCompleteRow(board, rows[i])) {
-                if (isAllWindowsRow(board,rows[i])){
-                    res.get("completedRowsWindows").add(rows[i]);
-                }
-                res.get("completedRows").add(rows[i]);  // Add completed row index
-            }
-        }
-        for (int i = 0; i < cols.length; i++) {
-            if (isCompleteColumn(board, cols[i])) {
-                if (isCompleteColumn(board,cols[i])){
-                    res.get("completedColsWindows").add(cols[i]);
-                }
-                res.get("completedCols").add(cols[i]);  // Add completed column index
-            }
-        }
-        return res;
-    }
+//    /**
+//     * checks row 1,3,5 and col 1,3
+//     * return 1 if row is completed, 0 is row else -1
+//     * @param board
+//     * @return
+//     */
+//    private HashMap<String, List<Integer>> isCoA(char[][] board) {
+//        HashMap<String, List<Integer>> res = new HashMap<>();
+//        res.put("completedRows", new ArrayList<>());
+//        res.put("completedCols", new ArrayList<>());
+//        res.put("completedRowsWindows", new ArrayList<>());
+//        res.put("completedColsWindows", new ArrayList<>());
+//
+//        int[] rows = {1, 3, 5};
+//        int[] cols = {1, 3};
+//
+//        // Check specific rows
+//        for (int row : rows) {
+//            if (isCompleteRow(board, row)) {
+//                res.get("completedRows").add(row);  // Add completed row index
+//                if (isAllWindowsRow(board, row)) {
+//                    ;
+//                    res.get("completedRowsWindows").add(row);  // Add completed row with all windows
+//                    System.out.println("Row " + row + " completed with all windows");
+//                } else {
+//                    res.get("completedRows").add(row);
+//                    System.out.println("Row " + row + " completed but not all windows");
+//                }
+//            } else {
+//                System.out.println("Row " + row + " is not complete");
+//            }
+//        }
+//
+//        // Check specific columns
+//        for (int col : cols) {
+//            if (isCompleteColumn(board, col)) {
+//                res.get("completedCols").add(col);  // Add completed column index
+//                if (isAllWindowsColumn(board, col)) {
+//                    res.get("completedColsWindows").add(col);  // Add completed column with all windows
+//                    System.out.println("Column " + col + " completed with all windows");
+//                } else {
+//                    System.out.println("Column " + col + " completed but not all windows");
+//                }
+//            } else {
+//                System.out.println("Column " + col + " is not complete");
+//            }
+//        }
+//
+//        return res;
+//    }
 
     /**
      * Adds two points to the score.
@@ -199,7 +241,8 @@ public class Score {
      * @return A list of integers indicating completed rows and columns.
      * @author Jalal
      */
-    public HashMap<String, List<Integer>> getCoA(char[][] board) {
-        return isCoA(board);
-    }
+//    public HashMap<String, List<Integer>> getCoA(char[][] board) {
+//        System.out.println("I am in");
+//        return isCoA(board);
+//    }
 }
