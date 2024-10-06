@@ -1,11 +1,10 @@
 package comp1110.ass2;
 
-import comp1110.ass2.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class u8011583_Test {
+public class TrackTest {
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;

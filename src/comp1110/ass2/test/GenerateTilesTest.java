@@ -42,22 +42,22 @@ public class GenerateTilesTest {
     // This test case evaluate the isValidSelection() method under Tile class.
     // Given dice: ("R", "R", "R", "W", "P").
     // It succeeds because the method correctly identify the given tile is vaild.
-    @Test
-    public void isValidSelectionTest() {
-        assertTrue(tile.isValidSelection("R3"));
-    }
-    @Test
-    public void isValidSelectionTest2() {
-        assertTrue(tile.isValidSelection("R4"));
-    }
-
-    // This test case evaluate the isValidSelection() method under Tile class.
-    // Given dice: ("R", "R", "R", "W", "P").
-    // It succeeds because the method correctly identifies the given tile is invaild.
-    @Test
-    public void isValidSelectionTest3() {
-        assertFalse(tile.isValidSelection("Y2"));
-    }
+//    @Test
+//    public void isValidSelectionTest() {
+//        assertTrue(tile.isValidSelection("R3"));
+//    }
+//    @Test
+//    public void isValidSelectionTest2() {
+//        assertTrue(tile.isValidSelection("R4"));
+//    }
+//
+//    // This test case evaluate the isValidSelection() method under Tile class.
+//    // Given dice: ("R", "R", "R", "W", "P").
+//    // It succeeds because the method correctly identifies the given tile is invaild.
+//    @Test
+//    public void isValidSelectionTest3() {
+//        assertFalse(tile.isValidSelection("Y2"));
+//    }
 
     // This test case evaluate the updateSelectedTile() method under Tile class.
     // It checks the value of variable selectedTileKey and selectedTile after

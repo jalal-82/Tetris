@@ -110,6 +110,35 @@ public class GameState {
     }
 
     /**
+     * checks if the tile selection is valid given the selected dice
+     * @param selectedDice
+     * @param tileName
+     * @return
+     */
+
+    public boolean isValidTileSelection(List<String> selectedDice, String tileName) {
+
+        return this.tiles.isValidSelection(selectedDice, tileName);
+    }
+
+    /**
+     * updates the selectedDice variable in Dice
+     * @param selectedDice
+     */
+    public void updateSelectedDice(List<Integer> selectedDice){
+        dice.setSelectedDice(selectedDice);
+    }
+
+    /**
+     *
+     * @return selectedDice from Dice
+     */
+    public List<String> getSelectedDice() {
+        return dice.getSelectedDice();
+    }
+
+
+    /**
      * Places the selected tile on the game board at the specified row and column.
      * @param row       The row where the tile will be placed.
      * @param col       The column where the tile will be placed.
@@ -156,39 +185,9 @@ public class GameState {
         placeTile(row,col);
     }
 
-    /**
-     * place selected tile on the game board with random windows and no rotation.
-     * @param col       The column where the tile will be placed.
-     * @param row       The row where the tile will be placed.
-     */
-    public void placeTileWithRotation(int row, int col){
-        tiles.applyWindows();
-        placeTile(row,col);
-    }
 
-    /**
-     * Starts a new round of the game using the provided game state.
-     *
-     * @param gameState The GameState object that holds the current state of the game.
-     * @author Hunter
-     */
-    public static void startRound(GameState gameState) {
-        Dices roundDice = new Dices();
-        String[] generatedTiles = gameState.tiles.generateTiles(roundDice);
-    }
-
-    /**
-     * Plays a round of the game by updating the selected tile in the game state.
-     *
-     * @param gameState The GameState object that holds the current state of the game.
-     * @param selectedTile The tile selected by the player for the round.
-     * @author Hunter
-     */
-    public static void playRound(GameState gameState, String selectedTile) {
-        gameState.tiles.updateSelectedTile(selectedTile);
-        //select windows
-        //select rotation
-        //select placement
+    public List<String> getAvailableDice() {
+        return dice.getAvailableColors();
     }
 
     /**
