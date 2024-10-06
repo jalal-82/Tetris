@@ -1,12 +1,15 @@
-package comp1110.ass2.D2D;
+package comp1110.ass2.test;
 
 import comp1110.ass2.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class u7480662_Test {
+public class ScoreTest {
 
     Dices diceOne;
     Tile tileOne;
@@ -20,6 +23,8 @@ public class u7480662_Test {
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
         gameStateOne = new GameState(diceOne, tileOne, scoreOne);
+
+
     }
 
     @Test
@@ -32,7 +37,9 @@ public class u7480662_Test {
         boolean[] windows = {false, false, false, false, false};
         gameStateOne.placeTileWithRotationWindows(0, 0, 0, windows);
 
-        scoreOne.addPoints(gameStateOne.getGameBoard());
+        HashMap<String, List<Integer>> completedMap = new HashMap<>();
+
+        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(1, res);
     }
@@ -47,7 +54,9 @@ public class u7480662_Test {
         boolean[] windows = {true, true, true, true, true};
         gameStateOne.placeTileWithRotationWindows(0, 0, 0, windows);
 
-        scoreOne.addPoints(gameStateOne.getGameBoard());
+        HashMap<String, List<Integer>> completedMap = new HashMap<>();
+
+        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(2, res);
     }
@@ -72,7 +81,9 @@ public class u7480662_Test {
         boolean[] windowsThree = {true, true, true, true, true};
         gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
-        scoreOne.addPoints(gameStateOne.getGameBoard());
+        HashMap<String, List<Integer>> completedMap = new HashMap<>();
+
+        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(4, res);
     }
@@ -97,7 +108,9 @@ public class u7480662_Test {
         boolean[] windowsThree = {false, false, false, false, false};
         gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
-        scoreOne.addPoints(gameStateOne.getGameBoard());
+        HashMap<String, List<Integer>> completedMap = new HashMap<>();
+
+        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(2, res);
     }
@@ -127,7 +140,9 @@ public class u7480662_Test {
         boolean[] windowsFour = {false, false, false};
         gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
 
-        scoreOne.addPoints(gameStateOne.getGameBoard());
+        HashMap<String, List<Integer>> completedMap = new HashMap<>();
+
+        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(3, res);
     }
@@ -157,7 +172,9 @@ public class u7480662_Test {
         boolean[] windowsFour = {true, true, true};
         gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
 
-        scoreOne.addPoints(gameStateOne.getGameBoard());
+        HashMap<String, List<Integer>> completedMap = new HashMap<>();
+
+        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(6, res);
     }

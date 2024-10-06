@@ -7,10 +7,9 @@ public class Tile {
     private Random random;
     private String[] dice;
     private String[] generatedTiles;
-    //stores the tile in use so as we can rotate and apply windows without affecting the reference tile.
     private char[][] selectedTile;
     private String selectedTileKey;
-    private List<String> usedTiles; //Can maybe use this as a means of tracking which larger tiles have been used ??
+    private List<String> usedTiles; // Will be used later
 
     /**
      * Constructor that initializes the Tile object. It generates all the possible tiles and
@@ -100,16 +99,22 @@ public class Tile {
      * @return true if the tile is a valid selection, false otherwise.
      * Author: Hunter, Jalal
      */
-    public boolean isValidSelection(String tileName) {
-        for (String generatedTile : generatedTiles) {
-            if (generatedTile.equals(tileName)) {
-                return true;
-            }
-        }
+    public boolean isValidSelection(List<String> selectedDice, String tileName) {
 
-        // If the tile is not in the generated tiles, return false
-        return false;
+        int diceOfTileColour = 0;
+
+        for (int i = 0; i < selectedDice.size(); i++) {
+            if (tileName.startsWith(selectedDice.get(i)) || Objects.equals(selectedDice.get(i), "W"))
+                diceOfTileColour++;
+
+        }
+        String tileSize = tileName.replaceAll("[A-Z]", "");
+        if (diceOfTileColour >= Integer.parseInt(tileSize))
+            return true;
+        else
+            return false;
     }
+
 
     /**
      * Applies windows to the selectedTile, incrementing the values for any position that should have a window.
@@ -209,7 +214,7 @@ public class Tile {
      * Author: Eileen
      */
     public String[] generateTiles(Dices rolledDices)                                                                                                                                                                                                   {
-        String[] result = new String[4]; // 4 tiles on screen
+        String[] result = new String[10]; // 4 tiles on screen
         String[] color = {"R", "B", "P", "G", "Y"};
         int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
         int wildCount = 0; // Count of wild (White) dice
@@ -229,12 +234,12 @@ public class Tile {
         }
         rolledDices.setColorCount(colorsNum, wildCount);
         int ite = 0;
-        while (ite < 4 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
+        while (ite < 10 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
             int curMax = getmaxIndex(colorsNum, colorsNum.length);
             int cur = colorsNum[curMax] + wildCount;
 
             if (cur > 1) {
-                for (int i = 2; i <= cur && ite < 4; i++) {
+                for (int i = 2; i <= cur && ite < 10; i++) {
                     result[ite] = color[curMax] + i;
                     ite++;
                     if (colorsNum[curMax] > 0) {
@@ -256,7 +261,7 @@ public class Tile {
 
         // Fill remaining slots with random tiles if needed
         Random rand = new Random();
-        while (ite < 4) {
+        while (ite < 10) {
             int y = rand.nextInt(allTiles.keySet().toArray().length);
             result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
             ite++;
@@ -264,10 +269,6 @@ public class Tile {
 
         return result;
     }
-
-//    public void addToUsedTiles(String key) {
-//        usedTiles.add(key);
-//    }
 
     /**
      * Finds the index of the maximum value in an array.
@@ -338,6 +339,7 @@ public class Tile {
      * Setter method for selectedTile
      * Temporarily stores the tiles structure to allow for rotation and addition of windows without affecting allTiles
      * @param key: key for the selectedTile
+     * @author: Hunter
      */
     public void updateSelectedTile(String key) {
         if (allTiles.get(key) == null)
@@ -351,18 +353,29 @@ public class Tile {
         this.selectedTileKey = key;
     }
 
+    /**
+     * Get the key of selected tile.
+     * @return String: The key of currently selected tile.
+     * @Author: Hunter
+     */
     public String getSelectedTileKey() {
         return selectedTileKey;
     }
 
     /**
-     * getter method for selectedTile
-     * Author: Hunter
+     * Get the selected tile.
+     * @return The currently selected tile.
+     * @Author: Hunter
      */
     public char[][] getSelectedTile() {
         return selectedTile;
     }
 
+    /**
+     * Get the generated tile.
+     * @return String[] of Generated Tiles
+     * @Author: Eileen
+     */
     public String[] getGeneratedTiles(){
         return generatedTiles;
     }

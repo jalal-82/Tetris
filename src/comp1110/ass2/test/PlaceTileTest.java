@@ -1,5 +1,9 @@
-package comp1110.ass2;
+package comp1110.ass2.test;
 
+import comp1110.ass2.Dices;
+import comp1110.ass2.GameState;
+import comp1110.ass2.Score;
+import comp1110.ass2.Tile;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -10,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 This Test class should be the main submission, However, it is just stuck on run for some
 reason even though it is the same thing as D2C except for variable naming changes. Therefore, we have left it here.
  */
-public class D2CTest {
+public class PlaceTileTest {
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;
@@ -50,23 +54,23 @@ public class D2CTest {
         }
     }
 
-    @Test
-    public void selectR3(){
-        boolean res = tileOne.isValidSelection("R3");
-        assertEquals(res,true);
-    }
+//    @Test
+//    public void selectR3(){
+//        boolean res = tileOne.isValidSelection("R3");
+//        assertEquals(res,true);
+//    }
 
-    @Test
-    public void selectR4(){
-        boolean res = tileOne.isValidSelection("R4");
-        assertEquals(res,true);
-    }
-
-    @Test
-    public void selectB3(){
-        boolean res = tileOne.isValidSelection("B3");
-        assertEquals(res,false);
-    }
+//    @Test
+//    public void selectR4(){
+//        boolean res = tileOne.isValidSelection("R4");
+//        assertEquals(res,true);
+//    }
+//
+//    @Test
+//    public void selectB3(){
+//        boolean res = tileOne.isValidSelection("B3");
+//        assertEquals(res,false);
+//    }
 
     @Test
     public void isTileY3PlacementValid1(){

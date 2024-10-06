@@ -1,4 +1,8 @@
 package comp1110.ass2;
+
+import java.util.HashMap;
+import java.util.List;
+
 public class GameState {
 
     private final Dices dice;
@@ -10,7 +14,6 @@ public class GameState {
     protected Track greenTrack;
     protected Track yellowTrack;
     protected Track purpleTrack;
-
 
     /**
      * Constructor for the GameState class.
@@ -98,9 +101,43 @@ public class GameState {
         return hasSupport;
     }
 
+    /**
+     * Updates the selectedTile on the GUI
+     * @param tile
+     */
     public void updateSelectedTile(String tile) {
         this.tiles.updateSelectedTile(tile);
     }
+
+    /**
+     * checks if the tile selection is valid given the selected dice
+     * @param selectedDice
+     * @param tileName
+     * @return
+     */
+
+    public boolean isValidTileSelection(List<String> selectedDice, String tileName) {
+
+        return this.tiles.isValidSelection(selectedDice, tileName);
+    }
+
+    /**
+     * updates the selectedDice variable in Dice
+     * @param selectedDice
+     */
+    public void updateSelectedDice(List<Integer> selectedDice){
+        dice.setSelectedDice(selectedDice);
+    }
+
+    /**
+     *
+     * @return selectedDice from Dice
+     */
+    public List<String> getSelectedDice() {
+        return dice.getSelectedDice();
+    }
+
+
     /**
      * Places the selected tile on the game board at the specified row and column.
      * @param row       The row where the tile will be placed.
@@ -148,61 +185,65 @@ public class GameState {
         placeTile(row,col);
     }
 
+
+    public List<String> getAvailableDice() {
+        return dice.getAvailableColors();
+    }
+
     /**
-     * place selected tile on the game board with random windows and no rotation.
-     * @param col       The column where the tile will be placed.
-     * @param row       The row where the tile will be placed.
+     * Updates the score based on the current game board state.
+     *
+     * @param gameState The GameState object that holds the current state of the game.
+     * @author Hunter
      */
-    public void placeTileWithRotationWindows(int row, int col){
-        tiles.applyWindows();
-        placeTile(row,col);
+    public void updateScore(GameState gameState, HashMap<String, List<Integer>> completedMap){
+        score.addPoints(gameState.getGameBoard(),completedMap);
+    }
+
+    /**
+     * Rerolls the dice in the current game state.
+     *
+     * @author Hunter
+     */
+    public void rerollDice(){
+        dice.rollDice();
     }
 
     /**
      * Returns the current state of the game board.
-     *
      * @return  A 2D character array representing the current game board.
      */
     public char[][] getGameBoard() {
         return gameBoard;
     }
 
+    /**
+     * Retrieves the generated tiles based on the current dice state.
+     *
+     * @return An array of strings representing the generated tiles.
+     * @author Hunter
+     */
     public String[] getTiles() {
         return tiles.generateTiles(dice);
     }
 
+    /**
+     * Retrieves all the dice currently in use.
+     *
+     * @return An array of strings representing all the dice.
+     * @author Eileen
+     */
     public String[] getDice() {
         return dice.getAllDice();
     }
 
-
-    public static void startRound(GameState gameState) {
-        Dices roundDice = new Dices();
-        String[] generatedTiles = gameState.tiles.generateTiles(roundDice);
-    }
-
-    public static void playRound(GameState gameState, String selectedTile) {
-        gameState.tiles.updateSelectedTile(selectedTile);
-        //select windows
-        //select rotation
-        //select placement
-
-    }
-//    public void addTrack(String trackColour) {
-//        switch (trackColour.toLowerCase()) {
-//            case "red" -> redTrack.addTrack();
-//            case "blue" -> blueTrack.addTrack();
-//            case "purple" -> purpleTrack.addTrack();
-//            case "green" -> greenTrack.addTrack();
-//            case "yellow" -> yellowTrack.addTrack();
-//            default -> throw new IllegalArgumentException("Unknown color: " + trackColour);
-//        }
-//    }
-
-    public static void updateScore(Score playerScore,GameState gameState){
-        playerScore.addPoints(gameState.getGameBoard());
-    }
-
+    /**
+     * Retrieves the current score from the score object.
+     *
+     * @return The current score as an integer.
+     * @author Jalal
+     */
+    public int getScore() {return score.getScore();}
 
     /**
      * Prints the current game board to the console.
@@ -233,4 +274,16 @@ public class GameState {
             System.out.println();
         }
     }
+
+    //    public void addTrack(String trackColour) {
+//        switch (trackColour.toLowerCase()) {
+//            case "red" -> redTrack.addTrack();
+//            case "blue" -> blueTrack.addTrack();
+//            case "purple" -> purpleTrack.addTrack();
+//            case "green" -> greenTrack.addTrack();
+//            case "yellow" -> yellowTrack.addTrack();
+//            default -> throw new IllegalArgumentException("Unknown color: " + trackColour);
+//        }
+//    }
+
 }

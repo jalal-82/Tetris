@@ -299,6 +299,8 @@ public class LibraryView extends ListView<Object> {
 	}
 
 	Color getFXColor() {
+	    if (this.name.startsWith("S"))
+		return Colour.GRAY.getFXColor();
 	    return Colour.getColour(this.name.substring(0, 1)).getFXColor();
 	}
 

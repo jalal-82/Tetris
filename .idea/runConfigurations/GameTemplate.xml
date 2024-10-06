@@ -5,7 +5,7 @@
     <option name="VM_PARAMETERS" value="-ea --module-path ${PATH_TO_FX} --add-modules javafx.base,javafx.controls" />
     <extension name="coverage">
       <pattern>
-        <option name="PATTERN" value="comp1110.ass2.*" />
+        <option name="PATTERN" value="comp1110.ass2.test.*" />
         <option name="ENABLED" value="true" />
       </pattern>
     </extension>

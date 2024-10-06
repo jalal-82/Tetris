@@ -35,8 +35,8 @@ public class BuildingView extends GridPane {
 	this.height = height;
         grid = new SquareView[width][height];
 	content = new Square[GameGUI.MAX_N_PLAYERS][width][height];
-	showColCoA = new boolean[width];
-	showRowCoA = new boolean[height];
+	showColCoA = new boolean[GameGUI.MAX_N_PLAYERS][width];
+	showRowCoA = new boolean[GameGUI.MAX_N_PLAYERS][height];
         for (int x = 0; x < width; x++)
             for (int y = 0; y < height; y++) {
                 grid[x][y] = new SquareView(SQUARE_SIZE);
@@ -96,8 +96,8 @@ public class BuildingView extends GridPane {
     }
 
     private Square[][][] content;
-    private boolean[] showColCoA;
-    private boolean[] showRowCoA;
+    private boolean[][] showColCoA;
+    private boolean[][] showRowCoA;
 
     /**
      * Update the view to show the state of a given building.
@@ -116,14 +116,12 @@ public class BuildingView extends GridPane {
 	    }
         }
 
-        // Hardcoded: row/col index of coat-of-arms (CoA) (originally
-	// "cRows" {1,3,5}) and cols (1,3)
         for (int x : List.of(1, 3)) {
-            Image image = (showColCoA[x] ? goldCoA : blackCoA);
+            Image image = ((player >= 0) && showColCoA[player][x] ? goldCoA : blackCoA);
             topRow[x].setImage(image);
         }
         for (int y : List.of(1, 3, 5)) {
-            Image image = (showRowCoA[y] ? goldCoA : blackCoA);
+            Image image = ((player >= 0) && showRowCoA[player][y] ? goldCoA : blackCoA);
             rightCol[y].setImage(image);
         }
     }
@@ -190,11 +188,11 @@ public class BuildingView extends GridPane {
 	    content[p][x][y] = new Square();
     }
 
-    void setRowCoA(int y, boolean highlightOn) {
-	showRowCoA[y] = highlightOn;
+    void setRowCoA(int player, int y, boolean highlightOn) {
+	showRowCoA[player][y] = highlightOn;
     }
 
-    void setColumnCoA(int x, boolean highlightOn) {
-	showColCoA[x] = highlightOn;
+    void setColumnCoA(int player, int x, boolean highlightOn) {
+	showColCoA[player][x] = highlightOn;
     }
 }
