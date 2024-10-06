@@ -100,7 +100,8 @@ public class Tile {
      * Author: Hunter, Jalal
      */
     public boolean isValidSelection(List<String> selectedDice, String tileName) {
-
+        if (tileName == null)
+            return false;
         int diceOfTileColour = 0;
 
         for (int i = 0; i < selectedDice.size(); i++) {

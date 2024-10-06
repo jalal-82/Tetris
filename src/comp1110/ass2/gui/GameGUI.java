@@ -401,8 +401,16 @@ public class GameGUI extends BorderPane {
      * from the building view.
      */
     public void clearTileSelection() {
-	candidate = null;
-	library_view.clearSelection();
+        candidate = null;
+        if (library_view != null) {
+            Platform.runLater(() -> {
+                try {
+                    library_view.getSelectionModel().clearSelection();
+                } catch (IndexOutOfBoundsException ignored) {
+
+                }
+            });
+        }
     }
 
     /**
@@ -467,7 +475,7 @@ public class GameGUI extends BorderPane {
      * Toggle display status of the coat-of-arms on top of a column
      * @param player The player whose building should be updated
      *        (0 to number of players - 1).
-     * @param y The row index. Note that this must be one of 1 or 3.
+     * @param x The row index. Note that this must be one of 1 or 3.
      * @param highlightOn Whether the CoA should be highlighted (shown
      *        in gold colour) or not (shown in black).
      */
