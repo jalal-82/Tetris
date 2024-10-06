@@ -54,23 +54,23 @@ public class PlaceTileTest {
         }
     }
 
-    @Test
-    public void selectR3(){
-        boolean res = tileOne.isValidSelection("R3");
-        assertEquals(res,true);
-    }
+//    @Test
+//    public void selectR3(){
+//        boolean res = tileOne.isValidSelection("R3");
+//        assertEquals(res,true);
+//    }
 
-    @Test
-    public void selectR4(){
-        boolean res = tileOne.isValidSelection("R4");
-        assertEquals(res,true);
-    }
-
-    @Test
-    public void selectB3(){
-        boolean res = tileOne.isValidSelection("B3");
-        assertEquals(res,false);
-    }
+//    @Test
+//    public void selectR4(){
+//        boolean res = tileOne.isValidSelection("R4");
+//        assertEquals(res,true);
+//    }
+//
+//    @Test
+//    public void selectB3(){
+//        boolean res = tileOne.isValidSelection("B3");
+//        assertEquals(res,false);
+//    }
 
     @Test
     public void isTileY3PlacementValid1(){

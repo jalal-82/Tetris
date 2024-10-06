@@ -99,16 +99,22 @@ public class Tile {
      * @return true if the tile is a valid selection, false otherwise.
      * Author: Hunter, Jalal
      */
-    public boolean isValidSelection(String tileName) {
-        for (String generatedTile : generatedTiles) {
-            if (generatedTile.equals(tileName)) {
-                return true;
-            }
-        }
+    public boolean isValidSelection(List<String> selectedDice, String tileName) {
 
-        // If the tile is not in the generated tiles, return false
-        return false;
+        int diceOfTileColour = 0;
+
+        for (int i = 0; i < selectedDice.size(); i++) {
+            if (tileName.startsWith(selectedDice.get(i)) || Objects.equals(selectedDice.get(i), "W"))
+                diceOfTileColour++;
+
+        }
+        String tileSize = tileName.replaceAll("[A-Z]", "");
+        if (diceOfTileColour >= Integer.parseInt(tileSize))
+            return true;
+        else
+            return false;
     }
+
 
     /**
      * Applies windows to the selectedTile, incrementing the values for any position that should have a window.

@@ -18,6 +18,10 @@ public class GameTemplate extends Application {
 
 	int currentPlayer = 0;
 	int maxPlayers = 0;
+	List<String> availableDice = new ArrayList<>();
+	List<Integer> selectedDice = new ArrayList<>();
+
+
 	public void start(Stage stage) throws Exception {
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
@@ -58,7 +62,9 @@ public class GameTemplate extends Application {
 
 //			use setScore to apply the new score
 			gui.setScore(currentPlayer,currentState.getScore());
-
+			//resets the available dice to be all that the player hasn't used
+			gui.setAvailableDice(currentState.getAvailableDice());
+			System.out.println(currentState.getAvailableDice());
 //			check if Coat of Arms is completed
 			boolean isCompleted = false; // this boolean will be used by hunter's abilities/track
 			if (!completedMap.isEmpty()){
@@ -90,23 +96,32 @@ public class GameTemplate extends Application {
 
 
 
-//
+//updates the list of available dice
 	gui.setOnDiceSelectionChanged((i) -> {
-		List<Integer> selectedDice = gui.getSelectedDice();
-		gui.setMessage("dice selection: " + selectedDice);
+		currentState.updateSelectedDice(gui.getSelectedDice());
+
+		gui.setMessage("dice selection: " + currentState.getSelectedDice());
+		System.out.println(currentState.getSelectedDice());
+
 
 //		if red ability unlocked
 //		roll selected dices to their options
 //
 	    });
-//
-//	gui.setOnTrackSelectionChanged((i) -> {
-//		gui.setMessage("track selection: " + gui.getSelectedTracks());
-//	    });
 
 	// updates the selected tile when a tile is selected in the gui
 	gui.setOnTileSelected(tileName -> {
-		currentState.updateSelectedTile(tileName);
+//checks if the selection is valid given the selected die. only allows valid selections
+		if (currentState.isValidTileSelection(currentState.getSelectedDice(), tileName)) {
+			gui.setMessage("valid tile");
+			currentState.updateSelectedTile(tileName);
+
+		} else {
+			gui.setMessage("invalid selection, ensure you have selected the required die");
+			gui.clearTileSelection();
+		}
+
+
 	});
 
 	gui.setOnGameAction((s) -> {
@@ -124,13 +139,14 @@ public class GameTemplate extends Application {
 
 //		need to think of a process that after confirming tile, it moves to next players tab
 	gui.setOnConfirm((s) -> {
-		gui.setMessage("confirm: " + s);
+
 //		System.out.println("CurrentPlayer inside confirm "+currentPlayer);
 		currentPlayer++;
+
 		if (currentPlayer>maxPlayers-1){
 			currentPlayer=0;
 		}
-
+		gui.setMessage("Player " + String.valueOf(currentPlayer) + "'s turn");
 		currentState = gameStates.get(currentPlayer);
 		currentState.rerollDice();
 		gui.setAvailableTiles(List.of(currentState.getTiles()));
@@ -139,10 +155,6 @@ public class GameTemplate extends Application {
 		gui.setControlPlayer(currentPlayer);
 
 	    });
-//
-//	gui.setOnPass((s) -> {
-//		gui.setMessage("pass: " + s);
-//	    });
 
 	// Start the application:
         stage.setScene(scene);
@@ -153,7 +165,7 @@ public class GameTemplate extends Application {
 
 	//method to update the gui
 	//so far it just updates the gameboard
-	//ie sets a square wherever it one should be
+	//ie sets a square wherever one should be
 	private void updateGUIState() {
 		System.out.println("currPlayer in updateGUI "+currentPlayer);
 		char[][] board = gameStates.get(currentPlayer).getGameBoard();
