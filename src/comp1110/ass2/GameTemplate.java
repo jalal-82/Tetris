@@ -103,10 +103,8 @@ public class GameTemplate extends Application {
 		gui.setMessage("dice selection: " + currentState.getSelectedDice());
 		System.out.println(currentState.getSelectedDice());
 
-
 //		if red ability unlocked
 //		roll selected dices to their options
-//
 	    });
 
 	// updates the selected tile when a tile is selected in the gui
