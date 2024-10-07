@@ -1,6 +1,7 @@
 package comp1110.ass2.gui;
 
 import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
@@ -194,6 +195,9 @@ public class GameGUI extends BorderPane {
 		else if (onConfirm != null) {
 		    onConfirm.accept(b_confirm.getText());
 		}
+        // @Eileen: this switch the tab to next when press confirm button,
+        // @Eileen: then other player can select their dice to add on abilities.
+        player_selector.getSelectionModel().selectNext();
 	    });
         b_pass = new Button("Pass (player #)");
         controls.add(b_pass, 0, 2);
