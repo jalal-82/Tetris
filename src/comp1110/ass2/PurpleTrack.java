@@ -10,18 +10,41 @@ public class PurpleTrack extends Track {
      */
     @Override
     public void update() {
-        if (getTrack() == 1)
-            addBonus();
-        else if (getTrack() == 3)
-            addAbility();
-        else if (getTrack() == 4)
-            addBonus();
-        else if (getTrack() == 5)
-            addAbility();
-        else if (getTrack() == 7)
-            addAbility();
-        else if (getTrack() == 9)
-            updateScore();
+        switch (getTrack()) {
+            case 1:
+                addBonus();
+                nextAbility = 2;
+                nextBonus = 3;
+                break;
+            case 2:
+                nextAbility = 1;
+                nextBonus = 2;
+                break;
+            case 3:
+                addAbility();
+                nextAbility = 2;
+                nextBonus = 1;
+                break;
+            case 4:
+                addBonus();
+                nextAbility = 1;
+                nextBonus = 0;
+                break;
+            case 5:
+                addAbility();
+                nextAbility = 2;
+                break;
+            case 6:
+                nextAbility = 1;
+                break;
+            case 7:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
     }
 
     /**
@@ -31,6 +54,9 @@ public class PurpleTrack extends Track {
      * @author Hunter
      */
     public PurpleTrack(Score score) {
+
         super(score);
+        nextAbility = 3;
+        nextBonus = 1;
     }
 }

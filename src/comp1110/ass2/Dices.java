@@ -11,7 +11,9 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     private int[] colorCount = {0, 0, 0, 0, 0, 0};
     private Random random;
     private List<String> availableDice;
-
+    /**
+     * of the form "R", "B", "P", "G", "Y", "W"
+     */
     private List<String> selectedDice = new ArrayList<>();
 
     /**
@@ -50,6 +52,9 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         colorCount[5] = whiteCount;
     }
 
+    public void hardSetAvailableDice(String[] dice) {
+        availableDice = List.of(dice);
+    }
     /**
      * intended for use after a tile has been placed. calculates the dice leftover for other players to use towards their ability track
      * if the player has selected the correct amount of dice, it will remove the selected dice.
@@ -106,6 +111,8 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
             this.selectedDice.add(rolledDice[s]);
         }
     }
+
+
 
     /**
      * Applies preset dice values, setting the rolled dice to the specified colors.

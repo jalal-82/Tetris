@@ -10,18 +10,44 @@ public class GreenTrack extends Track {
      */
     @Override
     public void update() {
-        if (getTrack() == 1)
-            addBonus();
-        else if (getTrack() == 4)
-            addAbility();
-        else if (getTrack() == 5)
-            addBonus();
-        else if (getTrack() == 7)
-            addAbility();
-        else if (getTrack() == 8)
-            addAbility();
-        else if (getTrack() == 9)
-            updateScore();
+        switch (getTrack()) {
+            case 1:
+                addBonus();
+                nextBonus = 4;
+                nextAbility = 3;
+                break;
+            case 2:
+                nextBonus = 3;
+                nextAbility = 2;
+                break;
+            case 3:
+                nextBonus = 2;
+                nextAbility = 1;
+                break;
+            case 4:
+                addAbility();
+                nextBonus = 1;
+                nextAbility = 3;
+                break;
+            case 5:
+                addBonus();
+                nextBonus = 0;
+                nextAbility = 2;
+                break;
+            case 6:
+                nextAbility = 1;
+                break;
+            case 7:
+                addAbility();
+                break;
+            case 8:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
     }
 
     /**
@@ -32,5 +58,7 @@ public class GreenTrack extends Track {
      */
     public GreenTrack(Score score) {
         super(score);
+        nextAbility = 4;
+        nextBonus = 1;
     }
 }
