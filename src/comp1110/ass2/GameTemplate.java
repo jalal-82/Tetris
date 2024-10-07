@@ -58,8 +58,7 @@ public class GameTemplate extends Application {
 				gui.setMessage("no blue ability available, chose different window configuration");
 				return;
 			}
-		//check if bonus was used and adjust accordingly
-
+			//check place if valid
 		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
 			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 			gui.setMessage(p.getTileName()+" placed. Other players should now select Track");
@@ -75,6 +74,7 @@ public class GameTemplate extends Application {
 			gui.setAvailableDice(currentState.getAvailableDice());
 			System.out.println(currentState.getAvailableDice());
 //			check if Coat of Arms is completed
+			//maybe this could go in updateGUI?
 			boolean isCompleted = false; // this boolean will be used by hunter's abilities/track
 			if (!completedMap.isEmpty()){
 				List<Integer> rows = completedMap.get("completedRows");
@@ -198,18 +198,10 @@ public class GameTemplate extends Application {
 			gui.setAvailableDice(List.of(currentState.getDice()));
 
 			gui.setControlPlayer(currentPlayer);
-		} else if (gui.getSelectedTracks().size() > 1){
-			gui.setMessage("too many tracks selected, select only one");
-		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
-			System.out.println(gui.getSelectedTracks());
-			System.out.println(currentState.getAvailableDice());
-			gui.setMessage("this track colour is not available");
-		}else {
-			gameStates.get(controlPlayer).updateTrack(gui.getSelectedTracks().get(0));
-			updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0));
-			controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
-			gui.setControlPlayer(controlPlayer);
-		}
+		} else if (currentState.getAvailableDice().isEmpty())
+			gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
+		else
+			handleTrackSelection();
 		//also need case for if available die is null to skip track selection
 	    });
 
@@ -280,7 +272,21 @@ public class GameTemplate extends Application {
 				}
 			}
 		}
-}
+	}
+	private void handleTrackSelection () {
+		if (gui.getSelectedTracks().size() > 1){
+			gui.setMessage("too many tracks selected, select only one");
+		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
+			System.out.println(gui.getSelectedTracks());
+			System.out.println(currentState.getAvailableDice());
+			gui.setMessage("this track colour is not available");
+		}else {
+			gameStates.get(controlPlayer).updateTrack(gui.getSelectedTracks().get(0));
+			updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0));
+			controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
+			gui.setControlPlayer(controlPlayer);
+		}
+	}
 }
 
 
