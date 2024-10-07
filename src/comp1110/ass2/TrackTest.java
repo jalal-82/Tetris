@@ -2,6 +2,10 @@ package comp1110.ass2;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TrackTest {
@@ -47,12 +51,19 @@ public class TrackTest {
         gameStateOne.redTrack.addTrack();
         gameStateOne.redTrack.addTrack();
         gameStateOne.redTrack.addTrack();
+        List<String> diceUsed = new ArrayList<>();
+        diceUsed.add("R");
+        diceUsed.add("R");
         //test abilities and bonuses are updated correctly
         assertEquals(1, gameStateOne.redTrack.getAbility());
+        gameStateOne.redTrack.updateAbility();
         assertEquals(4, gameStateOne.redTrack.getBonus());
-        assertEquals(0, gameStateOne.redTrack.getAbility()); //ensures useAbility reduces ability count
+        assertEquals(0, gameStateOne.redTrack.getAbility());//ensures useAbility reduces ability count
+        gameStateOne.redTrack.updateBonus(diceUsed, "R3");
         assertEquals(3, gameStateOne.redTrack.getBonus()); //ensures useBonus reduces bonus count
-        //removed useBonus and ability so these tests will now fail
+        gameStateOne.redTrack.updateBonus(diceUsed, "R5");
+        assertEquals(0, gameStateOne.redTrack.getBonus()); //ensures useBonus reduces bonus count by the correct amount
+        gameStateOne.redTrack.updateAbility();
         assertEquals(0, gameStateOne.redTrack.getAbility()); //tests ability cant be negative
     }
     @Test
@@ -95,6 +106,8 @@ public class TrackTest {
         assertEquals(2, gameStateOne.purpleTrack.getAbility());
         assertEquals(2, gameStateOne.purpleTrack.getBonus());
     }
+
+
 
 
 

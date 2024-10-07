@@ -11,7 +11,9 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     private int[] colorCount = {0, 0, 0, 0, 0, 0};
     private Random random;
     private List<String> availableDice;
-
+    /**
+     * of the form "R", "B", "P", "G", "Y", "W"
+     */
     private List<String> selectedDice = new ArrayList<>();
 
     /**

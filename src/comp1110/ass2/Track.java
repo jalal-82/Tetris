@@ -66,7 +66,10 @@ public abstract class Track {
         return ability;
     }
     //this will reduce the ability
-    public void updateAbility() {}
+    public void updateAbility() {
+        if (ability > 0)
+         ability--;
+    }
 
     /**
      * Returns the current bonus count.

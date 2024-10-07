@@ -147,7 +147,19 @@ public class GameTemplate extends Application {
 
 		});
 //
-
+	gui.setOnGameAction((action) -> {
+		if (action.equals("Reroll")) {
+			if (currentState.redTrack.getAbility() == 0)
+				gui.setMessage("Missing red ability, can't reroll");
+			else {
+				gui.setMessage("Player " + String.valueOf(currentPlayer) + " rerolled");
+				currentState.rerollDice();
+				gui.setAvailableTiles(List.of(currentState.getTiles()));
+				gui.setAvailableDice(List.of(currentState.getDice()));
+				currentState.redTrack.updateAbility();
+			}
+		}
+	});
 //		need to think of a process that after confirming tile, it moves to next players tab
 	gui.setOnConfirm((s) -> {
 		//checks the control player, if it's the currentPlayer then it starts next turn, else it confirms track selection
