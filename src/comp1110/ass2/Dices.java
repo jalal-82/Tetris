@@ -52,6 +52,9 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
         colorCount[5] = whiteCount;
     }
 
+    public void hardSetAvailableDice(String[] dice) {
+        availableDice = List.of(dice);
+    }
     /**
      * intended for use after a tile has been placed. calculates the dice leftover for other players to use towards their ability track
      * if the player has selected the correct amount of dice, it will remove the selected dice.

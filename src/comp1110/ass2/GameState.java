@@ -265,6 +265,11 @@ public class GameState {
      */
     public void rerollDice(){
         dice.rollDice();
+        dice.hardSetAvailableDice(dice.getAllDice());
+    }
+
+    public void setAvailableDice (String[] dice) {
+        this.dice.hardSetAvailableDice(dice);
     }
 
     /**
@@ -349,6 +354,14 @@ public class GameState {
         return getAvailableDice().contains(colour);
     }
 
+    /**
+     * uses the old presetDiceMethod to update rolledDice
+     * @param dice to be applied
+     */
+    public void setRolledDice(List<String> dice) {
+
+        this.dice.applyPresetDiceD2CP1(dice.get(0), dice.get(1), dice.get(2), dice.get(3), dice.get(4));
+    }
     /**
      * Retrieves the current score from the score object.
      *

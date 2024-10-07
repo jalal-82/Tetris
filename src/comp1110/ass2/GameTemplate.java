@@ -6,9 +6,7 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class GameTemplate extends Application {
 
@@ -45,15 +43,23 @@ public class GameTemplate extends Application {
 			gui.setMessage("Start new game with " + np + " players");
 			gui.setAvailableTiles(List.of(currentState.getTiles()));
 			gui.setAvailableDice(List.of(currentState.getDice()));
-			gui.setAvailableActions(List.of("Reroll", "Give up"));
+			gui.setAvailableActions(List.of("Reroll", "Give up", "Change selected to Red","Change selected to Blue","Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
 
 			gui.setControlPlayer(0);
 		});
 
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
-//check if bonus was used and adjust accordingly
-		//currentState = gameStates.get(currentPlayer);
+		// first check windows are valid and updateBlue ability if necessary
+		if (allWindows(p.getWindows()))
+			if (currentState.blueTrack.getAbility() > 0)
+				currentState.blueTrack.updateAbility();
+			else {
+				gui.setMessage("no blue ability available, chose different window configuration");
+				return;
+			}
+		//check if bonus was used and adjust accordingly
+
 		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
 			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 			gui.setMessage(p.getTileName()+" placed. Other players should now select Track");
@@ -110,14 +116,8 @@ public class GameTemplate extends Application {
 //updates the list of available dice
 	gui.setOnDiceSelectionChanged((i) -> {
 		currentState.updateSelectedDice(gui.getSelectedDice());
-
-		gui.setMessage("dice selection: " + currentState.getSelectedDice());
 		System.out.println(currentState.getSelectedDice());
 
-
-//		if red ability unlocked
-//		roll selected dices to their options
-//
 	    });
 
 	// updates the selected tile when a tile is selected in the gui
@@ -135,19 +135,9 @@ public class GameTemplate extends Application {
 
 	});
 
-	gui.setOnGameAction((s) -> {
-		gui.setMessage("action: " + s);
-
-		//	this works but need to implement conditions to when reroll dice can be used
-		if (s.equals("Reroll")) {
-			currentState.rerollDice();
-			gui.setAvailableDice(List.of(currentState.getDice()));
-			gui.setMessage("Reroll Dices clicked");
-		}
-
-		});
 //
 	gui.setOnGameAction((action) -> {
+		//logic for reroll
 		if (action.equals("Reroll")) {
 			if (currentState.redTrack.getAbility() == 0)
 				gui.setMessage("Missing red ability, can't reroll");
@@ -159,6 +149,38 @@ public class GameTemplate extends Application {
 				currentState.redTrack.updateAbility();
 			}
 		}
+		//logic for dice change
+		if (action.contains("Change")) {
+			//return if blueAbility not available
+			if (currentState.greenTrack.getAbility() == 0)
+				gui.setMessage("This ability is not currently available, keep playing to unlock blue ability");
+			else {
+				String desiredColour = String.valueOf(action.charAt(19));
+				//determine all selected are the same colour
+				for (String s : currentState.getSelectedDice())
+					if (!(Objects.equals(currentState.getSelectedDice().get(0), s))) {
+						gui.setMessage("All selected die must be the same colour");
+						return;
+					}
+				//change all selected to the desired colour
+				currentState.greenTrack.updateAbility();//reduce ability count
+				//creates a string of the currently displayed dice
+				String[] currentDice = currentState.getAvailableDice().toArray(new String[currentState.getAvailableDice().size()]);
+				for (int a : gui.getSelectedDice())
+					currentDice[a] = desiredColour;
+				//checks if there are 5 or less current dice and acts accordingly
+				if (currentDice.length == 5) {
+					currentState.setRolledDice(List.of(currentDice));
+					System.out.println(Arrays.toString(currentDice));
+					gui.setAvailableDice(List.of(currentDice));
+				} else {
+					currentState.setAvailableDice(currentDice);
+					gui.setAvailableDice(List.of(currentDice));
+				}
+			}
+
+		}
+
 	});
 //		need to think of a process that after confirming tile, it moves to next players tab
 	gui.setOnConfirm((s) -> {
@@ -198,7 +220,14 @@ public class GameTemplate extends Application {
 
     }
 
-
+	private boolean allWindows(boolean[] windows) {
+		for (boolean value : windows) {
+			if (!value) {
+				return false;
+			}
+		}
+		return true;
+	}
 	private void updateTrackInfo(int player, int track) {
 		String colour = "";
 		Track trackToUpdate = null;

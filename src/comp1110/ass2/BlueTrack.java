@@ -55,6 +55,7 @@ public class BlueTrack extends Track {
      */
     public BlueTrack(Score score) {
         super(score);
+        addAbility();//remove later
         nextAbility = 2;
         nextBonus = 1;
     }
