@@ -7,6 +7,8 @@ package comp1110.ass2;
 public class YellowTrack extends Track {
     public YellowTrack(Score score) {
         super(score);
+        nextBonus = 1;
+        nextAbility = 3;
     }
 
     /**
@@ -23,17 +25,42 @@ public class YellowTrack extends Track {
      */
     @Override
     public void update() {
-        if (getTrack() == 1)
-            addBonus();
-        else if (getTrack() == 3)
-            addAbility();
-        else if (getTrack() == 4)
-            addBonus();
-        else if (getTrack() == 6)
-            addAbility();
-        else if (getTrack() == 7)
-            addAbility();
-        else if (getTrack() == 9)
-            updateScore();
+        switch (getTrack()) {
+            case 1:
+                addBonus();
+                nextAbility = 2;
+                nextBonus = 3;
+                break;
+            case 2:
+                nextAbility = 1;
+                nextBonus = 2;
+                break;
+            case 3:
+                addAbility();
+                nextAbility = 3;
+                nextBonus = 1;
+                break;
+            case 4:
+                addBonus();
+                nextAbility = 1;
+                nextBonus = 0;
+                break;
+            case 5:
+                nextAbility = 1;
+                break;
+            case 6:
+                addAbility();
+                nextAbility = 1;
+                break;
+            case 7:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 8:
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
     }
 }

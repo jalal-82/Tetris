@@ -14,18 +14,35 @@ public class BlueTrack extends Track {
     public void update() {
         switch (getTrack()) {
             case 1:
-            case 4:
                 addBonus();
+                nextAbility = 1;
+                nextBonus = 3;
                 break;
             case 2:
+                addAbility();
+                nextAbility = 2;
+                nextBonus = 3;
+                break;
+            case 3:
+                nextAbility = 1;
+                nextBonus = 2;
+                break;
+            case 4:
+                addAbility();
+                nextAbility = 2;
+                nextBonus = 1;
+                break;
             case 5:
+                addBonus();
+                nextAbility = 1;
+                nextBonus = 0;
+                break;
             case 6:
                 addAbility();
+                nextAbility = 0;
                 break;
             case 9:
                 updateScore();
-                break;
-            default:
                 break;
         }
     }
@@ -38,6 +55,8 @@ public class BlueTrack extends Track {
      */
     public BlueTrack(Score score) {
         super(score);
+        nextAbility = 2;
+        nextBonus = 1;
     }
 
 }

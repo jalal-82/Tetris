@@ -17,9 +17,8 @@ public class GameTemplate extends Application {
 	GameState currentState;//variable for easy reference to the currentState
 
 	int currentPlayer = 0;
+	int controlPlayer = 0;
 	int maxPlayers = 0;
-	List<String> availableDice = new ArrayList<>();
-	List<Integer> selectedDice = new ArrayList<>();
 
 
 	public void start(Stage stage) throws Exception {
@@ -38,6 +37,9 @@ public class GameTemplate extends Application {
 				Tile tile = new Tile(dices);
 				Score score = new Score();
 				gameStates.add(new GameState(dices, tile, score));
+				for (int j = 0; j < 5; j++) {
+					updateTrackInfo(i, j);
+				}
 			}
 			currentState = gameStates.get(0);
 			gui.setMessage("Start new game with " + np + " players");
@@ -50,12 +52,13 @@ public class GameTemplate extends Application {
 
 	//places the tile on the board in our backend logic then updates the gui
 	gui.setOnTilePlaced((p) -> {
-//
-		currentState = gameStates.get(currentPlayer);
+//check if bonus was used and adjust accordingly
+		//currentState = gameStates.get(currentPlayer);
 		if (currentState.isTilePlacementValid(currentState.getGameBoard(), p.getY(),p.getX())){
 			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
-			gui.setMessage(p.getTileName()+" Placement valid");
-
+			gui.setMessage(p.getTileName()+" placed. Other players should now select Track");
+			//updates bonus if bonus was used
+			currentState.updateBonus(currentState.getSelectedDice(), p.getTileName());
 //			after tile is placed, update score
 			HashMap<String, List<Integer>> completedMap = new HashMap<>();
 			currentState.updateScore(currentState,completedMap);
@@ -82,8 +85,16 @@ public class GameTemplate extends Application {
 			}
 			System.out.println("Board after tile for player "+currentPlayer);
 			currentState.printBoard(currentState.getGameBoard());
+			//update control player to represent player to select track
+            if (currentPlayer != maxPlayers - 1) {
+                gui.setControlPlayer(currentPlayer + 1);
+				controlPlayer = currentPlayer + 1;
+            } else {
+                gui.setControlPlayer(0);
+				controlPlayer = 0;
+            }
 
-		} else {
+        } else {
 			gui.setMessage(p.getTileName()+" Placement invalid");
 		}
 		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
@@ -139,21 +150,33 @@ public class GameTemplate extends Application {
 
 //		need to think of a process that after confirming tile, it moves to next players tab
 	gui.setOnConfirm((s) -> {
+		//checks the control player, if it's the currentPlayer then it starts next turn, else it confirms track selection
+		if (s.contains(String.valueOf(currentPlayer))) {
+			currentPlayer++;
 
-//		System.out.println("CurrentPlayer inside confirm "+currentPlayer);
-		currentPlayer++;
+			if (currentPlayer > maxPlayers - 1) {
+				currentPlayer = 0;
+			}
+			gui.setMessage("Player " + String.valueOf(currentPlayer) + "'s turn");
+			currentState = gameStates.get(currentPlayer);
+			currentState.rerollDice();
+			gui.setAvailableTiles(List.of(currentState.getTiles()));
+			gui.setAvailableDice(List.of(currentState.getDice()));
 
-		if (currentPlayer>maxPlayers-1){
-			currentPlayer=0;
+			gui.setControlPlayer(currentPlayer);
+		} else if (gui.getSelectedTracks().size() > 1){
+			gui.setMessage("too many tracks selected, select only one");
+		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
+			System.out.println(gui.getSelectedTracks());
+			System.out.println(currentState.getAvailableDice());
+			gui.setMessage("this track colour is not available");
+		}else {
+			gameStates.get(controlPlayer).updateTrack(gui.getSelectedTracks().get(0));
+			updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0));
+			controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
+			gui.setControlPlayer(controlPlayer);
 		}
-		gui.setMessage("Player " + String.valueOf(currentPlayer) + "'s turn");
-		currentState = gameStates.get(currentPlayer);
-		currentState.rerollDice();
-		gui.setAvailableTiles(List.of(currentState.getTiles()));
-		gui.setAvailableDice(List.of(currentState.getDice()));
-
-		gui.setControlPlayer(currentPlayer);
-
+		//also need case for if available die is null to skip track selection
 	    });
 
 	// Start the application:
@@ -163,6 +186,36 @@ public class GameTemplate extends Application {
 
     }
 
+
+	private void updateTrackInfo(int player, int track) {
+		String colour = "";
+		Track trackToUpdate = null;
+		GameState gameStateToUpdate = gameStates.get(player);
+        switch (track) {
+            case 0:
+                colour = "Red";
+				trackToUpdate = gameStateToUpdate.redTrack;
+				break;
+			case 1:
+				colour = "Blue";
+				trackToUpdate = gameStateToUpdate.blueTrack;
+				break;
+			case 2:
+				colour = "Purple";
+				trackToUpdate = gameStateToUpdate.purpleTrack;
+				break;
+			case 3:
+				colour = "Green";
+				trackToUpdate = gameStateToUpdate.greenTrack;
+				break;
+			case 4:
+				colour = "Yellow";
+				trackToUpdate = gameStateToUpdate.yellowTrack;
+				break;
+        }
+
+		gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(), trackToUpdate.nextBonus, trackToUpdate.nextAbility);
+	}
 	//method to update the gui
 	//so far it just updates the gameboard
 	//ie sets a square wherever one should be

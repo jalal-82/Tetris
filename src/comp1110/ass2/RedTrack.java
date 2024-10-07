@@ -10,20 +10,34 @@ public class RedTrack extends Track {
      */
     @Override
     public void update() {
-        if (getTrack() == 1)
-            addBonus();
-        else if (getTrack() == 2)
-            addAbility();
-        else if (getTrack() == 3)
-            addBonus();
-        else if (getTrack() == 4)
-            addAbility();
-        else if (getTrack() == 5)
-            addAbility();
-        else if (getTrack() == 6)
-            addAbility();
-        else if (getTrack() == 9)
-            updateScore();
+        switch (getTrack()) {
+            case 1:
+                addBonus();
+                nextBonus = 2;
+                nextAbility = 1;
+                break;
+            case 2:
+                addAbility();
+                nextBonus = 1;
+                nextAbility = 2;
+                break;
+            case 3:
+                addBonus();
+                nextBonus = 0;
+                nextAbility = 1;
+                break;
+            case 4, 5:
+                addAbility();
+                nextAbility = 1;
+                break;
+            case 6:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
     }
 
     /**
@@ -36,5 +50,7 @@ public class RedTrack extends Track {
     public RedTrack(Score score) {
         super(score);
         this.setBonus(2);
+        nextAbility = 2;
+        nextBonus = 1;
     }
 }

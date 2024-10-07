@@ -1,5 +1,8 @@
 package comp1110.ass2;
 
+import java.util.List;
+import java.util.Objects;
+
 /**
  * Abstract class that defines all the variables and methods for a given track.
  * Intended to be implemented by subclasses representing each color.
@@ -8,6 +11,8 @@ public abstract class Track {
     private int ability = 0;
     private int bonus = 0;
     private int track = 0;
+    protected int nextAbility;
+    protected int nextBonus;
     private Score score;
 
     public Track(Score score) {
@@ -15,31 +20,19 @@ public abstract class Track {
     }
 
     /**
-     * Checks if ability is available and then decrements it.
-     * If no ability is available, prints a message to the console.
-     *
-     * @description: Decreases the ability count if available.
-     * @author: Your Name
+     * called when tile is placed
+     * calculate the bonus points used to place that tile
+     * @param selectedDice should be from the dice class
+     * @param tileName the tile placed
      */
-    public void useAbility() {
-        if (this.ability > 0)
-            this.ability--;
-        else
-            System.out.println("no ability available");
-    }
-
-    /**
-     * Checks if a bonus is available and then decrements it.
-     * If no bonus is available, prints a message to the console.
-     *
-     * @description: Decreases the bonus count if available.
-     * @author: Your Name
-     */
-    public void useBonus() {
-        if (this.bonus > 0)
-            this.bonus--;
-        else
-            System.out.println("no bonus available");
+    public void updateBonus(List<String> selectedDice, String tileName) {
+        int tileSize = Integer.parseInt(tileName.replaceAll("[A-Z]", ""));
+        int diceOfTileColour = 0;
+        for (String s : selectedDice) {
+            if (tileName.startsWith(s) || Objects.equals(s, "W"))
+                diceOfTileColour++;
+        }
+        this.bonus = this.bonus - (tileSize - diceOfTileColour);
     }
 
     /**
@@ -72,6 +65,8 @@ public abstract class Track {
     public int getAbility() {
         return ability;
     }
+    //this will reduce the ability
+    public void updateAbility() {}
 
     /**
      * Returns the current bonus count.

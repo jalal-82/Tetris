@@ -2,6 +2,7 @@ package comp1110.ass2;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 public class GameState {
 
@@ -117,13 +118,67 @@ public class GameState {
      */
 
     public boolean isValidTileSelection(List<String> selectedDice, String tileName) {
+        if (tileName == null)
+            return false;
+        Track track = null;
+        switch (tileName.charAt(0)) {
+            case 'R':
+                track = redTrack;
+            case 'B':
+                track = blueTrack;
+            case 'P':
+                track = purpleTrack;
+            case 'G':
+                track = greenTrack;
+            case 'Y':
+                track = yellowTrack;
+        }
+        int diceOfTileColour = track.getBonus();
+        for (int i = 0; i < selectedDice.size(); i++) {
+            if (tileName.startsWith(selectedDice.get(i)) || Objects.equals(selectedDice.get(i), "W"))
+                diceOfTileColour++;
 
-        return this.tiles.isValidSelection(selectedDice, tileName);
+        }
+        int tileSize = Integer.parseInt(tileName.replaceAll("[A-Z]", ""));
+        if (diceOfTileColour >= tileSize)
+            return true;
+        else
+            return false;
+        //check if valid, return
+        //if not valid, check for bonus, use bonus
+
     }
+    /**
+     * to be used when the tile is placed
+     * calls updateBonus from the track class on the desired track
+     */
+    public void updateBonus(List<String> selectedDice, String tileName) {
+        Track track = null;
+        switch (tileName.charAt(0)) {
+            case 'R':
+                track = redTrack;
+                break;
+            case 'B':
+                track = blueTrack;
+                break;
+            case 'P':
+                track = purpleTrack;
+                break;
+            case 'G':
+                track = greenTrack;
+                break;
+            case 'Y':
+                track = yellowTrack;
+                break;
+        }
+
+        track.updateBonus(selectedDice, tileName);
+    }
+
 
     /**
      * updates the selectedDice variable in Dice
-     * @param selectedDice
+     * @param selectedDice should be the selectedDice in the gui
      */
     public void updateSelectedDice(List<Integer> selectedDice){
         dice.setSelectedDice(selectedDice);
@@ -131,7 +186,7 @@ public class GameState {
 
     /**
      *
-     * @return selectedDice from Dice
+     * @return selectedDice from Dice class
      */
     public List<String> getSelectedDice() {
         return dice.getSelectedDice();
@@ -185,7 +240,10 @@ public class GameState {
         placeTile(row,col);
     }
 
-
+    /**
+     *
+     * @return the dice remaining after the active player places their tile
+     */
     public List<String> getAvailableDice() {
         return dice.getAvailableColors();
     }
@@ -228,13 +286,67 @@ public class GameState {
     }
 
     /**
-     * Retrieves all the dice currently in use.
+     * Retrieves all the dice that were originally rolled for this turn.
      *
      * @return An array of strings representing all the dice.
      * @author Eileen
      */
     public String[] getDice() {
         return dice.getAllDice();
+    }
+
+    /**
+     * calls addTrack on the track passed to it
+     * @param track should be the selectedTrack
+     */
+    public void updateTrack(int track) {
+        switch (track) {
+            case 0:
+                redTrack.addTrack();
+                break;
+            case 1:
+                blueTrack.addTrack();
+                break;
+            case 2:
+                purpleTrack.addTrack();
+                break;
+            case 3:
+                greenTrack.addTrack();
+                break;
+            case 4:
+                yellowTrack.addTrack();
+                break;
+
+        }
+    }
+
+    /**
+     * checks if the selected track is in the available dice
+     * @param trackNum should take selected track
+     * @return true if the selected track is in the currently available die
+     */
+    public boolean isInAvailableDice(int trackNum) {
+        if (getAvailableDice().contains("W"))
+            return true;
+        String colour = "";
+        switch (trackNum){
+            case 0:
+                colour = "R";
+                break;
+            case 1:
+                colour = "B";
+                break;
+            case 2:
+                colour = "P";
+                break;
+            case 3:
+                colour = "G";
+                break;
+            case 4:
+                colour = "Y";
+                break;
+        }
+        return getAvailableDice().contains(colour);
     }
 
     /**
@@ -275,15 +387,6 @@ public class GameState {
         }
     }
 
-    //    public void addTrack(String trackColour) {
-//        switch (trackColour.toLowerCase()) {
-//            case "red" -> redTrack.addTrack();
-//            case "blue" -> blueTrack.addTrack();
-//            case "purple" -> purpleTrack.addTrack();
-//            case "green" -> greenTrack.addTrack();
-//            case "yellow" -> yellowTrack.addTrack();
-//            default -> throw new IllegalArgumentException("Unknown color: " + trackColour);
-//        }
-//    }
+
 
 }

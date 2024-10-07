@@ -50,11 +50,9 @@ public class TrackTest {
         //test abilities and bonuses are updated correctly
         assertEquals(1, gameStateOne.redTrack.getAbility());
         assertEquals(4, gameStateOne.redTrack.getBonus());
-        gameStateOne.redTrack.useAbility();
-        gameStateOne.redTrack.useBonus();
         assertEquals(0, gameStateOne.redTrack.getAbility()); //ensures useAbility reduces ability count
         assertEquals(3, gameStateOne.redTrack.getBonus()); //ensures useBonus reduces bonus count
-        gameStateOne.redTrack.useAbility();
+        //removed useBonus and ability so these tests will now fail
         assertEquals(0, gameStateOne.redTrack.getAbility()); //tests ability cant be negative
     }
     @Test

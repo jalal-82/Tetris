@@ -97,20 +97,21 @@ public class Tile {
      * Checks whether the given tile is a valid selection from the set of generated tiles.
      * @param tileName The name of the tile to check (e.g., "R2", "B3").
      * @return true if the tile is a valid selection, false otherwise.
-     * Author: Hunter, Jalal
+     * Author: Hunter
      */
     public boolean isValidSelection(List<String> selectedDice, String tileName) {
         if (tileName == null)
             return false;
         int diceOfTileColour = 0;
-
+        int bonusAvailable;
         for (int i = 0; i < selectedDice.size(); i++) {
             if (tileName.startsWith(selectedDice.get(i)) || Objects.equals(selectedDice.get(i), "W"))
                 diceOfTileColour++;
 
         }
-        String tileSize = tileName.replaceAll("[A-Z]", "");
-        if (diceOfTileColour >= Integer.parseInt(tileSize))
+        int tileSize = Integer.parseInt(tileName.replaceAll("[A-Z]", ""));
+        int bonusUsed = tileSize - diceOfTileColour;
+        if (diceOfTileColour >= tileSize)
             return true;
         else
             return false;
