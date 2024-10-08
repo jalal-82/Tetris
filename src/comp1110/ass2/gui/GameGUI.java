@@ -54,6 +54,7 @@ public class GameGUI extends BorderPane {
     private Button b_reroll;
     private Button b_confirm;
     private Button b_pass;
+    private Button b_error;
     private MenuButton b_colour_change;
 
     private BiConsumer<Integer, boolean[]> onStartGame;
@@ -62,6 +63,7 @@ public class GameGUI extends BorderPane {
     private Consumer<String> onConfirm;
     private Consumer<String> onPass;
     private Consumer<String> onGameAction;
+    private Consumer<String> onError;
     //private Consumer<String> onReroll;
     //private Consumer<String> onColourChange;
 
@@ -219,6 +221,15 @@ public class GameGUI extends BorderPane {
         // }
         controls.add(b_colour_change, 0, 0);
         current_player_controls = controls;
+
+        b_error = new Button("Reroll and Generate");
+        controls.add(b_error, 0, 3);
+    b_error.setOnAction((e) -> {
+        if (onError != null) {
+            onError.accept(b_error.getText());
+        }
+        });
+
     }
 
     private void showState() {
@@ -661,6 +672,8 @@ public class GameGUI extends BorderPane {
     public void setOnPass(Consumer<String> handler) {
 	onPass = handler;
     }
+
+    public void setOnError(Consumer<String> handler){ onError = handler; }
 
     /**
      * Set the event handler to be called when an item from the "Action"

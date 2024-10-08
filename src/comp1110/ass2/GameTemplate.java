@@ -18,7 +18,6 @@ public class GameTemplate extends Application {
 	int controlPlayer = 0;
 	int maxPlayers = 0;
 
-
 	public void start(Stage stage) throws Exception {
 		game = new Game();
 		gui = new GameGUI();
@@ -26,27 +25,24 @@ public class GameTemplate extends Application {
 
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
 
-
 		gui.setOnStartGame((np, isAI) -> {
 			maxPlayers = np;
 			// Initialize game states for np players
-
 			for (int i=0;i<np;i++){
 				Dices dices = new Dices();
 				Tile tile = new Tile(dices);
 				Score score = new Score();
 				gameStates.add(new GameState(dices, tile, score));
 				for (int j = 0; j < 5; j++) {
-//					updateTrackInfo(i, j);
-					game.getUpdateTrackInfo(i,j,gameStates.get(i),gui);
+					updateTrackInfo(i, j);
 				}
 			}
+
 			currentState = gameStates.get(0);
 			gui.setMessage("Start new game with " + np + " players");
 			gui.setAvailableTiles(List.of(currentState.getTiles()));
 			gui.setAvailableDice(List.of(currentState.getDice()));
-			gui.setAvailableActions(List.of("Reroll", "Give up", "Change selected to Red","Change selected to Blue","Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
-
+			gui.setAvailableActions(List.of("Reroll","Change selected to Red","Change selected to Blue","Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
 			gui.setControlPlayer(0);
 		});
 
@@ -62,7 +58,6 @@ public class GameTemplate extends Application {
 			}
 			//check place if valid
 		if (currentState.getIsTilePlacementValid(p.getY(),p.getX())){
-
 			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 			gui.setMessage(p.getTileName()+" placed. Other players should now select Track");
 			//updates bonus if bonus was used
@@ -77,19 +72,8 @@ public class GameTemplate extends Application {
 			gui.setAvailableDice(currentState.getAvailableDice());
 			System.out.println(currentState.getAvailableDice());
 
-//			check if Coat of Arms is completed
-			//maybe this could go in updateGUI?
-			if (!completedMap.isEmpty()){
-				List<Integer> rows = completedMap.get("completedRows");
-				for (int j=0;j<rows.size();j++){
-					gui.setRowCoA(currentPlayer,rows.get(j),true);
-				}
-				List<Integer> cols = completedMap.get("completedCols");
-				for (int j=0;j<cols.size();j++){
-					gui.setColumnCoA(currentPlayer,cols.get(j),true);
-				}
-			}
-
+//			update Coat of Arms
+			currentState.updateCoA(gui,currentPlayer,completedMap);
 
 			System.out.println("Board after tile for player "+currentPlayer);
 			currentState.printBoard(currentState.getGameBoard());
@@ -134,7 +118,6 @@ public class GameTemplate extends Application {
 			gui.clearTileSelection();
 		}
 	});
-
 
 	gui.setOnGameAction((action) -> {
 		//logic for reroll
@@ -182,7 +165,7 @@ public class GameTemplate extends Application {
 		}
 
 	});
-//		need to think of a process that after confirming tile, it moves to next players tab
+
 	gui.setOnConfirm((s) -> {
 		//checks the control player, if it's the currentPlayer then it starts next turn, else it confirms track selection
 		if (s.contains(String.valueOf(currentPlayer))) {
@@ -195,16 +178,46 @@ public class GameTemplate extends Application {
 			currentState = gameStates.get(currentPlayer);
 			currentState.rerollDice();
 			gui.setAvailableTiles(List.of(currentState.getTiles()));
+			System.out.println(List.of(currentState.getTiles()));
 			gui.setAvailableDice(List.of(currentState.getDice()));
 
 			gui.setControlPlayer(currentPlayer);
+
 		} else if (currentState.getAvailableDice().isEmpty())
 			gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
 		else
-//			handleTrackSelection();
-			game.getHandleTrackSelection(gui,gameStates.get(controlPlayer), controlPlayer, maxPlayers);
+			handleTrackSelection();
 		//also need case for if available die is null to skip track selection
 	    });
+
+	gui.setOnPass((s) -> {
+		gui.setMessage("Player" + currentPlayer + " Skips their turn");
+		if (currentPlayer == maxPlayers-1){
+			currentPlayer = 0;
+		} else {
+			currentPlayer++;
+		}
+		gui.setControlPlayer(currentPlayer);
+		gui.setMessage("Now it's player " + currentPlayer + "'s turn");
+
+		// implement reroll and new tiles for next player
+		currentState = gameStates.get(currentPlayer);
+		currentState.rerollDice();
+		gui.setAvailableTiles(List.of(currentState.getTiles()));
+		System.out.println(List.of(currentState.getTiles()));
+		gui.setAvailableDice(List.of(currentState.getDice()));
+	});
+
+
+	gui.setOnError((s) -> {
+		gui.setControlPlayer(currentPlayer);
+		currentState = gameStates.get(currentPlayer);
+		currentState.rerollDice();
+		gui.setAvailableTiles(List.of(currentState.getTiles()));
+		System.out.println(List.of(currentState.getTiles()));
+		gui.setAvailableDice(List.of(currentState.getDice()));
+	});
+
 	// Start the application:
         stage.setScene(scene);
         stage.setTitle("Copenhagen Roll & Write");
@@ -220,72 +233,51 @@ public class GameTemplate extends Application {
 		return true;
 	}
 
-//	private void updateTrackInfo(int player, int track) {
-//		String colour = "";
-//		Track trackToUpdate = null;
-//		GameState gameStateToUpdate = gameStates.get(player);
-//        switch (track) {
-//            case 0:
-//                colour = "Red";
-//				trackToUpdate = gameStateToUpdate.redTrack;
-//				break;
-//			case 1:
-//				colour = "Blue";
-//				trackToUpdate = gameStateToUpdate.blueTrack;
-//				break;
-//			case 2:
-//				colour = "Purple";
-//				trackToUpdate = gameStateToUpdate.purpleTrack;
-//				break;
-//			case 3:
-//				colour = "Green";
-//				trackToUpdate = gameStateToUpdate.greenTrack;
-//				break;
-//			case 4:
-//				colour = "Yellow";
-//				trackToUpdate = gameStateToUpdate.yellowTrack;
-//				break;
-//        }
-//
-//		gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(), trackToUpdate.nextBonus, trackToUpdate.nextAbility);
-//	}
+	private void updateTrackInfo(int player, int track) {
+		String colour = "";
+		Track trackToUpdate = null;
+		GameState gameStateToUpdate = gameStates.get(player);
+        switch (track) {
+            case 0:
+                colour = "Red";
+				trackToUpdate = gameStateToUpdate.redTrack;
+				break;
+			case 1:
+				colour = "Blue";
+				trackToUpdate = gameStateToUpdate.blueTrack;
+				break;
+			case 2:
+				colour = "Purple";
+				trackToUpdate = gameStateToUpdate.purpleTrack;
+				break;
+			case 3:
+				colour = "Green";
+				trackToUpdate = gameStateToUpdate.greenTrack;
+				break;
+			case 4:
+				colour = "Yellow";
+				trackToUpdate = gameStateToUpdate.yellowTrack;
+				break;
+        }
 
-//	private void updateGUIState() {
-//		System.out.println("currPlayer in updateGUI "+currentPlayer);
-//		char[][] board = gameStates.get(currentPlayer).getGameBoard();
-//		for (int y = 0; y < board.length; y++) { // @Eileen: y is gameboard row
-//			for (int x = 0; x < board[y].length; x++) { // @Eileen: x is gameboard column
-//				char c = board[y][x];
-//				boolean isWindow = false; // @Eileen: default is not a window
-//				if (c != '.') {
-//					//to extract colour value from c, decrement if it is representing a window
-//					if (c == 'S' || c == 'C' || c == 'Q' || c == 'H' || c == 'Z') { // @Eileen: This is identifying windows on tile
-//						c--;
-//						isWindow = true; // @Eileen: This is a window
-//					}
-//					String color = String.valueOf(c);
-//					// adjust y-coordinate for GUI
-//					int guiY = board.length - 1 - y;
-//					gui.setFacadeSquare(currentPlayer, x, guiY, color, isWindow);
-//				}
-//			}
-//		}
-//	}
+		gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(), trackToUpdate.nextBonus, trackToUpdate.nextAbility);
+	}
 
-//	private void handleTrackSelection () {
-//		if (gui.getSelectedTracks().size() > 1){
-//			gui.setMessage("too many tracks selected, select only one");
-//		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
-//			System.out.println(gui.getSelectedTracks());
-//			System.out.println(currentState.getAvailableDice());
-//			gui.setMessage("this track colour is not available");
-//		}else {
-//			gameStates.get(controlPlayer).getUpdateTrack(gui.getSelectedTracks().get(0));
-//			updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0));
-//			controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
-//			gui.setControlPlayer(controlPlayer);
-//		}
-//	}
+	private void handleTrackSelection () {
+		if (gui.getSelectedTracks().size() > 1){
+			gui.setMessage("too many tracks selected, select only one");
+		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
+			System.out.println(gui.getSelectedTracks());
+			System.out.println(currentState.getAvailableDice());
+			gui.setMessage("this track colour is not available");
+		} else {
+			gameStates.get(controlPlayer).getUpdateTrack(gui.getSelectedTracks().get(0));
+			updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0));
+			controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
+			gui.setControlPlayer(controlPlayer);
+		}
+	}
+
 }
 
 

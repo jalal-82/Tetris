@@ -143,136 +143,68 @@ public class Tile {
     }
 
     /**
-     * applyWindows method without parameter will randomly generate
-     * one square that has NO window.
-     * Author: Eileen
-     */
-    public void applyWindows() { // @Eileen: now we set c++ to window, and 1 tile only has 1 "window"
-        char[][] tileArr = selectedTile;
-        random = new Random();
-        int row=0, col=0;
-        for (int i = 0; i < tileArr.length; i++) {
-            for (int j = 0; j < tileArr[i].length; j++) {
-                if (!String.valueOf(tileArr[i][j]).equals(" ") && random.nextBoolean()) { // @Eileen: not empty char
-                    tileArr[i][j]++;
-                    return;
-                } else if (!String.valueOf(tileArr[i][j]).equals(" ")) {
-                    row = i;
-                    col = j;
-                }
-            }
-        }
-        // in case no random windows
-        tileArr[row][col]++;
-    }
-
-    /**
-     * This method negate all element in a
-     * boolean list.
-     * NOTE: abandoned method, just keep it in case for now
-     * @param list a boolean list
-     * @return negated boolean list
-     * @author Eileen
-     */
-    public boolean[] negateBList(boolean[] list) {
-        int size = list.length;
-        boolean[] result = new boolean[size];
-        for (int i = 0; i < result.length; i++) {
-            result[i] = !list[i];
-        }
-        return result;
-    }
-
-    /**
-     * This method flip the tile array 90 degree anticlockwise
-     * to match with the GUI setting.
-     * NOTE: abandoned method, just keep it in case for now
-     * @param tile
-     * @return flipped tile
-     * @author Eileen
-     */
-    public static char[][] flipTile(char[][] tile) {
-        int row = tile.length;
-        System.out.println("row is " + row);
-        int col = tile[0].length;
-        System.out.println("col is "+col);
-        char[][] result = new char[row][col];
-        int c = col;
-        int r = row;
-        for (char[] chars : tile) {
-            for (char aChar : chars) {
-                result[r-1][col-c] = aChar;
-                r--;
-                if (r==0){
-                    r = row;
-                    c--;
-                }
-            }
-        }
-        return result;
-    }
-
-    /**
      * Generates tiles based on the provided dice rolls. Takes into account colors and wild dice.
      * @param rolledDices The dice rolls that determine the available tiles.
      * @return A String array of the selected tiles.
      * Author: Eileen
      */
-    public String[] generateTiles(Dices rolledDices)                                                                                                                                                                                                   {
-        String[] result = new String[10]; // 4 tiles on screen
-        String[] color = {"R", "B", "P", "G", "Y"};
-        int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
-        int wildCount = 0; // Count of wild (White) dice
+    public String[] generateTiles(Dices rolledDices) {
+        {
+            String[] result = new String[10]; // 4 tiles on screen
+            String[] color = {"R", "B", "P", "G", "Y"};
+            int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
+            int wildCount = 0; // Count of wild (White) dice
 
-        String[] dices = rolledDices.getAllDice();
-        for (String s : dices) {
-            if (s.equals("W")) {
-                wildCount++;
-            } else {
-                for (int i = 0; i < color.length; i++) {
-                    if (s.equals(color[i])) {
-                        colorsNum[i]++;
-                        break;
+            String[] dices = rolledDices.getAllDice();
+            for (String s : dices) {
+                if (s.equals("W")) {
+                    wildCount++;
+                } else {
+                    for (int i = 0; i < color.length; i++) {
+                        if (s.equals(color[i])) {
+                            colorsNum[i]++;
+                            break;
+                        }
                     }
                 }
             }
-        }
-        rolledDices.setColorCount(colorsNum, wildCount);
-        int ite = 0;
-        while (ite < 10 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
-            int curMax = getmaxIndex(colorsNum, colorsNum.length);
-            int cur = colorsNum[curMax] + wildCount;
+            rolledDices.setColorCount(colorsNum, wildCount);
+            int ite = 0;
+            while (ite < 10 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
+                int curMax = getmaxIndex(colorsNum, colorsNum.length);
+                int cur = colorsNum[curMax] + wildCount;
 
-            if (cur > 1) {
-                for (int i = 2; i <= cur && ite < 10; i++) {
-                    result[ite] = color[curMax] + i;
+                if (cur > 1) {
+                    for (int i = 2; i <= cur && ite < 10; i++) {
+                        result[ite] = color[curMax] + i;
+                        ite++;
+                        if (colorsNum[curMax] > 0) {
+                            colorsNum[curMax]--;
+                        } else {
+                            wildCount--;
+                        }
+                    }
+                } else {//else clause in case all colours have a total of one. (generates tiles of size 2)
+                    result[ite] = color[curMax] + 2;
                     ite++;
-                    if (colorsNum[curMax] > 0) {
-                        colorsNum[curMax]--;
-                    } else {
-                        wildCount--;
-                    }
+                    colorsNum[curMax]--;
                 }
-            } else {//else clause in case all colours have a total of one. (generates tiles of size 2)
-                result[ite] = color[curMax] + 2;
+
+                if (colorsNum[curMax] == 0) {
+                    colorsNum[curMax] = -1; // Mark as processed
+                }
+            }
+
+            // Fill remaining slots with random tiles if needed
+            Random rand = new Random();
+            while (ite < 10) {
+                int y = rand.nextInt(allTiles.keySet().toArray().length);
+                result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
                 ite++;
-                colorsNum[curMax]--;
             }
 
-            if (colorsNum[curMax] == 0) {
-                colorsNum[curMax] = -1; // Mark as processed
-            }
+            return result;
         }
-
-        // Fill remaining slots with random tiles if needed
-        Random rand = new Random();
-        while (ite < 10) {
-            int y = rand.nextInt(allTiles.keySet().toArray().length);
-            result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
-            ite++;
-        }
-
-        return result;
     }
 
     /**

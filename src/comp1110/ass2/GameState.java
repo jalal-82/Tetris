@@ -1,8 +1,10 @@
 package comp1110.ass2;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Objects;
+import comp1110.ass2.gui.*;
 
 public class GameState {
 
@@ -120,7 +122,6 @@ public class GameState {
        return isValid;
     }
 
-
     /**
      * checks if the tile selection is valid given the selected dice
      * @param selectedDice
@@ -203,7 +204,6 @@ public class GameState {
         updateBonus(getSelectedDice(),tileName);
     }
 
-
     /**
      * updates the selectedDice variable in Dice
      * @param selectedDice should be the selectedDice in the gui
@@ -219,7 +219,6 @@ public class GameState {
     public List<String> getSelectedDice() {
         return dice.getSelectedDice();
     }
-
 
     /**
      * Places the selected tile on the game board at the specified row and column.
@@ -296,10 +295,9 @@ public class GameState {
         dice.hardSetAvailableDice(dice.getAllDice());
     }
 
-    public void setAvailableDice (String[] dice) {
+    public void setAvailableDice(String[] dice) {
         this.dice.hardSetAvailableDice(dice);
     }
-
 
     /**
      * Returns the current state of the game board.
@@ -362,7 +360,6 @@ public class GameState {
         updateTrack(track);
     }
 
-
     /**
      * checks if the selected track is in the available dice
      * @param trackNum should take selected track
@@ -399,6 +396,7 @@ public class GameState {
     public void setRolledDice(List<String> dice) {
         this.dice.applyPresetDiceD2CP1(dice.get(0), dice.get(1), dice.get(2), dice.get(3), dice.get(4));
     }
+
     /**
      * Retrieves the current score from the score object.
      *
@@ -434,6 +432,19 @@ public class GameState {
                 System.out.print(" ");
             }
             System.out.println();
+        }
+    }
+
+    public void updateCoA(GameGUI gui, int currentPlayer,HashMap<String, List<Integer>> completedMap){
+        if (!completedMap.isEmpty()){
+            List<Integer> rows = completedMap.get("completedRows");
+            for (int j=0;j<rows.size();j++){
+                gui.setRowCoA(currentPlayer,rows.get(j),true);
+            }
+            List<Integer> cols = completedMap.get("completedCols");
+            for (int j=0;j<cols.size();j++){
+                gui.setColumnCoA(currentPlayer,cols.get(j),true);
+            }
         }
     }
 
