@@ -169,7 +169,6 @@ public class GameState {
         return res;
     }
 
-
     /**
      * to be used when the tile is placed
      * calls updateBonus from the track class on the desired track
@@ -213,7 +212,6 @@ public class GameState {
     }
 
     /**
-     *
      * @return selectedDice from Dice class
      */
     public List<String> getSelectedDice() {
@@ -435,7 +433,7 @@ public class GameState {
         }
     }
 
-    public void updateCoA(GameGUI gui, int currentPlayer,HashMap<String, List<Integer>> completedMap){
+    private void updateCoA(GameGUI gui, int currentPlayer,HashMap<String, List<Integer>> completedMap){
         if (!completedMap.isEmpty()){
             List<Integer> rows = completedMap.get("completedRows");
             for (int j=0;j<rows.size();j++){
@@ -446,6 +444,36 @@ public class GameState {
                 gui.setColumnCoA(currentPlayer,cols.get(j),true);
             }
         }
+    }
+
+    public void getUpdateCoA(GameGUI gui, int currentPlayer,HashMap<String, List<Integer>> completedMap){
+        updateCoA(gui,currentPlayer,completedMap);
+    }
+
+    public void updateDiceAndTiles(GameGUI gui,GameState gameState){
+        gameState.rerollDice();
+        gameState.updateSelectedDice(gui.getSelectedDice());
+        gui.setAvailableTiles(List.of(gameState.getTiles()));
+        System.out.println(List.of(gameState.getTiles()));
+        gui.setAvailableDice(List.of(gameState.getDice()));
+    }
+
+    public void placeSingleTile(int row, int col, int rotation, boolean[] windows){
+        tiles.updateSelectedTile("I1X");
+        if (isTilePlacementValid(gameBoard,row,col)){
+            tiles.applyWindows(windows);
+            placeTile(row,col);
+        }
+    }
+
+    public static void main(String[] args) {
+        Dices D1 = new Dices();
+        Tile T1 = new Tile(D1);
+        Score S1 = new Score();
+        GameState gameState = new GameState(D1,T1,S1);
+        boolean[] windows = {true};
+        gameState.placeSingleTile(0,1,0,windows);
+        gameState.printBoard(gameState.getGameBoard());
     }
 
 }

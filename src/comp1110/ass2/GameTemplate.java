@@ -56,6 +56,7 @@ public class GameTemplate extends Application {
 				gui.setMessage("no blue ability available, chose different window configuration");
 				return;
 			}
+
 			//check place if valid
 		if (currentState.getIsTilePlacementValid(p.getY(),p.getX())){
 			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
@@ -73,7 +74,7 @@ public class GameTemplate extends Application {
 			System.out.println(currentState.getAvailableDice());
 
 //			update Coat of Arms
-			currentState.updateCoA(gui,currentPlayer,completedMap);
+			currentState.getUpdateCoA(gui,currentPlayer,completedMap);
 
 			System.out.println("Board after tile for player "+currentPlayer);
 			currentState.printBoard(currentState.getGameBoard());
@@ -90,10 +91,7 @@ public class GameTemplate extends Application {
         } else {
 			gui.setMessage(p.getTileName()+" Placement invalid");
 		}
-		// @Eileen: replace placeTile method with placeTileWithRotationWindows method
-		// @Eileen: for more functionalities
-		//update bonuses from windows?
-//		updateGUIState();
+
 		game.getUpdateGUIState(currentPlayer,gameStates.get(currentPlayer),gui);
 
 	});
@@ -103,7 +101,6 @@ public class GameTemplate extends Application {
 	gui.setOnDiceSelectionChanged((i) -> {
 		currentState.updateSelectedDice(gui.getSelectedDice());
 		System.out.println(currentState.getSelectedDice());
-
 	    });
 
 	// updates the selected tile when a tile is selected in the gui
@@ -174,13 +171,12 @@ public class GameTemplate extends Application {
 			if (currentPlayer > maxPlayers - 1) {
 				currentPlayer = 0;
 			}
-			gui.setMessage("Player " + String.valueOf(currentPlayer) + "'s turn");
-			currentState = gameStates.get(currentPlayer);
-			currentState.rerollDice();
-			gui.setAvailableTiles(List.of(currentState.getTiles()));
-			System.out.println(List.of(currentState.getTiles()));
-			gui.setAvailableDice(List.of(currentState.getDice()));
+			gui.setMessage("Player " + currentPlayer + "'s turn");
 
+
+			// rolls dice, generate tiles and sets control for next player
+			currentState = gameStates.get(currentPlayer);
+			currentState.updateDiceAndTiles(gui,currentState);
 			gui.setControlPlayer(currentPlayer);
 
 		} else if (currentState.getAvailableDice().isEmpty())
@@ -191,31 +187,29 @@ public class GameTemplate extends Application {
 	    });
 
 	gui.setOnPass((s) -> {
+		// move to next player
 		gui.setMessage("Player" + currentPlayer + " Skips their turn");
 		if (currentPlayer == maxPlayers-1){
 			currentPlayer = 0;
 		} else {
 			currentPlayer++;
 		}
+
+
 		gui.setControlPlayer(currentPlayer);
 		gui.setMessage("Now it's player " + currentPlayer + "'s turn");
 
 		// implement reroll and new tiles for next player
 		currentState = gameStates.get(currentPlayer);
-		currentState.rerollDice();
-		gui.setAvailableTiles(List.of(currentState.getTiles()));
-		System.out.println(List.of(currentState.getTiles()));
-		gui.setAvailableDice(List.of(currentState.getDice()));
+		currentState.updateDiceAndTiles(gui,currentState);
 	});
 
-
+	/**
+	 * The purpose of this method is that player can reroll their dices and tiles, only if their game runs into error.
+	 */
 	gui.setOnError((s) -> {
-		gui.setControlPlayer(currentPlayer);
 		currentState = gameStates.get(currentPlayer);
-		currentState.rerollDice();
-		gui.setAvailableTiles(List.of(currentState.getTiles()));
-		System.out.println(List.of(currentState.getTiles()));
-		gui.setAvailableDice(List.of(currentState.getDice()));
+		currentState.updateDiceAndTiles(gui,currentState);
 	});
 
 	// Start the application:
