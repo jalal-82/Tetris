@@ -234,8 +234,8 @@ public class LibraryView extends ListView<Object> {
 	     Map.entry("Y4R", new int[][]{{0, 0, 1, 1}, {1, 2, 0, 1}}),
 	     Map.entry("Y5", new int[][]{{0, 0, 1, 2, 2}, {0, 1, 1, 1, 2}}),
 	     // Special tiles ("S" -> Colour.GRAY)
-	     Map.entry("S1X", s1), // [X] fixed
-	     Map.entry("S1O", s1)  // [O] fixed - bonus
+	     Map.entry("I1X", s1), // [X] fixed
+	     Map.entry("I1O", s1)  // [O] fixed - bonus
 	      );
 
 	String getName() {

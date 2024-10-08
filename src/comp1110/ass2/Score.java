@@ -163,57 +163,6 @@ public class Score {
         return tile == 'S' || tile == 'C' || tile == 'Q' || tile == 'H' || tile == 'Z';
     }
 
-//    /**
-//     * checks row 1,3,5 and col 1,3
-//     * return 1 if row is completed, 0 is row else -1
-//     * @param board
-//     * @return
-//     */
-//    private HashMap<String, List<Integer>> isCoA(char[][] board) {
-//        HashMap<String, List<Integer>> res = new HashMap<>();
-//        res.put("completedRows", new ArrayList<>());
-//        res.put("completedCols", new ArrayList<>());
-//        res.put("completedRowsWindows", new ArrayList<>());
-//        res.put("completedColsWindows", new ArrayList<>());
-//
-//        int[] rows = {1, 3, 5};
-//        int[] cols = {1, 3};
-//
-//        // Check specific rows
-//        for (int row : rows) {
-//            if (isCompleteRow(board, row)) {
-//                res.get("completedRows").add(row);  // Add completed row index
-//                if (isAllWindowsRow(board, row)) {
-//                    ;
-//                    res.get("completedRowsWindows").add(row);  // Add completed row with all windows
-//                    System.out.println("Row " + row + " completed with all windows");
-//                } else {
-//                    res.get("completedRows").add(row);
-//                    System.out.println("Row " + row + " completed but not all windows");
-//                }
-//            } else {
-//                System.out.println("Row " + row + " is not complete");
-//            }
-//        }
-//
-//        // Check specific columns
-//        for (int col : cols) {
-//            if (isCompleteColumn(board, col)) {
-//                res.get("completedCols").add(col);  // Add completed column index
-//                if (isAllWindowsColumn(board, col)) {
-//                    res.get("completedColsWindows").add(col);  // Add completed column with all windows
-//                    System.out.println("Column " + col + " completed with all windows");
-//                } else {
-//                    System.out.println("Column " + col + " completed but not all windows");
-//                }
-//            } else {
-//                System.out.println("Column " + col + " is not complete");
-//            }
-//        }
-//
-//        return res;
-//    }
-
     /**
      * Adds two points to the score.
      * Intended for use by track classes.

@@ -21,6 +21,9 @@ public class Tile {
         allTiles = new HashMap<>();
         this.dice = dice.getAllDice();
         {
+            allTiles.put("I1X", new ArrayList<>());
+            allTiles.get("I1X").add(new char[][] {{'I'}});
+
             allTiles.put("R2", new ArrayList<>());
             allTiles.get("R2").add(new char[][] { {'R'}, {'R'} });
 
@@ -93,6 +96,7 @@ public class Tile {
         this.generatedTiles = generateTiles(dice);
     }
 
+
     /**
      * Checks whether the given tile is a valid selection from the set of generated tiles.
      * @param tileName The name of the tile to check (e.g., "R2", "B3").
@@ -117,14 +121,13 @@ public class Tile {
             return false;
     }
 
-
     /**
      * Applies windows to the selectedTile, incrementing the values for any position that should have a window.
      * 'R' becomes 'S', 'B' becomes 'C', 'P' becomes 'Q', 'G' becomes 'H', 'Y' becomes 'Z'.
      * @param windows A boolean array where each true element represents the presence of a window.
      * Author: Hunter
      */
-    public void applyWindows( boolean[] windows) {
+    public void applyWindows(boolean[] windows) {
         char[][] tileArr = selectedTile;
         int squareCounter = 0; // keeps count of all the squares so as it is easily referenced with the windows input
         int rowL = tileArr.length;
@@ -295,7 +298,6 @@ public class Tile {
      * Author: Jalal
      */
     public void rotateTile(int rotation) {
-
         char[][] tile = selectedTile;
         if (tile == null) {
             System.out.println("Selected tile not found");

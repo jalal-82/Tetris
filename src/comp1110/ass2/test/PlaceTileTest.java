@@ -54,30 +54,12 @@ public class PlaceTileTest {
         }
     }
 
-//    @Test
-//    public void selectR3(){
-//        boolean res = tileOne.isValidSelection("R3");
-//        assertEquals(res,true);
-//    }
-
-//    @Test
-//    public void selectR4(){
-//        boolean res = tileOne.isValidSelection("R4");
-//        assertEquals(res,true);
-//    }
-//
-//    @Test
-//    public void selectB3(){
-//        boolean res = tileOne.isValidSelection("B3");
-//        assertEquals(res,false);
-//    }
-
     @Test
     public void isTileY3PlacementValid1(){
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 0);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,0);
+            boolean isValid = gameStateOne.getIsTilePlacementValid(1,0);
             assertFalse(isValid);
         }
     }
@@ -87,7 +69,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 3);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,0);
+            boolean isValid = gameStateOne.getIsTilePlacementValid(1,0);
             assertEquals(isValid,true);
         }
     }
@@ -97,7 +79,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 3);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),2,0);
+            boolean isValid = gameStateOne.getIsTilePlacementValid(2,0);
             assertEquals(isValid,false);
         }
     }
@@ -107,7 +89,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 1);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),2,0);
+            boolean isValid = gameStateOne.getIsTilePlacementValid(2,0);
             assertEquals(isValid,true);
         }
     }
@@ -117,7 +99,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 3);
-            boolean isValid = gameStateOne.isTilePlacementValid(gameStateOne.getGameBoard(),1,1);
+            boolean isValid = gameStateOne.getIsTilePlacementValid(1,1);
             assertEquals(isValid,false);
         }
     }

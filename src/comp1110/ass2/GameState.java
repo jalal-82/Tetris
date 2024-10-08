@@ -49,13 +49,21 @@ public class GameState {
     }
 
     /**
+     * Updates the selectedTile on the GUI
+     * @param tile
+     */
+    public void updateSelectedTile(String tile) {
+        this.tiles.updateSelectedTile(tile);
+    }
+
+    /**
      * Checks if a tile placement of the selected tile is valid based on its position, overlap, and support.
      * @param board     The current game board.
      * @param col       The column where the tile is to be placed.
      * @param row       The row where the tile is to be placed.
      * @return          True if the tile placement is valid, false otherwise.
      */
-    public boolean isTilePlacementValid(char[][] board, int row, int col) {
+    private boolean isTilePlacementValid(char[][] board, int row, int col) {
         char[][] tile = tiles.getSelectedTile();
 
         if (tile == null) {
@@ -101,14 +109,17 @@ public class GameState {
 
         return hasSupport;
     }
-
     /**
-     * Updates the selectedTile on the GUI
-     * @param tile
+     * Getter for isTilePlacementValid Method
+     * @param row
+     * @param col
+     * @return True if placement Valid else false
      */
-    public void updateSelectedTile(String tile) {
-        this.tiles.updateSelectedTile(tile);
+    public boolean getIsTilePlacementValid(int row, int col) {
+       boolean isValid = isTilePlacementValid(getGameBoard(),row,col); ;
+       return isValid;
     }
+
 
     /**
      * checks if the tile selection is valid given the selected dice
@@ -116,8 +127,7 @@ public class GameState {
      * @param tileName
      * @return
      */
-
-    public boolean isValidTileSelection(List<String> selectedDice, String tileName) {
+    private boolean isValidTileSelection(List<String> selectedDice, String tileName) {
         if (tileName == null)
             return false;
         Track track = null;
@@ -149,6 +159,17 @@ public class GameState {
 
     }
     /**
+     * Getter for isValidTileSelection
+     * @param tileName
+     * @return True if valid else false
+     */
+    public boolean getIsValidTileSelection(String tileName){
+        boolean res = isValidTileSelection(getSelectedDice(),tileName);
+        return res;
+    }
+
+
+    /**
      * to be used when the tile is placed
      * calls updateBonus from the track class on the desired track
      */
@@ -174,6 +195,13 @@ public class GameState {
 
         track.updateBonus(selectedDice, tileName);
     }
+    /**
+     * getter for updateBonus
+     * @param tileName
+     */
+    public void getUpdateBonus(String tileName){
+        updateBonus(getSelectedDice(),tileName);
+    }
 
 
     /**
@@ -198,7 +226,7 @@ public class GameState {
      * @param row       The row where the tile will be placed.
      * @param col       The column where the tile will be placed.
      */
-    public void placeTile(int row, int col) {
+    private void placeTile(int row, int col) {
         if (!isTilePlacementValid(gameBoard, row, col)) {
             System.out.println(tiles.getSelectedTileKey() + " placement is invalid");
             return;
@@ -272,6 +300,7 @@ public class GameState {
         this.dice.hardSetAvailableDice(dice);
     }
 
+
     /**
      * Returns the current state of the game board.
      * @return  A 2D character array representing the current game board.
@@ -304,7 +333,7 @@ public class GameState {
      * calls addTrack on the track passed to it
      * @param track should be the selectedTrack
      */
-    public void updateTrack(int track) {
+    private void updateTrack(int track) {
         switch (track) {
             case 0:
                 redTrack.addTrack();
@@ -324,6 +353,15 @@ public class GameState {
 
         }
     }
+
+    /**
+     * getter for updateTrack
+     * @param track
+     */
+    public void getUpdateTrack(int track){
+        updateTrack(track);
+    }
+
 
     /**
      * checks if the selected track is in the available dice
@@ -359,7 +397,6 @@ public class GameState {
      * @param dice to be applied
      */
     public void setRolledDice(List<String> dice) {
-
         this.dice.applyPresetDiceD2CP1(dice.get(0), dice.get(1), dice.get(2), dice.get(3), dice.get(4));
     }
     /**
@@ -399,7 +436,5 @@ public class GameState {
             System.out.println();
         }
     }
-
-
 
 }
