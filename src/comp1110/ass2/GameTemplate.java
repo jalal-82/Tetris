@@ -73,20 +73,17 @@ public class GameTemplate extends Application {
 			//resets the available dice to be all that the player hasn't used
 			gui.setAvailableDice(currentState.getAvailableDice());
 			System.out.println(currentState.getAvailableDice());
+
 //			check if Coat of Arms is completed
 			//maybe this could go in updateGUI?
-			boolean isCompleted = false; // this boolean will be used by hunter's abilities/track
 			if (!completedMap.isEmpty()){
 				List<Integer> rows = completedMap.get("completedRows");
 				for (int j=0;j<rows.size();j++){
 					gui.setRowCoA(currentPlayer,rows.get(j),true);
-					isCompleted = true;
 				}
-
 				List<Integer> cols = completedMap.get("completedCols");
 				for (int j=0;j<cols.size();j++){
 					gui.setColumnCoA(currentPlayer,cols.get(j),true);
-					isCompleted = true;
 				}
 			}
 			System.out.println("Board after tile for player "+currentPlayer);
@@ -249,9 +246,8 @@ public class GameTemplate extends Application {
 
 		gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(), trackToUpdate.nextBonus, trackToUpdate.nextAbility);
 	}
-	//method to update the gui
-	//so far it just updates the gameboard
-	//ie sets a square wherever one should be
+
+
 	private void updateGUIState() {
 		System.out.println("currPlayer in updateGUI "+currentPlayer);
 		char[][] board = gameStates.get(currentPlayer).getGameBoard();
