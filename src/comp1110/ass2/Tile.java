@@ -93,6 +93,7 @@ public class Tile {
             allTiles.put("Y5", new ArrayList<>());
             allTiles.get("Y5").add(new char[][] { {' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '} });
         }
+//        this.generatedTiles = generateTiles(dice);
         this.generatedTiles = generateTiles(dice);
     }
 
@@ -142,86 +143,68 @@ public class Tile {
         }
     }
 
-    /**
-     * Generates tiles based on the provided dice rolls. Takes into account colors and wild dice.
-     * @param rolledDices The dice rolls that determine the available tiles.
-     * @return A String array of the selected tiles.
-     * Author: Eileen
-     */
+
+    // new generate tiles
     public String[] generateTiles(Dices rolledDices) {
-        {
-            String[] result = new String[10]; // 4 tiles on screen
-            String[] color = {"R", "B", "P", "G", "Y"};
-            int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
-            int wildCount = 0; // Count of wild (White) dice
+        Set<String> result = new HashSet<>(); // Use a Set to avoid duplicates
+        String[] color = {"R", "B", "P", "G", "Y"};
+        int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
+        int wildCount = 0; // Count of wild (White) dice
 
-            String[] dices = rolledDices.getAllDice();
-            for (String s : dices) {
-                if (s.equals("W")) {
-                    wildCount++;
-                } else {
-                    for (int i = 0; i < color.length; i++) {
-                        if (s.equals(color[i])) {
-                            colorsNum[i]++;
-                            break;
-                        }
+        // Count the dice for each color and wilds
+        String[] dices = rolledDices.getAllDice();
+        for (String s : dices) {
+            if (s.equals("W")) {
+                wildCount++;
+            } else {
+                for (int i = 0; i < color.length; i++) {
+                    if (s.equals(color[i])) {
+                        colorsNum[i]++;
+                        break;
                     }
                 }
             }
-            rolledDices.setColorCount(colorsNum, wildCount);
-            int ite = 0;
-            while (ite < 10 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
-                int curMax = getmaxIndex(colorsNum, colorsNum.length);
-                int cur = colorsNum[curMax] + wildCount;
-
-                if (cur > 1) {
-                    for (int i = 2; i <= cur && ite < 10; i++) {
-                        result[ite] = color[curMax] + i;
-                        ite++;
-                        if (colorsNum[curMax] > 0) {
-                            colorsNum[curMax]--;
-                        } else {
-                            wildCount--;
-                        }
-                    }
-                } else {//else clause in case all colours have a total of one. (generates tiles of size 2)
-                    result[ite] = color[curMax] + 2;
-                    ite++;
-                    colorsNum[curMax]--;
-                }
-
-                if (colorsNum[curMax] == 0) {
-                    colorsNum[curMax] = -1; // Mark as processed
-                }
-            }
-
-            // Fill remaining slots with random tiles if needed
-            Random rand = new Random();
-            while (ite < 10) {
-                int y = rand.nextInt(allTiles.keySet().toArray().length);
-                result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
-                ite++;
-            }
-
-            return result;
         }
+
+        rolledDices.setColorCount(colorsNum, wildCount);
+
+        int totalDice = Arrays.stream(colorsNum).sum() + wildCount;
+
+        // For each color, calculate possible tiles considering wild dice
+        for (int i = 0; i < color.length; i++) {
+            int diceCount = colorsNum[i];
+            int maxDiceForColor = diceCount + wildCount;
+            int maxTileSize = Math.min(maxDiceForColor, totalDice);
+
+            // Generate tiles based on the possible dice count for each color
+            for (int tileSize = 2; tileSize <= maxTileSize; tileSize++) {
+                String tileKey = color[i] + tileSize;
+                if (allTiles.containsKey(tileKey)) {
+                    result.add(tileKey);
+                }
+            }
+        }
+
+        return result.toArray(new String[0]);
     }
 
-    /**
-     * Finds the index of the maximum value in an array.
-     * @param arr The array to search.
-     * @param n The size of the array.
-     * @return The index of the maximum value.
-     * Author: Eileen
-     */
     private int getmaxIndex(int[] arr, int n) {
-        int maxIndex = 0;
-        for (int i = 1; i < n; i++) {
-            if (arr[i] > arr[maxIndex]) {
+        int maxIndex = -1;
+        for (int i = 0; i < n; i++) {
+            if (arr[i] > 0 && (maxIndex == -1 || arr[i] > arr[maxIndex])) {
                 maxIndex = i;
             }
         }
         return maxIndex;
+    }
+
+    /**
+     * Get the generated tile.
+     * @return String[] of Generated Tiles
+     * @Author: Eileen
+     */
+    public String[] getGeneratedTiles(){
+        return generatedTiles;
     }
 
     /**
@@ -308,15 +291,6 @@ public class Tile {
     }
 
     /**
-     * Get the generated tile.
-     * @return String[] of Generated Tiles
-     * @Author: Eileen
-     */
-    public String[] getGeneratedTiles(){
-        return generatedTiles;
-    }
-
-    /**
      * Returns all tiles in the game.
      * @return A copy of the map containing all tiles.
      * Author:
@@ -354,6 +328,92 @@ public class Tile {
         for (String tile : generatedTiles) {
             System.out.println(tile);
         }
+    }
+
+
+    /**
+     * Generates tiles based on the provided dice rolls. Takes into account colors and wild dice.
+     * @param rolledDices The dice rolls that determine the available tiles.
+     * @return A String array of the selected tiles.
+     * Author: Eileen
+     */
+    public String[] oldgenerateTiles(Dices rolledDices) {
+        {
+            String[] result = new String[10]; // 4 tiles on screen
+            String[] color = {"R", "B", "P", "G", "Y"};
+            int[] colorsNum = new int[5]; // number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
+            int wildCount = 0; // Count of wild (White) dice
+
+            String[] dices = rolledDices.getAllDice();
+            for (String s : dices) {
+                if (s.equals("W")) {
+                    wildCount++;
+                } else {
+                    for (int i = 0; i < color.length; i++) {
+                        if (s.equals(color[i])) {
+                            colorsNum[i]++;
+                            break;
+                        }
+                    }
+                }
+            }
+            rolledDices.setColorCount(colorsNum, wildCount);
+            int ite = 0;
+            while (ite < 10 && (Arrays.stream(colorsNum).sum() > 0 || wildCount > 0)) {
+                int curMax = getmaxIndex(colorsNum, colorsNum.length);
+                int cur = colorsNum[curMax] + wildCount;
+
+                if (cur > 1) {
+                    for (int i = 2; i <= cur && ite < 10; i++) {
+                        result[ite] = color[curMax] + i;
+                        ite++;
+                        if (colorsNum[curMax] > 0) {
+                            colorsNum[curMax]--;
+                        } else {
+                            wildCount--;
+                        }
+                    }
+                } else {//else clause in case all colours have a total of one. (generates tiles of size 2)
+                    result[ite] = color[curMax] + 2;
+                    ite++;
+                    colorsNum[curMax]--;
+                }
+
+                if (colorsNum[curMax] == 0) {
+                    colorsNum[curMax] = -1; // Mark as processed
+                }
+            }
+
+            // Fill remaining slots with random tiles if needed
+            Random rand = new Random();
+            while (ite < 10) {
+                int y = rand.nextInt(allTiles.keySet().toArray().length);
+                result[ite] = String.valueOf(allTiles.keySet().toArray()[y]);
+                ite++;
+            }
+
+            return result;
+        }
+    }
+    /**
+     * Finds the index of the maximum value in an array.
+     * @param arr The array to search.
+     * @param n The size of the array.
+     * @return The index of the maximum value.
+     * Author: Eileen
+     */
+    private int oldgetmaxIndex(int[] arr, int n) {
+        int maxIndex = 0;
+        for (int i = 1; i < n; i++) {
+            if (arr[i] > arr[maxIndex]) {
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
+    }
+
+    public void removeTile(String key){
+        allTiles.remove(key);
     }
 
 }

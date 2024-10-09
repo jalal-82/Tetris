@@ -1,9 +1,7 @@
 package comp1110.ass2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+
 import comp1110.ass2.gui.*;
 
 public class GameState {
@@ -228,9 +226,12 @@ public class GameState {
             System.out.println(tiles.getSelectedTileKey() + " placement is invalid");
             return;
         }
-        //checks if the selectedTile is of size 4 or larger and adds it to usedTiles.
-//        if (tiles.getSelectedTileKey().contains("4") || tiles.getSelectedTileKey().contains("5") )
-//            tiles.addToUsedTiles(tiles.getSelectedTileKey());
+        // fix this, it doesn't remove the selectedTile
+        tiles.removeTile(tiles.getSelectedTileKey());
+
+        // everything else works fine
+
+
         //sets the available colors to be used by the other players
         dice.setAvailableColors(tiles.getSelectedTileKey());
         char[][] tile = tiles.getSelectedTile();
@@ -466,14 +467,14 @@ public class GameState {
         }
     }
 
+    public Map<String, List<char[][]>> getTilesFromGS(){
+        return tiles.getAllTiles();
+    }
     public static void main(String[] args) {
         Dices D1 = new Dices();
+        D1.applyPresetDiceD2CP1("R","R","W","W","W");
         Tile T1 = new Tile(D1);
-        Score S1 = new Score();
-        GameState gameState = new GameState(D1,T1,S1);
-        boolean[] windows = {true};
-        gameState.placeSingleTile(0,1,0,windows);
-        gameState.printBoard(gameState.getGameBoard());
+        T1.printGeneratedTiles();
     }
 
 }

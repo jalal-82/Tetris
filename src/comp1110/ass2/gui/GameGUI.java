@@ -222,13 +222,13 @@ public class GameGUI extends BorderPane {
         controls.add(b_colour_change, 0, 0);
         current_player_controls = controls;
 
-        b_error = new Button("Reroll and Generate (only when game breaks)");
-        controls.add(b_error, 0, 3);
-    b_error.setOnAction((e) -> {
-        if (onError != null) {
-            onError.accept(b_error.getText());
-        }
-        });
+//        b_error = new Button("Reroll and Generate (only when game breaks)");
+//        controls.add(b_error, 0, 3);
+//    b_error.setOnAction((e) -> {
+//        if (onError != null) {
+//            onError.accept(b_error.getText());
+//        }
+//        });
 
     }
 

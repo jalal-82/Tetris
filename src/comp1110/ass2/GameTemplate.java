@@ -79,6 +79,9 @@ public class GameTemplate extends Application {
 			System.out.println("Board after tile for player "+currentPlayer);
 			currentState.printBoard(currentState.getGameBoard());
 
+			// remove that tile from allTiles
+			System.out.println(currentState.getTilesFromGS().size());
+
 			//update control player to represent player to select track
             if (currentPlayer != maxPlayers - 1) {
                 gui.setControlPlayer(currentPlayer + 1);
@@ -122,7 +125,7 @@ public class GameTemplate extends Application {
 			if (currentState.redTrack.getAbility() == 0)
 				gui.setMessage("Missing red ability, can't reroll");
 			else {
-				gui.setMessage("Player " + String.valueOf(currentPlayer) + " rerolled");
+				gui.setMessage("Player " + currentPlayer + " rerolled");
 				currentState.rerollDice();
 				gui.setAvailableTiles(List.of(currentState.getTiles()));
 				gui.setAvailableDice(List.of(currentState.getDice()));
@@ -195,7 +198,6 @@ public class GameTemplate extends Application {
 			currentPlayer++;
 		}
 
-
 		gui.setControlPlayer(currentPlayer);
 		gui.setMessage("Now it's player " + currentPlayer + "'s turn");
 
@@ -207,10 +209,10 @@ public class GameTemplate extends Application {
 	/**
 	 * The purpose of this method is that player can reroll their dices and tiles, only if their game runs into error.
 	 */
-	gui.setOnError((s) -> {
-		currentState = gameStates.get(currentPlayer);
-		currentState.updateDiceAndTiles(gui,currentState);
-	});
+//	gui.setOnError((s) -> {
+//		currentState = gameStates.get(currentPlayer);
+//		currentState.updateDiceAndTiles(gui,currentState);
+//	});
 
 	// Start the application:
         stage.setScene(scene);
