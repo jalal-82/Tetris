@@ -3,6 +3,7 @@ package comp1110.ass2.gui;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.CheckBox;
@@ -14,14 +15,18 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+import javafx.scene.image.Image;
 import javafx.geometry.Pos;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseButton;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 
 import java.util.function.Consumer;
 import java.util.function.BiConsumer;
@@ -199,7 +204,7 @@ public class GameGUI extends BorderPane {
 		}
         // @Eileen: this switch the tab to next when press confirm button,
         // @Eileen: then other player can select their dice to add on abilities.
-        player_selector.getSelectionModel().selectNext();
+        player_selector.getSelectionModel().selectNext(); //TODO @Eileen: a bug is that last player won't switch to the first one
 	    });
         b_pass = new Button("Pass (player #)");
         controls.add(b_pass, 0, 2);
@@ -267,6 +272,28 @@ public class GameGUI extends BorderPane {
 
         player_view = new PlayerStateView();
         player_pane.add(player_view, 0, 0);
+        // @Eileen: add a button to display facade sheet
+        Button fs = new Button("facade sheet");
+        Popup popup = new Popup();
+        Image image1 = new Image("file:assets/tile-names.png", true);
+        ImageView view = new ImageView(image1);
+        view.setFitHeight(500);
+        view.setFitWidth(500);
+        VBox vBox=new VBox (view);
+        Scene sc = new Scene(vBox, view.getFitHeight(), view.getFitWidth());
+        Stage st = new Stage();
+        st.setTitle("facade sheet");
+        st.setScene(sc);
+        fs.setOnAction((e) -> {
+            if (popup.isShowing()) {
+                popup.hide();
+                st.close();
+            } else {
+                st.show();
+                popup.show(st);
+            }
+        });
+        player_pane.add(fs, 0, 1);
         //player_pane.setHgrow(player_view, Priority.ALWAYS);
         building_view = new BuildingView(BUILDING_WIDTH, BUILDING_HEIGHT);
         building_view.setFocusTraversable(true);
@@ -383,8 +410,8 @@ public class GameGUI extends BorderPane {
     public static final int MAX_N_PLAYERS = 4;
     
     public GameGUI() {
-	super(); // BorderPane no-arg constructor
-	makeMainLayout();
+	    super(); // BorderPane no-arg constructor
+	    makeMainLayout();
         makeSetupControls();
         makePlayerControls();
         control_view.getChildren().add(game_setup_controls);
