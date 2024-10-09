@@ -104,6 +104,7 @@ public class GameTemplate extends Application {
 	gui.setOnDiceSelectionChanged((i) -> {
 		currentState.updateSelectedDice(gui.getSelectedDice());
 		System.out.println(currentState.getSelectedDice());
+		System.out.println("here");
 	    });
 
 	// updates the selected tile when a tile is selected in the gui
@@ -166,28 +167,21 @@ public class GameTemplate extends Application {
 
 	});
 
-	gui.setOnConfirm((s) -> {
-		//checks the control player, if it's the currentPlayer then it starts next turn, else it confirms track selection
-		if (s.contains(String.valueOf(currentPlayer))) {
-			currentPlayer++;
 
-			if (currentPlayer > maxPlayers - 1) {
-				currentPlayer = 0;
-			}
-			gui.setMessage("Player " + currentPlayer + "'s turn");
-
-
-			// rolls dice, generate tiles and sets control for next player
-			currentState = gameStates.get(currentPlayer);
+	gui.setOnConfirm((s) -> { // into select dice mode
+		currentPlayer++;
+		if (currentPlayer>maxPlayers-1)
+			currentPlayer = 0;
+		currentState = gameStates.get(currentPlayer);
+		if (s.equals("next")) {
 			currentState.updateDiceAndTiles(gui,currentState);
 			gui.setControlPlayer(currentPlayer);
+			return;
+		}
+		gui.setMessage("Player"+currentPlayer+"choose a dice");
 
-		} else if (currentState.getAvailableDice().isEmpty())
-			gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
-		else
-			handleTrackSelection();
-		//also need case for if available die is null to skip track selection
 	    });
+
 
 	gui.setOnPass((s) -> {
 		// move to next player
