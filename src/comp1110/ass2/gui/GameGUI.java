@@ -193,6 +193,7 @@ public class GameGUI extends BorderPane {
 		}
 		else if (onConfirm != null) {
 		    onConfirm.accept(b_confirm.getText());
+		    showState();
 		}
 	    });
         b_pass = new Button("Pass (player #)");
@@ -200,6 +201,7 @@ public class GameGUI extends BorderPane {
 	b_pass.setOnAction((e) -> {
 		if (onPass != null) {
 		    onPass.accept(b_pass.getText());
+		    showState();
 		}
 	    });
         b_colour_change = new MenuButton("Action...");
@@ -540,6 +542,15 @@ public class GameGUI extends BorderPane {
     }
 
     /**
+     * Set the player whose score sheet should be shown in the left part
+     * of the GUI.
+     * @param player The player to display (0 to number of players - 1).
+     */
+    public void setSelectedPlayer(int player) {
+        player_selector.getSelectionModel().select(player);
+    }
+
+    /**
      * Set the list of actions to appear in the "Action..." menu.
      */
     public void setAvailableActions(List<String> actions) {
@@ -549,6 +560,7 @@ public class GameGUI extends BorderPane {
 	    act.setOnAction((e) -> {
 		    if (onGameAction != null)
 			onGameAction.accept(act.getText());
+		    showState();
 		});
             b_colour_change.getItems().add(act);
         }
@@ -613,7 +625,10 @@ public class GameGUI extends BorderPane {
      * currently selected dice.
      */
     public void setOnDiceSelectionChanged(IntConsumer handler) {
-	dice_view.selectors().setOnSelectionChanged(handler);
+	dice_view.selectors().setOnSelectionChanged((i) -> {
+		handler.accept(i);
+		showState();
+	    });
     }
 
     /**
@@ -627,7 +642,10 @@ public class GameGUI extends BorderPane {
      * of currently selected tracks.
      */
     public void setOnTrackSelectionChanged(IntConsumer handler) {
-	player_view.getTrackSelectors().setOnSelectionChanged(handler);
+	player_view.getTrackSelectors().setOnSelectionChanged((i) -> {
+		handler.accept(i);
+		showState();
+	    });
     }
 
     /**
