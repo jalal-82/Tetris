@@ -97,7 +97,6 @@ public class Tile {
         this.generatedTiles = generateTiles(dice);
     }
 
-
     /**
      * Checks whether the given tile is a valid selection from the set of generated tiles.
      * @param tileName The name of the tile to check (e.g., "R2", "B3").
@@ -142,7 +141,6 @@ public class Tile {
             }
         }
     }
-
 
     // new generate tiles
     public String[] generateTiles(Dices rolledDices) {
@@ -415,6 +413,7 @@ public class Tile {
     public void removeTile(String key){
         allTiles.remove(key);
     }
+
 
 }
 
