@@ -3,6 +3,7 @@ package comp1110.ass2.gui;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.CheckBox;
@@ -14,14 +15,18 @@ import javafx.scene.control.MenuButton;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.Font;
+import javafx.scene.image.Image;
 import javafx.geometry.Pos;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseButton;
+import javafx.stage.Popup;
+import javafx.stage.Stage;
 
 import java.util.function.Consumer;
 import java.util.function.BiConsumer;
@@ -69,7 +74,8 @@ public class GameGUI extends BorderPane {
 
     private Placement candidate = null;
     private int candidate_index = -1;
-
+    private boolean selectDiceMode = false;
+    private int playerLock = 0;
     private void makeSetupControls() {
         VBox controls = new VBox();
         controls.setSpacing(4);
@@ -185,22 +191,47 @@ public class GameGUI extends BorderPane {
 	//     });
         b_confirm = new Button("Confirm (player #)");
         controls.add(b_confirm, 0, 1);
+
 	b_confirm.setOnAction((e) -> {
-		if (candidate != null) {
+        System.out.println("GUI confirm called");
+		if (candidate != null && !selectDiceMode) {
+            System.out.println("candidate not null");
 		    Placement tmp = candidate;
 		    candidate = null;
 		    library_view.clearSelection();
 		    if (onTilePlaced != null)
 			onTilePlaced.accept(tmp);
 		    showState();
+            selectDiceMode = true;
+            // @Eileen: this switch the tab to next when press confirm button,
+            // @Eileen: then other player can select their dice to add on abilities.
+            playerLock = player_selector.getSelectionModel().getSelectedIndex(); //remember current player
+            player_selector.getSelectionModel().selectNext();
 		}
-		else if (onConfirm != null) {
-		    onConfirm.accept(b_confirm.getText());
+        else if (candidate != null && selectDiceMode) {
+            setMessage("You can only pick a dice");
+        }
+		else if (onConfirm != null && selectDiceMode) {
+            System.out.println("onConfirm not null");
+            System.out.println("Size is "+player_selector.getTabs().size());
+            if (player_selector.getSelectionModel().isSelected(player_selector.getTabs().size()-1)) // check if it's the last
+                player_selector.getSelectionModel().selectFirst();
+            else
+                player_selector.getSelectionModel().selectNext();
+            if (player_selector.getSelectionModel().getSelectedIndex() == playerLock) {
+                onConfirm.accept("next");
+                selectDiceMode = false;
+                player_selector.getSelectionModel().selectNext();
+            } else {
+		        onConfirm.accept(b_confirm.getText());
+            }
 		}
-        // @Eileen: this switch the tab to next when press confirm button,
-        // @Eileen: then other player can select their dice to add on abilities.
-        player_selector.getSelectionModel().selectNext();
+//        else if
+        // test
+        System.out.println("now:" + player_selector.getSelectionModel().getSelectedIndex());
 	    });
+
+
         b_pass = new Button("Pass (player #)");
         controls.add(b_pass, 0, 2);
 	b_pass.setOnAction((e) -> {
@@ -267,6 +298,61 @@ public class GameGUI extends BorderPane {
 
         player_view = new PlayerStateView();
         player_pane.add(player_view, 0, 0);
+        // @Eileen: add a button to display facade sheet
+        Button fs = new Button("facade sheet");
+        Popup popup = new Popup();
+        Image image1 = new Image("file:assets/tile-names.png", true);
+        ImageView view = new ImageView(image1);
+        view.setFitHeight(500);
+        view.setFitWidth(500);
+        VBox vBox=new VBox (view);
+        Scene sc = new Scene(vBox, view.getFitHeight(), view.getFitWidth());
+        Stage st = new Stage();
+        st.setTitle("facade sheet");
+        st.setScene(sc);
+        fs.setOnAction((e) -> {
+            if (popup.isShowing()) {
+                popup.hide();
+                st.close();
+            } else {
+                st.show();
+                popup.show(st);
+            }
+        });
+        player_pane.add(fs, 0, 1);
+
+        // @Eileen: add a button to display abilities rules
+        Button ab = new Button("abilities rules");
+        Popup popup2 = new Popup();
+        Label lb = new Label("""
+                The red ability allows the player to reroll one or more of their dice. (The player can choose which dice to reroll and which to keep.)
+                
+                The blue ability allows the player to add an extra window when placing a tile. This means all squares on the tile will have windows.
+                
+                The purple ability allows the player to place an extra single-square tile. The tile does not have a window, but using the combination of a purple and a blue ability allows the player to also put a window on the single-square tile.
+                
+                The green ability allows the player to change any number of dice that have the same colour to another colour of their choice.
+                
+                The yellow ability allows the player to pick one of the single-use (size four or five) tiles from the facade sheet even if that tile has already been used.
+                """);
+        lb.setWrapText(true);
+        lb.setFont(new Font("Arial", 18));
+        lb.setPrefSize(1500,300);
+        Scene sc2 = new Scene(lb);
+        Stage st2 = new Stage();
+        st2.setTitle("abilities rules");
+        st2.setScene(sc2);
+        ab.setOnAction((e) -> {
+            if (popup2.isShowing()) {
+                popup2.hide();
+                st2.close();
+            } else {
+                st2.show();
+                popup2.show(st2);
+            }
+        });
+        player_pane.add(ab, 0, 2);
+
         //player_pane.setHgrow(player_view, Priority.ALWAYS);
         building_view = new BuildingView(BUILDING_WIDTH, BUILDING_HEIGHT);
         building_view.setFocusTraversable(true);
@@ -359,7 +445,7 @@ public class GameGUI extends BorderPane {
         price_view.setBorder(boxBorder);
         price_view.setPadding(new Insets(2, 2, 2, 2));
         price_view.setMinHeight(40);
-        // right.getChildren().add(price_view);
+//         right.getChildren().add(price_view);
         dice_view = new DiceView(5);
         dice_view.setBorder(boxBorder);
         dice_view.setPadding(new Insets(2, 2, 2, 2));
@@ -383,8 +469,8 @@ public class GameGUI extends BorderPane {
     public static final int MAX_N_PLAYERS = 4;
     
     public GameGUI() {
-	super(); // BorderPane no-arg constructor
-	makeMainLayout();
+	    super(); // BorderPane no-arg constructor
+	    makeMainLayout();
         makeSetupControls();
         makePlayerControls();
         control_view.getChildren().add(game_setup_controls);
@@ -671,6 +757,14 @@ public class GameGUI extends BorderPane {
      */
     public void setOnPass(Consumer<String> handler) {
 	onPass = handler;
+    }
+
+    /**
+     * Set the value of selectDiceMode to the opposite.
+     * @author: Eileen
+     */
+    public void setSelectDiceMode() {
+        selectDiceMode = !selectDiceMode;
     }
 
     public void setOnError(Consumer<String> handler){ onError = handler; }
