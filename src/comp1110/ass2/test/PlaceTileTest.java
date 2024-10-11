@@ -1,9 +1,6 @@
 package comp1110.ass2.test;
 
-import comp1110.ass2.Dices;
-import comp1110.ass2.GameState;
-import comp1110.ass2.Score;
-import comp1110.ass2.Tile;
+import comp1110.ass2.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -18,12 +15,12 @@ public class PlaceTileTest {
     Dices diceOne;
     Tile tileOne;
     Score scoreOne;
-    GameState gameStateOne;
+    GameBoard gameBoardOne;
 
     Dices dicesTwo;
     Tile tileTwo;
     Score scoreTwo;
-    GameState gameStateTwo;
+    GameBoard gameBoardTwo;
 
     @BeforeEach
     public void setup() {
@@ -33,24 +30,24 @@ public class PlaceTileTest {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
-        gameStateOne = new GameState(diceOne, tileOne, scoreOne);
+        gameBoardOne = new GameBoard(diceOne, tileOne);
 
 //      Create Game Instance for Player 2
         dicesTwo = new Dices();
         tileTwo = new Tile(dicesTwo);
         scoreTwo = new Score();
-        gameStateTwo = new GameState(dicesTwo, tileTwo, scoreTwo);
+        gameBoardTwo = new GameBoard(dicesTwo, tileTwo);
 
         //      Apply Tiles to Player 1's Gameboard
         if (tileOne.getAllTiles().containsKey("B3")) {
             tileOne.updateSelectedTile("B3");
             boolean[] windows = {true, false, true};
-            gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
+            gameBoardOne.placeTileWithRotationWindows(0, 0, 1, windows);
         }
         if (tileOne.getAllTiles().containsKey("G4L")) {
             tileOne.updateSelectedTile("G4L");
             boolean[] windows = {true, false, true, true};
-            gameStateOne.placeTileWithRotationWindows( 0, 3, 0, windows);
+            gameBoardOne.placeTileWithRotationWindows( 0, 3, 0, windows);
         }
     }
 
@@ -59,7 +56,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 0);
-            boolean isValid = gameStateOne.getIsTilePlacementValid(1,0);
+            boolean isValid = gameBoardOne.getIsTilePlacementValid(1,0);
             assertFalse(isValid);
         }
     }
@@ -69,7 +66,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 3);
-            boolean isValid = gameStateOne.getIsTilePlacementValid(1,0);
+            boolean isValid = gameBoardOne.getIsTilePlacementValid(1,0);
             assertEquals(isValid,true);
         }
     }
@@ -79,7 +76,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 3);
-            boolean isValid = gameStateOne.getIsTilePlacementValid(2,0);
+            boolean isValid = gameBoardOne.getIsTilePlacementValid(2,0);
             assertEquals(isValid,false);
         }
     }
@@ -89,7 +86,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 1);
-            boolean isValid = gameStateOne.getIsTilePlacementValid(2,0);
+            boolean isValid = gameBoardOne.getIsTilePlacementValid(2,0);
             assertEquals(isValid,true);
         }
     }
@@ -99,7 +96,7 @@ public class PlaceTileTest {
         if (tileOne.getAllTiles().containsKey("Y3")) {
             tileOne.updateSelectedTile("Y3");
             tileOne.rotateTile( 3);
-            boolean isValid = gameStateOne.getIsTilePlacementValid(1,1);
+            boolean isValid = gameBoardOne.getIsTilePlacementValid(1,1);
             assertEquals(isValid,false);
         }
     }

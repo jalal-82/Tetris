@@ -13,6 +13,7 @@ public class TrackTest {
     Tile tileOne;
     Score scoreOne;
     GameState gameStateOne;
+    GameBoard gameBoardOne;
     Dices diceTwo;
 
 
@@ -24,7 +25,8 @@ public class TrackTest {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "B", "W");
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
-        gameStateOne = new GameState(diceOne, tileOne, scoreOne);
+        gameStateOne = new GameState(scoreOne);
+        gameBoardOne = new GameBoard(diceOne, tileOne);
         diceTwo = new Dices();
 //
     }

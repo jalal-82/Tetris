@@ -15,6 +15,7 @@ public class ScoreTest {
     Tile tileOne;
     Score scoreOne;
     GameState gameStateOne;
+    GameBoard gameBoardOne;
 
     @BeforeEach
     public void setup() {
@@ -22,7 +23,8 @@ public class ScoreTest {
         diceOne = new Dices();
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
-        gameStateOne = new GameState(diceOne, tileOne, scoreOne);
+        gameStateOne = new GameState(scoreOne);
+        gameBoardOne = new GameBoard(diceOne, tileOne);
 
 
     }
@@ -35,11 +37,11 @@ public class ScoreTest {
         diceOne.applyPresetDiceD2CP1("P","P","P","P","P");
         tileOne.updateSelectedTile("P5");
         boolean[] windows = {false, false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 0, 0, windows);
+        gameBoardOne.placeTileWithRotationWindows(0, 0, 0, windows);
 
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
 
-        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(1, res);
     }
@@ -52,11 +54,11 @@ public class ScoreTest {
         diceOne.applyPresetDiceD2CP1("P","P","P","P","P");
         tileOne.updateSelectedTile("P5");
         boolean[] windows = {true, true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 0, 0, windows);
+        gameBoardOne.placeTileWithRotationWindows(0, 0, 0, windows);
 
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
 
-        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(2, res);
     }
@@ -69,21 +71,21 @@ public class ScoreTest {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windows = {true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
+        gameBoardOne.placeTileWithRotationWindows(0, 0, 1, windows);
 
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
+        gameBoardOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {true, true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
+        gameBoardOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
 
-        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(4, res);
     }
@@ -96,21 +98,21 @@ public class ScoreTest {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windows = {false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
+        gameBoardOne.placeTileWithRotationWindows(0, 0, 1, windows);
 
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
+        gameBoardOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {false, false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
+        gameBoardOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
 
-        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(2, res);
     }
@@ -123,26 +125,26 @@ public class ScoreTest {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windows = {false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
+        gameBoardOne.placeTileWithRotationWindows(0, 0, 1, windows);
 
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
+        gameBoardOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {false, false, false, false, false};
-        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
+        gameBoardOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "R", "P");
         tileOne.updateSelectedTile("P3");
         boolean[] windowsFour = {false, false, false};
-        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
+        gameBoardOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
 
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
 
-        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(3, res);
     }
@@ -155,26 +157,26 @@ public class ScoreTest {
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windows = {true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 0, 1, windows);
+        gameBoardOne.placeTileWithRotationWindows(0, 0, 1, windows);
 
         diceOne.applyPresetDiceD2CP1("R", "R", "R", "R", "P");
         tileOne.updateSelectedTile("R4");
         boolean[] windowsTwo = {true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
+        gameBoardOne.placeTileWithRotationWindows(2, 0, 1, windowsTwo);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "P", "P");
         tileOne.updateSelectedTile("P5");
         boolean[] windowsThree = {true, true, true, true, true};
-        gameStateOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
+        gameBoardOne.placeTileWithRotationWindows(4, 0, 1, windowsThree);
 
         diceOne.applyPresetDiceD2CP1("P", "P", "P", "R", "P");
         tileOne.updateSelectedTile("P3");
         boolean[] windowsFour = {true, true, true};
-        gameStateOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
+        gameBoardOne.placeTileWithRotationWindows(0, 2, 1, windowsFour);
 
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
 
-        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(),completedMap);
         int res = scoreOne.getScore();
         assertEquals(6, res);
     }

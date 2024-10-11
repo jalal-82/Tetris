@@ -4,7 +4,7 @@ import comp1110.ass2.gui.*;
 
 public class Game {
 
-    private void updateGUIState(int currentPlayer, GameState gameboard, GameGUI gui) {
+    private void updateGUIState(int currentPlayer, GameBoard gameboard, GameGUI gui) {
         System.out.println("currPlayer in updateGUI "+currentPlayer);
         char[][] board = gameboard.getGameBoard();
         for (int y = 0; y < board.length; y++) { // @Eileen: y is gameboard row
@@ -26,7 +26,7 @@ public class Game {
         }
     }
 
-    private void handleTrackSelection(GameGUI gui,GameState gameBoard, int controlPlayer, int maxPlayers) {
+    private void handleTrackSelection(GameGUI gui,GameState gameState, GameBoard gameBoard, int controlPlayer, int maxPlayers) {
         if (gui.getSelectedTracks().size() > 1){
             gui.setMessage("too many tracks selected, select only one");
         } else if (!gameBoard.isInAvailableDice(gui.getSelectedTracks().get(0))) {
@@ -34,8 +34,8 @@ public class Game {
             System.out.println(gameBoard.getAvailableDice());
             gui.setMessage("this track colour is not available");
         }else {
-            gameBoard.getUpdateTrack(gui.getSelectedTracks().get(0));
-            updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0),gameBoard,gui);
+            gameState.getUpdateTrack(gui.getSelectedTracks().get(0));
+            updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0),gameState,gui);
             controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
             gui.setControlPlayer(controlPlayer);
         }
@@ -70,12 +70,12 @@ public class Game {
         gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(), trackToUpdate.nextBonus, trackToUpdate.nextAbility);
     }
 
-    public void getUpdateGUIState(int currentPlayer, GameState gameboard,GameGUI gui){
+    public void getUpdateGUIState(int currentPlayer, GameBoard gameboard,GameGUI gui){
         updateGUIState(currentPlayer,gameboard,gui);
     }
 
-    public void getHandleTrackSelection(GameGUI gui, GameState gameBoard, int controlPlayer, int maxPlayers){
-        handleTrackSelection(gui,gameBoard,controlPlayer,maxPlayers);
+    public void getHandleTrackSelection(GameGUI gui, GameState gameState, GameBoard gameBoard, int controlPlayer, int maxPlayers){
+        handleTrackSelection(gui,gameState, gameBoard,controlPlayer,maxPlayers);
     }
 
     public void getUpdateTrackInfo(int player, int track, GameState gameStateToUpdate, GameGUI gui){
