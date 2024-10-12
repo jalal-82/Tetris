@@ -38,7 +38,6 @@ public class GameTemplate extends Application {
 			setupGameUI(); // Display message and available actions for the start of the game
 		});
 
-		// Places the tile on the board in our backend logic then updates the GUI
 		gui.setOnTilePlaced((p) -> {
 			// Validate the window configuration and check blue ability
 			if (!handleWindowValidation(p)) return;

@@ -56,10 +56,8 @@ public class GameGUI extends BorderPane {
     private StackPane control_view;
     private Node game_setup_controls;
     private Node current_player_controls;
-    private Button b_rerol;
     private Button b_confirm;
     private Button b_pass;
-    private Button b_error;
     private MenuButton b_colour_change;
 
     private BiConsumer<Integer, boolean[]> onStartGame;
