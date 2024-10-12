@@ -189,10 +189,23 @@ public class GameGUI extends BorderPane {
 	//     });
         b_confirm = new Button("Confirm (player #)");
         controls.add(b_confirm, 0, 1);
+        b_confirm.setOnAction((e) -> {
+            if (candidate != null) {
+                Placement tmp = candidate;
+                candidate = null;
+                library_view.clearSelection();
+                if (onTilePlaced != null)
+                    onTilePlaced.accept(tmp);
+                showState();
+            }
+            else if (onConfirm != null) {
+                onConfirm.accept(b_confirm.getText());
+            }
+        });
 
         b_confirm.setOnAction((e) -> {
             System.out.println("GUI confirm called");
-            if (candidate != null && !selectDiceMode) {
+            if (candidate != null) {
                 System.out.println("candidate not null");
                 Placement tmp = candidate;
                 candidate = null;
@@ -201,11 +214,7 @@ public class GameGUI extends BorderPane {
                     onTilePlaced.accept(tmp);
                 showState();
                 selectDiceMode = true;
-
                 cycleToNextPlayer(); // Call the method to handle player cycling
-            }
-            else if (candidate != null && selectDiceMode) {
-                setMessage("You can only pick a dice");
             }
             else if (onConfirm != null && selectDiceMode) {
                 System.out.println("onConfirm not null");
@@ -221,6 +230,7 @@ public class GameGUI extends BorderPane {
                     cycleToNextPlayer(); // Go to the next player
                 } else {
                     onConfirm.accept(b_confirm.getText());
+
                 }
             }
 

@@ -63,6 +63,7 @@ public class GameTemplate extends Application {
 
 		// Updates the selected tile when a tile is selected in the GUI
 		gui.setOnTileSelected(tileName -> {
+			currentState.updateSelectedDice(gui.getSelectedDice());
 			// Checks if the selection is valid given the selected dice. Only allows valid selections
 			if (currentState.isValidTileSelection(tileName)) {
 				gui.setMessage("Valid tile selected");
@@ -93,7 +94,7 @@ public class GameTemplate extends Application {
 				gui.setAvailableTiles(List.of(currentState.getTiles()));
 				gui.setAvailableDice(List.of(currentState.getDice()));
 			}
-			if (currentState.getAvailableDice().isEmpty()){
+			else if (currentState.getAvailableDice().isEmpty()){
 				gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
 			} else {
 				handleTrackSelection();
@@ -102,10 +103,7 @@ public class GameTemplate extends Application {
 
 		gui.setOnPass((s) -> {
 			handlePassTurnMessage(); // Handle message and turn skipping
-
-			updateCurrentPlayer(); // Move control to the next player
-
-			updatePlayerStateForNextTurn(); // Set up the new player's game state (reroll dice, assign new tiles)
+			handleTrackSelection();
 		});
 
 		// Start the application:
