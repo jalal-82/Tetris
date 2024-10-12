@@ -363,6 +363,11 @@ The public interface of the `GameGUI` class contains the following methods:
 	shown in the left part of the GUI. The index ranges from 0 to number
 	of players - 1.
 
+*   `public void setSelectedPlayer(int player)`
+
+    Set the player whose score sheet should be shown in the left part
+    of the GUI to be `player` (from 0 to number of players - 1).
+
 *   `public void setAvailableActions(List<String> actions)`
 
 	Set the list of possible player actions to appear when the "Action..."
