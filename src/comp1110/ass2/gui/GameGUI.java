@@ -204,7 +204,6 @@ public class GameGUI extends BorderPane {
                 showState();
                 selectDiceMode = true;
 
-                // Switch the tab to next when confirm is pressed, so the next player can select dice for abilities
                 cycleToNextPlayer(); // Call the method to handle player cycling
             }
             else if (candidate != null && selectDiceMode) {
