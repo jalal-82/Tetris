@@ -1,0 +1,327 @@
+package comp1110.ass2;
+import comp1110.ass2.gui.GameGUI;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+public class GameBoard {
+
+    private char[][] gameBoard;
+    private final Dices dice;
+    private Tile tiles;
+
+    public GameBoard(Dices dice, Tile tiles) {
+        this.dice = dice;
+        this.tiles = tiles;
+        this.gameBoard = new char[9][5];
+        initializeBoard();
+    }
+
+    /**
+     * Initializes the game board by filling it with '.' characters.
+     * This represents an empty board with no tiles placed.
+     */
+    private void initializeBoard() {
+        for (int i = 0; i < gameBoard.length; i++) {
+            for (int j = 0; j < gameBoard[i].length; j++) {
+                gameBoard[i][j] = '.';
+            }
+        }
+    }
+
+    /**
+     * Updates the selectedTile on the GUI
+     * @param tile
+     */
+    public void updateSelectedTile(String tile) {
+        this.tiles.updateSelectedTile(tile);
+    }
+
+    /**
+     * Checks if a tile placement of the selected tile is valid based on its position, overlap, and support.
+     * @param board     The current game board.
+     * @param col       The column where the tile is to be placed.
+     * @param row       The row where the tile is to be placed.
+     * @return          True if the tile placement is valid, false otherwise.
+     */
+    private boolean isTilePlacementValid(char[][] board, int row, int col) {
+        char[][] tile = tiles.getSelectedTile();
+
+        if (tile == null) {
+            System.out.println("Error: No tile is selected.");
+            return false;
+        }
+
+        int tileRows = tile.length;
+        int tileCols = tile[0].length;
+
+        // Convert the row index to match the new orientation (bottom to top)
+        int adjustedRow = board.length - (row + tileRows);
+        // Check if the tile fits within the board boundaries (row and col)
+        if (adjustedRow < 0 || col + tileCols > board[0].length) {
+            return false;
+        }
+
+        // Check if the tile overlaps with any existing tiles
+        for (int i = 0; i < tileRows; i++) {
+            for (int j = 0; j < tileCols; j++) {
+                if (tile[i][j] != ' ' && board[adjustedRow + i][col + j] != '.') {
+                    return false;
+                }
+            }
+        }
+
+        // Check if the tile "rests on" an existing tile or the base
+        boolean hasSupport = false;
+        for (int i = 0; i < tileRows; i++) {
+            for (int j = 0; j < tileCols; j++) {
+                if (tile[i][j] != ' ') {  // Only check non-empty characters
+                    int belowRow = adjustedRow + i + 1;  // Check the row below the current tile
+                    if (belowRow >= board.length) {
+                        // Tile is on the base (bottom row), so it's valid
+                        hasSupport = true;
+                    } else if (board[belowRow][col + j] != '.') {
+                        // Tile is resting on an already placed tile
+                        hasSupport = true;
+                    }
+                }
+            }
+        }
+
+        return hasSupport;
+    }
+
+
+
+    /**
+     * Places the selected tile on the game board at the specified row and column.
+     * @param row       The row where the tile will be placed.
+     * @param col       The column where the tile will be placed.
+     */
+    private void placeTile(int row, int col) {
+        if (!isTilePlacementValid(gameBoard, row, col)) {
+            System.out.println(tiles.getSelectedTileKey() + " placement is invalid");
+            return;
+        }
+        // fix this, it doesn't remove the selectedTile
+        tiles.removeTile(tiles.getSelectedTileKey());
+
+        // everything else works fine
+
+
+        //sets the available colors to be used by the other players
+        dice.setAvailableColors(tiles.getSelectedTileKey());
+        char[][] tile = tiles.getSelectedTile();
+        int tileRows = tile.length;
+        int tileCols = tile[0].length;
+
+        // Convert the row index to match the new orientation (bottom to top)
+        int adjustedRow = gameBoard.length - (row + tileRows);
+
+        // Place the tile on the board
+        for (int i = 0; i < tileRows; i++) {
+            for (int j = 0; j < tileCols; j++) {
+                if (tile[i][j] != ' ') {  // Only place non-empty characters
+                    gameBoard[adjustedRow + i][col + j] = tile[i][j];
+
+                }
+            }
+        }
+    }
+
+    /**
+     * Places selected tile on the game board with a specified rotation and applied windows.
+     *
+     * @param col       The column where the tile will be placed.
+     * @param row       The row where the tile will be placed.
+     * @param rotation  The degree of rotation to apply to the tile (0-3 for 0, 90, 180, 270 degrees).
+     * @param windows   Boolean array indicating which windows to apply to the tile.
+     */
+    public void placeTileWithRotationWindows(int row, int col, int rotation, boolean[] windows){
+        tiles.applyWindows(windows);
+        tiles.rotateTile(rotation);
+        placeTile(row,col);
+    }
+
+    /**
+     *
+     * @return the dice remaining after the active player places their tile
+     */
+    public List<String> getAvailableDice() {
+        return dice.getAvailableColors();
+    }
+
+    /**
+     * Getter for isTilePlacementValid Method
+     * @param row
+     * @param col
+     * @return True if placement Valid else false
+     */
+    public boolean getIsTilePlacementValid(int row, int col) {
+        boolean isValid = isTilePlacementValid(getGameBoard(),row,col); ;
+        return isValid;
+    }
+
+    /**
+     * Returns the current state of the game board.
+     * @return  A 2D character array representing the current game board.
+     */
+    public char[][] getGameBoard() {
+        return gameBoard;
+    }
+
+    /**
+     * updates the selectedDice variable in Dice
+     * @param selectedDice should be the selectedDice in the gui
+     */
+    public void updateSelectedDice(List<Integer> selectedDice){
+        dice.setSelectedDice(selectedDice);
+    }
+
+    /**
+     * @return selectedDice from Dice class
+     */
+    public List<String> getSelectedDice() {
+        return dice.getSelectedDice();
+    }
+
+    /**
+     * Rerolls the dice in the current game state.
+     *
+     * @author Hunter
+     */
+    public void rerollDice(){
+        dice.rollDice();
+        dice.hardSetAvailableDice(dice.getAllDice());
+    }
+
+    public void setAvailableDice(String[] dice) {
+        this.dice.hardSetAvailableDice(dice);
+    }
+
+    /**
+     * Retrieves the generated tiles based on the current dice state.
+     *
+     * @return An array of strings representing the generated tiles.
+     * @author Hunter
+     */
+    public String[] getTiles() {
+        return tiles.generateTiles(dice);
+    }
+
+    /**
+     * Retrieves all the dice that were originally rolled for this turn.
+     *
+     * @return An array of strings representing all the dice.
+     * @author Eileen
+     */
+    public String[] getDice() {
+        return dice.getAllDice();
+    }
+
+    /**
+     * checks if the selected track is in the available dice
+     * @param trackNum should take selected track
+     * @return true if the selected track is in the currently available die
+     */
+    public boolean isInAvailableDice(int trackNum) {
+        if (getAvailableDice().contains("W"))
+            return true;
+        String colour = "";
+        switch (trackNum){
+            case 0:
+                colour = "R";
+                break;
+            case 1:
+                colour = "B";
+                break;
+            case 2:
+                colour = "P";
+                break;
+            case 3:
+                colour = "G";
+                break;
+            case 4:
+                colour = "Y";
+                break;
+        }
+        return getAvailableDice().contains(colour);
+    }
+
+    /**
+     * uses the old presetDiceMethod to update rolledDice
+     * @param dice to be applied
+     */
+    public void setRolledDice(List<String> dice) {
+        this.dice.applyPresetDiceD2CP1(dice.get(0), dice.get(1), dice.get(2), dice.get(3), dice.get(4));
+    }
+
+    /**
+     * Prints the current game board to the console.
+     *
+     * @param board  A 2D character array representing the game board to print.
+     */
+    public void printBoard(char[][] board) {
+        for (int i = 0; i < board.length; i++) {
+            for (int j = 0; j < board[0].length; j++) {
+                System.out.print(board[i][j] == '\u0000' ? '.' : board[i][j]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+
+    /**
+     * Prints a tile to the console.
+     *
+     * @param tile  A 2D character array representing the tile to print.
+     */
+    public static void printTile(char[][] tile) {
+        for (int i = 0; i < tile.length; i++) {
+            for (int j = 0; j < tile[0].length; j++) {
+                System.out.print(tile[i][j] == '\u0000' ? '.' : tile[i][j]);
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
+    }
+
+    private void updateCoA(GameGUI gui, int currentPlayer, HashMap<String, List<Integer>> completedMap){
+        if (!completedMap.isEmpty()){
+            List<Integer> rows = completedMap.get("completedRows");
+            for (int j=0;j<rows.size();j++){
+                gui.setRowCoA(currentPlayer,rows.get(j),true);
+            }
+            List<Integer> cols = completedMap.get("completedCols");
+            for (int j=0;j<cols.size();j++){
+                gui.setColumnCoA(currentPlayer,cols.get(j),true);
+            }
+        }
+    }
+
+    public void getUpdateCoA(GameGUI gui, int currentPlayer,HashMap<String, List<Integer>> completedMap){
+        updateCoA(gui,currentPlayer,completedMap);
+    }
+
+    public void updateDiceAndTiles(GameGUI gui,GameBoard gameBoard){
+        gameBoard.rerollDice();
+        gameBoard.updateSelectedDice(gui.getSelectedDice());
+        gui.setAvailableTiles(List.of(gameBoard.getTiles()));
+        System.out.println(List.of(gameBoard.getTiles()));
+        gui.setAvailableDice(List.of(gameBoard.getDice()));
+    }
+
+    public void placeSingleTile(int row, int col, int rotation, boolean[] windows){
+        tiles.updateSelectedTile("I1X");
+        if (isTilePlacementValid(gameBoard,row,col)){
+            tiles.applyWindows(windows);
+            placeTile(row,col);
+        }
+    }
+
+    public Map<String, List<char[][]>> getTilesFromGS(){
+        return tiles.getAllTiles();
+    }
+
+}

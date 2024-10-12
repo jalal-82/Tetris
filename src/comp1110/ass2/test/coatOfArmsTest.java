@@ -1,9 +1,6 @@
 package comp1110.ass2.test;
 
-import comp1110.ass2.Dices;
-import comp1110.ass2.GameState;
-import comp1110.ass2.Score;
-import comp1110.ass2.Tile;
+import comp1110.ass2.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,6 +14,7 @@ public class coatOfArmsTest {
     Tile tileOne;
     Score scoreOne;
     GameState gameStateOne;
+    GameBoard gameBoardOne;
 
     @BeforeEach
     public void setup() {
@@ -24,7 +22,8 @@ public class coatOfArmsTest {
         diceOne = new Dices();
         tileOne = new Tile(diceOne);
         scoreOne = new Score();
-        gameStateOne = new GameState(diceOne, tileOne, scoreOne);
+        gameStateOne = new GameState(scoreOne);
+        gameBoardOne = new GameBoard(diceOne, tileOne);
 
     }
 
@@ -35,10 +34,10 @@ public class coatOfArmsTest {
             boolean[] windows = {false, false};
             int row = (i / 5) * 2;
             int col = i % 5;
-            gameStateOne.placeTileWithRotationWindows(row, col, 0, windows);
+            gameBoardOne.placeTileWithRotationWindows(row, col, 0, windows);
         }
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
-        scoreOne.addPoints(gameStateOne.getGameBoard(), completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(), completedMap);
 
         List<Integer> res = new ArrayList<>();
         res.add(5);
@@ -60,17 +59,17 @@ public class coatOfArmsTest {
             for (int i = 0; i < rows.length; i++) {
                 if (i == 0) { // First two rows get P3, others get P2
                     tileOne.updateSelectedTile("P3");
-                    gameStateOne.placeTileWithRotationWindows(rows[i], col, 0, new boolean[] {false, false, false});
+                    gameBoardOne.placeTileWithRotationWindows(rows[i], col, 0, new boolean[] {false, false, false});
                 } else {
                     tileOne.updateSelectedTile("P2");
-                    gameStateOne.placeTileWithRotationWindows(rows[i], col, 0, new boolean[] {false, false});
+                    gameBoardOne.placeTileWithRotationWindows(rows[i], col, 0, new boolean[] {false, false});
                 }
 
             }
         }
 
         HashMap<String, List<Integer>> completedMap = new HashMap<>();
-        scoreOne.addPoints(gameStateOne.getGameBoard(),completedMap);
+        scoreOne.addPoints(gameBoardOne.getGameBoard(),completedMap);
 
         List<Integer> res = new ArrayList<>();
         res.add(1);

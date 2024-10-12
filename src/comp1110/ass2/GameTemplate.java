@@ -12,7 +12,10 @@ public class GameTemplate extends Application {
 	Game game;
     GameGUI gui;
 	List<GameState> gameStates;
+
+	List<GameBoard> gameBoards;
 	GameState currentState;//variable for easy reference to the currentState
+	GameBoard currentBoard;
 
 	int currentPlayer = 0;
 	int controlPlayer = 0;
@@ -22,6 +25,7 @@ public class GameTemplate extends Application {
 		game = new Game();
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
+		gameBoards = new ArrayList<>();
 
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
 
@@ -32,16 +36,18 @@ public class GameTemplate extends Application {
 				Dices dices = new Dices();
 				Tile tile = new Tile(dices);
 				Score score = new Score();
-				gameStates.add(new GameState(dices, tile, score));
+				gameStates.add(new GameState(score));
+				gameBoards.add(new GameBoard(dices, tile));
 				for (int j = 0; j < 5; j++) {
 					updateTrackInfo(i, j);
 				}
 			}
 
 			currentState = gameStates.get(0);
+			currentBoard = gameBoards.get(0);
 			gui.setMessage("Start new game with " + np + " players");
-			gui.setAvailableTiles(List.of(currentState.getTiles()));
-			gui.setAvailableDice(List.of(currentState.getDice()));
+			gui.setAvailableTiles(List.of(currentBoard.getTiles()));
+			gui.setAvailableDice(List.of(currentBoard.getDice()));
 			gui.setAvailableActions(List.of("Reroll","Change selected to Red","Change selected to Blue","Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
 			gui.setControlPlayer(0);
 		});
@@ -58,29 +64,29 @@ public class GameTemplate extends Application {
 			}
 
 			//check place if valid
-		if (currentState.getIsTilePlacementValid(p.getY(),p.getX())){
-			currentState.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+		if (currentBoard.getIsTilePlacementValid(p.getY(),p.getX())){
+			currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 			gui.setMessage(p.getTileName()+" placed. Other players should now select Track");
 			//updates bonus if bonus was used
-			currentState.getUpdateBonus(p.getTileName());
+			currentState.getUpdateBonus(p.getTileName(), currentBoard);
 
 //			after tile is placed, update score
 			HashMap<String, List<Integer>> completedMap = new HashMap<>();
-			currentState.updateScore(currentState,completedMap);
+			currentState.updateScore(currentBoard,completedMap);
 			gui.setScore(currentPlayer,currentState.getScore());
 
 			//resets the available dice to be all that the player hasn't used
-			gui.setAvailableDice(currentState.getAvailableDice());
-			System.out.println(currentState.getAvailableDice());
+			gui.setAvailableDice(currentBoard.getAvailableDice());
+			System.out.println(currentBoard.getAvailableDice());
 
 //			update Coat of Arms
-			currentState.getUpdateCoA(gui,currentPlayer,completedMap);
+			currentBoard.getUpdateCoA(gui,currentPlayer,completedMap);
 
 			System.out.println("Board after tile for player "+currentPlayer);
-			currentState.printBoard(currentState.getGameBoard());
+			currentBoard.printBoard(currentBoard.getGameBoard());
 
 			// remove that tile from allTiles
-			System.out.println(currentState.getTilesFromGS().size());
+			System.out.println(currentBoard.getTilesFromGS().size());
 
 			//update control player to represent player to select track
             if (currentPlayer != maxPlayers - 1) {
@@ -95,15 +101,15 @@ public class GameTemplate extends Application {
 			gui.setMessage(p.getTileName()+" Placement invalid");
 		}
 
-		game.getUpdateGUIState(currentPlayer,gameStates.get(currentPlayer),gui);
+		game.getUpdateGUIState(currentPlayer,gameBoards.get(currentPlayer),gui);
 
 	});
 
 
 //updates the list of available dice
 	gui.setOnDiceSelectionChanged((i) -> {
-		currentState.updateSelectedDice(gui.getSelectedDice());
-		System.out.println(currentState.getSelectedDice());
+		currentBoard.updateSelectedDice(gui.getSelectedDice());
+		System.out.println(currentBoard.getSelectedDice());
 		System.out.println("here");
 	    });
 
@@ -111,9 +117,9 @@ public class GameTemplate extends Application {
 
 	gui.setOnTileSelected(tileName -> {
 		//checks if the selection is valid given the selected die. only allows valid selections
-		if (currentState.getIsValidTileSelection(tileName)) {
+		if (currentState.getIsValidTileSelection(tileName, currentBoard)) {
 			gui.setMessage("valid tile");
-			currentState.updateSelectedTile(tileName);
+			currentBoard.updateSelectedTile(tileName);
 		} else {
 			gui.setMessage("invalid selection, ensure you have selected the required die");
 			gui.clearTileSelection();
@@ -127,9 +133,9 @@ public class GameTemplate extends Application {
 				gui.setMessage("Missing red ability, can't reroll");
 			else {
 				gui.setMessage("Player " + currentPlayer + " rerolled");
-				currentState.rerollDice();
-				gui.setAvailableTiles(List.of(currentState.getTiles()));
-				gui.setAvailableDice(List.of(currentState.getDice()));
+				currentBoard.rerollDice();
+				gui.setAvailableTiles(List.of(currentBoard.getTiles()));
+				gui.setAvailableDice(List.of(currentBoard.getDice()));
 				currentState.redTrack.updateAbility();
 			}
 		}
@@ -141,24 +147,24 @@ public class GameTemplate extends Application {
 			else {
 				String desiredColour = String.valueOf(action.charAt(19));
 				//determine all selected are the same colour
-				for (String s : currentState.getSelectedDice())
-					if (!(Objects.equals(currentState.getSelectedDice().get(0), s))) {
+				for (String s : currentBoard.getSelectedDice())
+					if (!(Objects.equals(currentBoard.getSelectedDice().get(0), s))) {
 						gui.setMessage("All selected die must be the same colour");
 						return;
 					}
 				//change all selected to the desired colour
 				currentState.greenTrack.updateAbility();//reduce ability count
 				//creates a string of the currently displayed dice
-				String[] currentDice = currentState.getAvailableDice().toArray(new String[currentState.getAvailableDice().size()]);
+				String[] currentDice = currentBoard.getAvailableDice().toArray(new String[currentBoard.getAvailableDice().size()]);
 				for (int a : gui.getSelectedDice())
 					currentDice[a] = desiredColour;
 				//checks if there are 5 or less current dice and acts accordingly
 				if (currentDice.length == 5) {
-					currentState.setRolledDice(List.of(currentDice));
+					currentBoard.setRolledDice(List.of(currentDice));
 					System.out.println(Arrays.toString(currentDice));
 					gui.setAvailableDice(List.of(currentDice));
 				} else {
-					currentState.setAvailableDice(currentDice);
+					currentBoard.setAvailableDice(currentDice);
 					gui.setAvailableDice(List.of(currentDice));
 				}
 			}
@@ -172,9 +178,9 @@ public class GameTemplate extends Application {
 		currentPlayer++;
 		if (currentPlayer>maxPlayers-1)
 			currentPlayer = 0;
-		currentState = gameStates.get(currentPlayer);
+		currentBoard = gameBoards.get(currentPlayer);
 		if (s.equals("next")) {
-			currentState.updateDiceAndTiles(gui,currentState);
+			currentBoard.updateDiceAndTiles(gui,currentBoard);
 			gui.setControlPlayer(currentPlayer);
 			return;
 		}
@@ -196,8 +202,8 @@ public class GameTemplate extends Application {
 		gui.setMessage("Now it's player " + currentPlayer + "'s turn");
 
 		// implement reroll and new tiles for next player
-		currentState = gameStates.get(currentPlayer);
-		currentState.updateDiceAndTiles(gui,currentState);
+		currentBoard = gameBoards.get(currentPlayer);
+		currentBoard.updateDiceAndTiles(gui,currentBoard);
 	});
 
 	/**
@@ -256,9 +262,9 @@ public class GameTemplate extends Application {
 	private void handleTrackSelection () {
 		if (gui.getSelectedTracks().size() > 1){
 			gui.setMessage("too many tracks selected, select only one");
-		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
+		} else if (!currentBoard.isInAvailableDice(gui.getSelectedTracks().get(0))) {
 			System.out.println(gui.getSelectedTracks());
-			System.out.println(currentState.getAvailableDice());
+			System.out.println(currentBoard.getAvailableDice());
 			gui.setMessage("this track colour is not available");
 		} else {
 			gameStates.get(controlPlayer).getUpdateTrack(gui.getSelectedTracks().get(0));
