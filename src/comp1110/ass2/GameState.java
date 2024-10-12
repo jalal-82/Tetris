@@ -15,19 +15,33 @@ public class GameState {
     protected Track yellowTrack;
     protected Track purpleTrack;
 
+    // Constructor
+    /**
+     * Constructor for the GameState class.
+     *
+     * @param score The score object to track player's score.
+     */
+    public GameState(Score score) {
+        this.score = score;
+        this.redTrack = new Track(TrackType.RED, score);
+        this.blueTrack = new Track(TrackType.BLUE, score);
+        this.greenTrack = new Track(TrackType.GREEN, score);
+        this.yellowTrack = new Track(TrackType.YELLOW, score);
+        this.purpleTrack = new Track(TrackType.PURPLE, score);
+        this.dice = new Dices();
+        this.tiles = new Tile(dice);
+    }
+
     // Private methods
     /**
      * Core logic to update the track.
      *
-     * @param track The track number to update.
+     * @param trackNum The track number to update.
      */
-    private void doUpdateTrack(int track) {
-        switch (track) {
-            case 0 -> redTrack.addTrack();
-            case 1 -> blueTrack.addTrack();
-            case 2 -> purpleTrack.addTrack();
-            case 3 -> greenTrack.addTrack();
-            case 4 -> yellowTrack.addTrack();
+    private void doUpdateTrack(int trackNum) {
+        Track track = getTrackByNumber(trackNum);
+        if (track != null) {
+            track.addTrack();
         }
     }
 
@@ -41,14 +55,7 @@ public class GameState {
     private boolean doIsValidTileSelection(List<String> selectedDice, String tileName) {
         if (tileName == null)
             return false;
-        Track track = switch (tileName.charAt(0)) {
-            case 'R' -> redTrack;
-            case 'B' -> blueTrack;
-            case 'P' -> purpleTrack;
-            case 'G' -> greenTrack;
-            case 'Y' -> yellowTrack;
-            default -> null;
-        };
+        Track track = getTrackByColor(tileName.charAt(0));
         int diceOfTileColour = track.getBonus();
         for (String diceColor : selectedDice) {
             if (tileName.startsWith(diceColor) || Objects.equals(diceColor, "W"))
@@ -65,7 +72,15 @@ public class GameState {
      * @param tileName     The name of the tile.
      */
     private void doUpdateBonus(List<String> selectedDice, String tileName) {
-        Track track = switch (tileName.charAt(0)) {
+        Track track = getTrackByColor(tileName.charAt(0));
+        if (track != null) {
+            track.updateBonus(selectedDice, tileName);
+        }
+    }
+
+    // Helper methods to get track by color or number
+    private Track getTrackByColor(char color) {
+        return switch (color) {
             case 'R' -> redTrack;
             case 'B' -> blueTrack;
             case 'P' -> purpleTrack;
@@ -73,33 +88,47 @@ public class GameState {
             case 'Y' -> yellowTrack;
             default -> null;
         };
-        track.updateBonus(selectedDice, tileName);
+    }
+
+    private Track getTrackByNumber(int trackNum) {
+        return switch (trackNum) {
+            case 0 -> redTrack;
+            case 1 -> blueTrack;
+            case 2 -> purpleTrack;
+            case 3 -> greenTrack;
+            case 4 -> yellowTrack;
+            default -> null;
+        };
     }
 
     // Public methods
     /**
-     * Constructor for the GameState class.
-     *
-     * @param score The score object to track player's score.
-     */
-    public GameState(Score score) {
-        this.score = score;
-        this.redTrack = new RedTrack(score);
-        this.blueTrack = new BlueTrack(score);
-        this.greenTrack = new GreenTrack(score);
-        this.yellowTrack = new YellowTrack(score);
-        this.purpleTrack = new PurpleTrack(score);
-        this.dice = new Dices();
-        this.tiles = new Tile(dice);
-    }
-
-    /**
      * Updates the track.
      *
-     * @param track The track number to update.
+//     * @param trackNum The track number to update.
      */
-    public void updateTrack(int track) {
-        doUpdateTrack(track);
+//    public void updateTrack(int trackNum) {
+//        doUpdateTrack(trackNum);
+//    }
+
+    public void updateTrack(TrackType trackType) {
+        switch (trackType) {
+            case RED:
+                redTrack.addTrack();
+                break;
+            case BLUE:
+                blueTrack.addTrack();
+                break;
+            case GREEN:
+                greenTrack.addTrack();
+                break;
+            case PURPLE:
+                purpleTrack.addTrack();
+                break;
+            case YELLOW:
+                yellowTrack.addTrack();
+                break;
+        }
     }
 
     /**
@@ -124,7 +153,7 @@ public class GameState {
     /**
      * Updates the score based on the current game board state.
      *
-     * @param gameBoard   The GameBoard object that holds the current state of the game.
+     * @param gameBoard    The GameBoard object that holds the current state of the game.
      * @param completedMap A map of completed rows and columns.
      */
     public void updateScore(GameBoard gameBoard, HashMap<String, List<Integer>> completedMap) {
@@ -210,28 +239,52 @@ public class GameState {
     /**
      * Checks if the selected track is in the available dice.
      *
-     * @param trackNum The track number to check.
+//     * @param trackNum The track number to check.
      * @return True if the selected track is in the currently available dice.
      */
-    public boolean isInAvailableDice(int trackNum) {
+//    public boolean isInAvailableDice(int trackNum) {
+//        if (getAvailableDice().contains("W"))
+//            return true;
+//        String colour = "";
+//        switch (trackNum) {
+//            case 0:
+//                colour = "R";
+//                break;
+//            case 1:
+//                colour = "B";
+//                break;
+//            case 2:
+//                colour = "P";
+//                break;
+//            case 3:
+//                colour = "G";
+//                break;
+//            case 4:
+//                colour = "Y";
+//                break;
+//        }
+//        return getAvailableDice().contains(colour);
+//    }
+
+    public boolean isInAvailableDice(TrackType trackType) {
         if (getAvailableDice().contains("W"))
             return true;
         String colour = "";
-        switch (trackNum) {
-            case 0:
+        switch (trackType) {
+            case RED:
                 colour = "R";
                 break;
-            case 1:
+            case BLUE:
                 colour = "B";
                 break;
-            case 2:
-                colour = "P";
-                break;
-            case 3:
+            case GREEN:
                 colour = "G";
                 break;
-            case 4:
+            case YELLOW:
                 colour = "Y";
+                break;
+            case PURPLE:
+                colour = "P";
                 break;
         }
         return getAvailableDice().contains(colour);
@@ -336,10 +389,32 @@ public class GameState {
     }
 
     /**
-     * returns used Tiles in the game per player
-     * @return Hashmap of usedTiles
+     * Returns used Tiles in the game per player.
+     *
+     * @return HashMap of usedTiles.
      */
-    public Map<String, List<char[][]>> getUsedTiles(){
+    public Map<String, List<char[][]>> getUsedTiles() {
         return tiles.getUsedTiles();
+    }
+
+    // Getters for tracks
+    public Track getRedTrack() {
+        return redTrack;
+    }
+
+    public Track getBlueTrack() {
+        return blueTrack;
+    }
+
+    public Track getGreenTrack() {
+        return greenTrack;
+    }
+
+    public Track getYellowTrack() {
+        return yellowTrack;
+    }
+
+    public Track getPurpleTrack() {
+        return purpleTrack;
     }
 }

@@ -8,7 +8,6 @@ import javafx.stage.Stage;
 import java.util.*;
 
 public class GameTemplate extends Application {
-	Game game;
 	GameGUI gui;
 	List<GameState> gameStates;
 	List<GameBoard> gameBoards;
@@ -21,7 +20,6 @@ public class GameTemplate extends Application {
 
 	public void start(Stage stage) throws Exception {
 
-		game = new Game();
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
 		gameBoards = new ArrayList<>();
@@ -37,8 +35,8 @@ public class GameTemplate extends Application {
 				GameState gameState = new GameState(score);
 				gameStates.add(gameState);
 				gameBoards.add(new GameBoard(gameState));
-				for (int j = 0; j < 5; j++) {
-					updateTrackInfo(i, j);
+				for (TrackType trackType : TrackType.values()) {
+					updateTrackInfo(i, trackType);
 				}
 			}
 
@@ -56,8 +54,8 @@ public class GameTemplate extends Application {
 		gui.setOnTilePlaced((p) -> {
 			// First check if all windows are valid and update blue ability if necessary
 			if (allWindows(p.getWindows())) {
-				if (currentState.blueTrack.getAbility() > 0)
-					currentState.blueTrack.updateAbility();
+				if (currentState.getBlueTrack().getAbility() > 0)
+					currentState.getBlueTrack().updateAbility();
 				else {
 					gui.setMessage("No blue ability available, choose a different window configuration");
 					return;
@@ -100,7 +98,7 @@ public class GameTemplate extends Application {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
 
-			game.getUpdateGUIState(currentPlayer, gameBoards.get(currentPlayer), gui);
+			currentBoard.getUpdateGUIState(currentPlayer, gameBoards.get(currentPlayer), gui);
 
 		});
 
@@ -126,20 +124,20 @@ public class GameTemplate extends Application {
 		gui.setOnGameAction((action) -> {
 			// Logic for reroll
 			if (action.equals("Reroll")) {
-				if (currentState.redTrack.getAbility() == 0)
+				if (currentState.getRedTrack().getAbility() == 0)
 					gui.setMessage("Missing red ability, can't reroll");
 				else {
 					gui.setMessage("Player " + currentPlayer + " rerolled");
 					currentState.rerollDice();
 					gui.setAvailableTiles(List.of(currentState.getTiles()));
 					gui.setAvailableDice(List.of(currentState.getDice()));
-					currentState.redTrack.updateAbility();
+					currentState.getRedTrack().updateAbility();
 				}
 			}
 			// Logic for dice change
 			if (action.contains("Change")) {
 				// Return if green ability not available
-				if (currentState.greenTrack.getAbility() == 0)
+				if (currentState.getGreenTrack().getAbility() == 0)
 					gui.setMessage("This ability is not currently available, keep playing to unlock green ability");
 				else {
 					String desiredColour = String.valueOf(action.charAt(19));
@@ -152,7 +150,7 @@ public class GameTemplate extends Application {
 						}
 					}
 					// Change all selected dice to the desired colour
-					currentState.greenTrack.updateAbility(); // Reduce ability count
+					currentState.getGreenTrack().updateAbility(); // Reduce ability count
 
 					// Create a list of the currently displayed dice
 					List<String> currentDice = new ArrayList<>(currentState.getAvailableDice());
@@ -168,7 +166,8 @@ public class GameTemplate extends Application {
 
 		});
 
-		gui.setOnConfirm((s) -> { // Into select dice mode
+		gui.setOnConfirm((s) -> {
+			// Into select dice mode
 			currentPlayer++;
 			if (currentPlayer > maxPlayers - 1)
 				currentPlayer = 0;
@@ -217,52 +216,77 @@ public class GameTemplate extends Application {
 		return true;
 	}
 
-	private void updateTrackInfo(int player, int track) {
+	private void updateTrackInfo(int player, TrackType trackType) {
 		String colour = "";
 		Track trackToUpdate = null;
 		GameState gameStateToUpdate = gameStates.get(player);
-		switch (track) {
-			case 0:
+
+		switch (trackType) {
+			case RED:
 				colour = "Red";
-				trackToUpdate = gameStateToUpdate.redTrack;
+				trackToUpdate = gameStateToUpdate.getRedTrack();
 				break;
-			case 1:
+			case BLUE:
 				colour = "Blue";
-				trackToUpdate = gameStateToUpdate.blueTrack;
+				trackToUpdate = gameStateToUpdate.getBlueTrack();
 				break;
-			case 2:
+			case PURPLE:
 				colour = "Purple";
-				trackToUpdate = gameStateToUpdate.purpleTrack;
+				trackToUpdate = gameStateToUpdate.getPurpleTrack();
 				break;
-			case 3:
+			case GREEN:
 				colour = "Green";
-				trackToUpdate = gameStateToUpdate.greenTrack;
+				trackToUpdate = gameStateToUpdate.getGreenTrack();
 				break;
-			case 4:
+			case YELLOW:
 				colour = "Yellow";
-				trackToUpdate = gameStateToUpdate.yellowTrack;
+				trackToUpdate = gameStateToUpdate.getYellowTrack();
 				break;
+			default:
+				throw new IllegalArgumentException("Unknown track type");
 		}
 
 		gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(),
-				trackToUpdate.nextBonus, trackToUpdate.nextAbility);
+				trackToUpdate.getNextBonus(), trackToUpdate.getNextAbility());
 	}
 
-	private void handleTrackSelection() {
-		if (gui.getSelectedTracks().size() > 1) {
-			gui.setMessage("Too many tracks selected, select only one");
-		} else if (gui.getSelectedTracks().isEmpty()) {
-			gui.setMessage("No track selected, please select a track");
-		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
-			System.out.println(gui.getSelectedTracks());
-			System.out.println(currentState.getAvailableDice());
-			gui.setMessage("This track colour is not available");
-		} else {
-			gameStates.get(controlPlayer).updateTrack(gui.getSelectedTracks().get(0));
-			updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0));
-			controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
-			gui.setControlPlayer(controlPlayer);
+//	private void handleTrackSelection() {
+//		if (gui.getSelectedTracks().size() > 1) {
+//			gui.setMessage("Too many tracks selected, select only one");
+//		} else if (gui.getSelectedTracks().isEmpty()) {
+//			gui.setMessage("No track selected, please select a track");
+//		} else {
+//			int selectedTrackNum = gui.getSelectedTracks().get(0);
+//			TrackType selectedTrackType = getTrackTypeFromInt(selectedTrackNum);
+//			if (selectedTrackType == null) {
+//				gui.setMessage("Invalid track selected");
+//				return;
+//			}
+//			if (!currentState.isInAvailableDice(selectedTrackType)) {
+//				gui.setMessage("This track colour is not available");
+//			} else {
+//				gameStates.get(controlPlayer).updateTrack(selectedTrackType);
+//				updateTrackInfo(controlPlayer, selectedTrackType);
+//				controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
+//				gui.setControlPlayer(controlPlayer);
+//			}
+//		}
+//	}
+
+	private TrackType getTrackTypeFromInt(int trackNum) {
+		switch (trackNum) {
+			case 0:
+				return TrackType.RED;
+			case 1:
+				return TrackType.BLUE;
+			case 2:
+				return TrackType.PURPLE;
+			case 3:
+				return TrackType.GREEN;
+			case 4:
+				return TrackType.YELLOW;
+			default:
+				return null;
 		}
 	}
-
 }

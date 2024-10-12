@@ -6,20 +6,79 @@ import java.util.List;
 import java.util.Random;
 
 public class Dices {
-private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
-    private String[] rolledDice;
-    private int[] colorCount = {0, 0, 0, 0, 0, 0};
-    private Random random;
+
+    private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
+    private final String[] rolledDice;
+    private final int[] colorCount = {0, 0, 0, 0, 0, 0};
+    private final Random random;
     private List<String> availableDice;
+    private final List<String> selectedDice = new ArrayList<>();
+
     /**
-     * of the form "R", "B", "P", "G", "Y", "W"
+     * Rolls 5 random dice by selecting colors randomly from the COLORS array.
+     * Stores the rolled colors into the rolledDice array.
+     * Author: Jalal
      */
-    private List<String> selectedDice = new ArrayList<>();
+    void rollDice() {
+        for (int i = 0; i < 5; i++) {
+            rolledDice[i] = COLORS[random.nextInt(COLORS.length)];
+        }
+    }
+
+    /**
+     * Helper method to calculate available colors after dice are selected.
+     * Logic separated for better clarity.
+     * @param color the key color.
+     * @param totalDiceUsed the total dice used.
+     */
+    private void calculateAvailableColors(String color, int totalDiceUsed) {
+        int index = 0;
+        List<String> availableColours = new ArrayList<>();
+
+        // Find the index of the color used
+        for (int i = 0; i < COLORS.length; i++) {
+            if (String.valueOf(color).equals(COLORS[i])) {
+                index = i;
+            }
+        }
+
+        // Takes away the dice used, starting with the specified color and then moving to white
+        for (int i = 0; i < totalDiceUsed; i++) {
+            if (colorCount[index] > 0)
+                colorCount[index]--;
+            else
+                colorCount[5]--;
+        }
+
+        for (int i = 0; i < colorCount.length; i++) {
+            if (colorCount[i] > 0)
+                availableColours.add(COLORS[i]);
+        }
+
+        this.availableDice = availableColours;
+    }
+
+    /**
+     * Helper method to generate a list of available dice colors after selecting dice.
+     * @param selectedDice List of selected dice.
+     */
+    private void calculateAvailableDiceForOthers(List<String> selectedDice) {
+        List<String> availableColours = new ArrayList<>();
+
+        // Adds all rolled dice to available colours before removing selected ones
+        Collections.addAll(availableColours, rolledDice);
+        availableColours.removeAll(selectedDice);
+
+        this.availableDice = availableColours;
+    }
+
+//          Public Methods
+//====================================
 
     /**
      * Constructor that generates 5 random dice colors upon object creation.
      * Initializes the rolledDice array and Random object, then rolls 5 dice.
-     * Author:
+     * Author: Eileen
      */
     public Dices() {
         rolledDice = new String[5];
@@ -28,83 +87,43 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     }
 
     /**
-     * Rolls 5 random dice by selecting colors randomly from the COLORS array.
-     * Stores the rolled colors into the rolledDice array.
-     * Author: Jalal
-     */
-    public void rollDice() {
-        for (int i = 0; i < 5; i++) {
-            rolledDice[i] = COLORS[random.nextInt(COLORS.length)];
-        }
-    }
-
-    /**
-     * sets the color count of dice
-     * used in generateTiles as these values are already calculated there
+     * Sets the color count of dice used in generateTiles.
      * @param count array of integers representing the total amount for each color relative to 'COLORS'
-     * @param whiteCount the total number of white die
+     * @param whiteCount the total number of white dice
      * @author Eileen
      */
     public void setColorCount(int[] count, int whiteCount) {
-        for (int i = 0; i < count.length; i++) {
-            colorCount[i] = count[i];
-        }
+        System.arraycopy(count, 0, colorCount, 0, count.length);
         colorCount[5] = whiteCount;
     }
 
+    /**
+     * Hard sets the available dice list.
+     * @param dice array of dice colors to be set as available.
+     */
     public void hardSetAvailableDice(String[] dice) {
         availableDice = List.of(dice);
     }
 
     /**
-     * intended for use after a tile has been placed. calculates the dice leftover for other players to use towards their ability track
-     * if the player has selected the correct amount of dice, it will remove the selected dice.
-     * if the player has selected more than necessary, it will remove the correct colours first and then white.
-     * @param key key value of the tile being placed
-     * sets availableColours
+     * Sets the available colors after dice are used.
+     * If more dice are selected than required, it removes extra dice starting from colored ones.
+     * @param key the key value of the tile being placed.
      */
     public void setAvailableColors(String key) {
         char color = key.charAt(0);
         int totalDiceUsed = key.charAt(1) - '0';
-        List<String> availableColours = new ArrayList<>();
+
         if (totalDiceUsed < selectedDice.size()) {
-
-            int index = 0;
-
-            //find the index of the colour used
-            for (int i = 0; i < COLORS.length; i++) {
-                if (String.valueOf(color).equals(COLORS[i])) {
-                    index = i;
-                }
-            }
-            //takes away the dice used, starting with color and then moving to white
-            for (int i = 0; i < totalDiceUsed; i++) {
-                if (colorCount[index] > 0)
-                    colorCount[index]--;
-                else
-                    colorCount[5]--;
-            }
-            for (int i = 0; i < colorCount.length; i++) {
-                if (colorCount[i] > 0)
-                    availableColours.add(COLORS[i]);
-
-            }
-            this.availableDice = availableColours;
+            calculateAvailableColors(String.valueOf(color), totalDiceUsed);
         } else {
-            // adds all the rolled dice to available colours before removing those which were selected
-            for (int i = 0; i < rolledDice.length; i++) {
-                availableColours.add(rolledDice[i]);
-            }
-            for (String s : selectedDice) {
-                availableColours.remove(s);
-            }
-            this.availableDice = availableColours;
+            calculateAvailableDiceForOthers(selectedDice);
         }
     }
 
     /**
-     * takes the selectedDice input from the gui and determines which colours have been selected
-     * @param selectedDice
+     * Takes the selectedDice input from the GUI and determines which colors have been selected.
+     * @param selectedDice List of selected dice indexes.
      */
     public void setSelectedDice(List<Integer> selectedDice) {
         this.selectedDice.clear();
@@ -122,7 +141,7 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
      * @param e The color for the fifth dice.
      * Author: Hunter
      */
-    public void applyPresetDiceD2CP1(String a, String b ,String c ,String d ,String e) {
+    public void applyPresetDiceD2CP1(String a, String b, String c, String d, String e) {
         rolledDice[0] = a;
         rolledDice[1] = b;
         rolledDice[2] = c;
@@ -133,17 +152,14 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
     /**
      * Returns the current values of the rolled dice as a String array.
      * @return A String array containing the values of the 5 rolled dice.
-     * Author:
      */
     public String[] getAllDice() {
         return rolledDice;
     }
 
     /**
-     * Gets the available colors.
-     *
-     * @return An array of available colors.
-     * @author Jalal
+     * Gets the available colors for other players after dice selection.
+     * @return A List of available colors.
      */
     public List<String> getAvailableColors() {
         return availableDice;
@@ -151,18 +167,17 @@ private static final String[] COLORS = {"R", "B", "P", "G", "Y", "W"};
 
     /**
      * Gets the count of each color.
-     *
      * @return An array containing the count of each color.
-     * @author Eileen
      */
     public int[] getColorCount() {
         return colorCount;
     }
 
     /**
-     * getter method for SelectedDice
-     * @return
+     * Gets the list of selected dice.
+     * @return A List of selected dice.
      */
-    public List<String> getSelectedDice() { return selectedDice;
+    public List<String> getSelectedDice() {
+        return selectedDice;
     }
 }

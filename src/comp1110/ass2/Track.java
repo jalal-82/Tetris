@@ -3,27 +3,60 @@ package comp1110.ass2;
 import java.util.List;
 import java.util.Objects;
 
-/**
- * Abstract class that defines all the variables and methods for a given track.
- * Intended to be implemented by subclasses representing each color.
- */
-public abstract class Track {
+enum TrackType {
+    RED, BLUE, PURPLE, GREEN, YELLOW
+}
+public class Track {
+    private final TrackType trackType;
     private int ability = 0;
     private int bonus = 0;
-    private int track = 0;
-    protected int nextAbility;
-    protected int nextBonus;
-    private Score score;
+    private int trackPosition = 0;
+    private int nextAbility;
+    private int nextBonus;
+    private final Score score;
 
-    public Track(Score score) {
+    public Track(TrackType trackType, Score score) {
+        this.trackType = trackType;
         this.score = score;
+        initializeTrack();
+    }
+
+    private void initializeTrack() {
+        switch (trackType) {
+            case BLUE:
+                addAbility();
+                nextAbility = 2;
+                nextBonus = 1;
+                break;
+            case RED:
+                this.setBonus(2);
+                nextAbility = 2;
+                nextBonus = 1;
+                break;
+            case PURPLE:
+                nextAbility = 3;
+                nextBonus = 1;
+                break;
+            case GREEN:
+                nextAbility = 4;
+                nextBonus = 1;
+                break;
+            case YELLOW:
+                nextAbility = 3;
+                nextBonus = 1;
+                break;
+            default:
+                System.out.println(trackType);
+                throw new IllegalArgumentException("Unknown track type");
+        }
     }
 
     /**
-     * called when tile is placed
-     * calculate the bonus points used to place that tile
-     * @param selectedDice should be from the dice class
-     * @param tileName the tile placed
+     * Called when a tile is placed.
+     * Calculates the bonus points used to place that tile.
+     *
+     * @param selectedDice Should be from the dice class.
+     * @param tileName     The tile placed.
      */
     public void updateBonus(List<String> selectedDice, String tileName) {
         int tileSize = Integer.parseInt(tileName.replaceAll("[A-Z]", ""));
@@ -36,101 +69,262 @@ public abstract class Track {
     }
 
     /**
-     * Abstract method to update the track state.
-     * Specifics will need to be added in subclasses.
-     *
-     * @description: Updates the track state based on specific color logic.
-     * @author: Your Name
+     * Updates the track based on its type and current position.
      */
-    public abstract void update();
-
-    /**
-     * Returns the current track value.
-     *
-     * @description: Gets the current track value.
-     * @return int: The current track value.
-     * @author: Your Name
-     */
-    public int getTrack() {
-        return this.track;
+    public void update() {
+        switch (trackType) {
+            case BLUE:
+                updateBlueTrack();
+                break;
+            case RED:
+                updateRedTrack();
+                break;
+            case PURPLE:
+                updatePurpleTrack();
+                break;
+            case GREEN:
+                updateGreenTrack();
+                break;
+        }
     }
 
-    /**
-     * Returns the current ability count.
-     *
-     * @description: Gets the current ability count.
-     * @return int: The current ability count.
-     * @author: Your Name
-     */
+    private void updateBlueTrack() {
+        switch (trackPosition) {
+            case 1:
+                addBonus();
+                nextAbility = 1;
+                nextBonus = 3;
+                break;
+            case 2:
+                addAbility();
+                nextAbility = 2;
+                nextBonus = 3;
+                break;
+            case 3:
+                nextAbility = 1;
+                nextBonus = 2;
+                break;
+            case 4:
+                addAbility();
+                nextAbility = 2;
+                nextBonus = 1;
+                break;
+            case 5:
+                addBonus();
+                nextAbility = 1;
+                nextBonus = 0;
+                break;
+            case 6:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
+    }
+
+    private void updateRedTrack() {
+        switch (trackPosition) {
+            case 1:
+                addBonus();
+                nextBonus = 2;
+                nextAbility = 1;
+                break;
+            case 2:
+                addAbility();
+                nextBonus = 1;
+                nextAbility = 2;
+                break;
+            case 3:
+                addBonus();
+                nextBonus = 0;
+                nextAbility = 1;
+                break;
+            case 4:
+            case 5:
+                addAbility();
+                nextAbility = 1;
+                break;
+            case 6:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
+    }
+
+    private void updatePurpleTrack() {
+        switch (trackPosition) {
+            case 1:
+                addBonus();
+                nextAbility = 2;
+                nextBonus = 3;
+                break;
+            case 2:
+                nextAbility = 1;
+                nextBonus = 2;
+                break;
+            case 3:
+                addAbility();
+                nextAbility = 2;
+                nextBonus = 1;
+                break;
+            case 4:
+                addBonus();
+                nextAbility = 1;
+                nextBonus = 0;
+                break;
+            case 5:
+                addAbility();
+                nextAbility = 2;
+                break;
+            case 6:
+                nextAbility = 1;
+                break;
+            case 7:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
+    }
+
+    private void updateGreenTrack() {
+        switch (trackPosition) {
+            case 1:
+                addBonus();
+                nextBonus = 4;
+                nextAbility = 3;
+                break;
+            case 2:
+                nextBonus = 3;
+                nextAbility = 2;
+                break;
+            case 3:
+                nextBonus = 2;
+                nextAbility = 1;
+                break;
+            case 4:
+                addAbility();
+                nextBonus = 1;
+                nextAbility = 3;
+                break;
+            case 5:
+                addBonus();
+                nextBonus = 0;
+                nextAbility = 2;
+                break;
+            case 6:
+                nextAbility = 1;
+                break;
+            case 7:
+                addAbility();
+                break;
+            case 8:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
+    }
+
+    private void updateYellowTrack(){
+        switch (trackPosition){
+            case 1:
+                addBonus();
+                nextAbility = 2;
+                nextBonus = 3;
+                break;
+            case 2:
+                nextAbility = 1;
+                nextBonus = 2;
+                break;
+            case 3:
+                addAbility();
+                nextAbility = 3;
+                nextBonus = 1;
+                break;
+            case 4:
+                addBonus();
+                nextAbility = 1;
+                nextBonus = 0;
+                break;
+            case 5:
+                nextAbility = 1;
+                break;
+            case 6:
+                addAbility();
+                nextAbility = 1;
+                break;
+            case 7:
+                addAbility();
+                nextAbility = 0;
+                break;
+            case 8:
+                break;
+            case 9:
+                updateScore();
+                break;
+        }
+    }
+
+    // Getters and Setters
+    public int getTrack() {
+        return this.trackPosition;
+    }
+
     public int getAbility() {
         return ability;
     }
-    //this will reduce the ability
+
     public void updateAbility() {
         if (ability > 0)
-         ability--;
+            ability--;
     }
 
-    /**
-     * Returns the current bonus count.
-     *
-     * @description: Gets the current bonus count.
-     * @return int: The current bonus count.
-     * @author: Your Name
-     */
     public int getBonus() {
         return bonus;
     }
 
-    /**
-     * Increments the track value and calls the update method.
-     *
-     * @description: Increases the track count and updates the track state.
-     * @author: Your Name
-     */
     public void addTrack() {
-        this.track++;
+        this.trackPosition++;
         update();
     }
 
-    /**
-     * Sets the bonus count to a specified value.
-     *
-     * @description: Sets the bonus count to the provided value.
-     * @param bonusCount - The value to set the bonus to.
-     * @author: Your Name
-     */
     public void setBonus(int bonusCount) {
         this.bonus = bonusCount;
     }
 
-    /**
-     * Increments the ability count by one.
-     *
-     * @description: Increases the ability count by one.
-     * @author: Your Name
-     */
     public void addAbility() {
         this.ability++;
     }
 
-    /**
-     * Increments the bonus count by one.
-     *
-     * @description: Increases the bonus count by one.
-     * @author: Your Name
-     */
     public void addBonus() {
         this.bonus++;
     }
 
-    /**
-     * Updates the score by adding two to the current score.
-     *
-     * @description: Adds two to the score.
-     * @author: Your Name
-     */
     public void updateScore() {
         score.addTwoToScore();
     }
+
+    public int getNextAbility() {
+        return nextAbility;
+    }
+
+    public int getNextBonus() {
+        return nextBonus;
+    }
+
+    public TrackType getTrackType() {
+        return trackType;
+    }
 }
+
+

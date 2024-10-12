@@ -1,6 +1,5 @@
 package comp1110.ass2;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,81 +7,6 @@ import java.util.List;
 public class Score {
 
     private int score;
-
-    /**
-     * Constructs a new Score with an initial score of 0.
-     * @author Jalal
-     */
-    public Score() {
-        this.score = 0;
-    }
-
-    /**
-     * Updates the score based on the game board.
-     *
-     * Completing a row of their building with windows in all squares of
-     * the row: 2 points.
-     * Completing a row of their building, but not with windows in all
-     * squares of the row: 1 point.
-     * Completing a column of their building with windows in all squares of
-     * the column: 4 points.
-     * Completing a column of their building, but not with windows in all
-     * squares of the column: 2 points.
-     *
-     * @param gameBoard The game board represented as a 2D character array.
-     * @author Jalal
-     */
-    public void addPoints(char[][] gameBoard, HashMap<String, List<Integer>> completedMap) {
-        int rows = gameBoard.length;
-        int cols = gameBoard[0].length;
-
-        completedMap.put("completedRows", new ArrayList<>());
-        completedMap.put("completedCols", new ArrayList<>());
-
-        // Check each row
-        for (int i = 0; i < rows; i++) {
-            if (isCompleteRow(gameBoard, i)) {
-                // Add points based on whether the row is all windows
-                if (isAllWindowsRow(gameBoard, i)) {
-                    score += 2;
-                } else {
-                    score += 1;
-                }
-
-                switch (i) {
-                    case 7:
-                        completedMap.get("completedRows").add(1);
-                        break;
-                    case 5:
-                        completedMap.get("completedRows").add(3);
-                        break;
-                    case 3:
-                        completedMap.get("completedRows").add(5);
-                        break;
-                    default:
-                        break; // If i is not 7, 5, or 3, do nothing
-                }
-
-            }
-        }
-
-        // Check each column
-        for (int j = 0; j < cols; j++) {
-            if (isCompleteColumn(gameBoard, j)) {
-                // Add points based on whether the column is all windows
-                if (isAllWindowsColumn(gameBoard, j)) {
-                    score += 4;
-                } else {
-                    score += 2;
-                }
-
-                if (j == 1 || j == 3) {
-                    completedMap.get("completedCols").add(j);
-                }
-
-            }
-        }
-    }
 
     /**
      * Checks if a specific row is complete (i.e., no empty spaces).
@@ -127,8 +51,8 @@ public class Score {
      * @author Jalal
      */
     private boolean isCompleteColumn(char[][] board, int col) {
-        for (int i = 0; i < board.length; i++) {
-            if (board[i][col] == '.') {
+        for (char[] chars : board) {
+            if (chars[col] == '.') {
                 return false;  // Found an empty space
             }
         }
@@ -144,8 +68,8 @@ public class Score {
      * @author Jalal
      */
     private boolean isAllWindowsColumn(char[][] board, int col) {
-        for (int i = 0; i < board.length; i++) {
-            if (!isWindow(board[i][col])) {
+        for (char[] chars : board) {
+            if (!isWindow(chars[col])) {
                 return false;  // Found a non-window tile
             }
         }
@@ -161,6 +85,84 @@ public class Score {
      */
     private boolean isWindow(char tile) {
         return tile == 'S' || tile == 'C' || tile == 'Q' || tile == 'H' || tile == 'Z';
+    }
+
+    /**
+     * Updates the score based on the game board.
+     * <p>
+     * Completing a row of their building with windows in all squares of
+     * the row: 2 points.
+     * Completing a row of their building, but not with windows in all
+     * squares of the row: 1 point.
+     * Completing a column of their building with windows in all squares of
+     * the column: 4 points.
+     * Completing a column of their building, but not with windows in all
+     * squares of the column: 2 points.
+     *
+     * @param gameBoard The game board represented as a 2D character array.
+     * @author Jalal
+     */
+    private void doAddPoints(char[][] gameBoard, HashMap<String, List<Integer>> completedMap) {
+        int rows = gameBoard.length;
+        int cols = gameBoard[0].length;
+
+        completedMap.put("completedRows", new ArrayList<>());
+        completedMap.put("completedCols", new ArrayList<>());
+
+        // Check each row
+        for (int i = 0; i < rows; i++) {
+            if (isCompleteRow(gameBoard, i)) {
+                // Add points based on whether the row is all windows
+                if (isAllWindowsRow(gameBoard, i)) {
+                    score += 2;
+                } else {
+                    score += 1;
+                }
+
+                switch (i) {
+                    case 7 -> completedMap.get("completedRows").add(1);
+                    case 5 -> completedMap.get("completedRows").add(3);
+                    case 3 -> completedMap.get("completedRows").add(5);
+                    default -> {
+                    } // If i is not 7, 5, or 3, do nothing
+                }
+            }
+        }
+
+        // Check each column
+        for (int j = 0; j < cols; j++) {
+            if (isCompleteColumn(gameBoard, j)) {
+                // Add points based on whether the column is all windows
+                if (isAllWindowsColumn(gameBoard, j)) {
+                    score += 4;
+                } else {
+                    score += 2;
+                }
+
+                if (j == 1 || j == 3) {
+                    completedMap.get("completedCols").add(j);
+                }
+            }
+        }
+    }
+
+//          Public Methods
+//===================================
+    /**
+     * Constructs a new Score with an initial score of 0.
+     * @author Jalal
+     */
+    public Score() {
+        this.score = 0;
+    }
+
+    /**
+     * Updates the score counter by reading the gameBoard and checking if rows and coloums are completed
+     * @param gameBoard
+     * @param completedMap
+     */
+    public void addPoints(char[][] gameBoard, HashMap<String, List<Integer>> completedMap){
+        doAddPoints(gameBoard,completedMap);
     }
 
     /**
@@ -183,15 +185,4 @@ public class Score {
         return score;
     }
 
-    /**
-     * Checks for completed rows and columns of interest (CoA).
-     *
-     * @param board The game board represented as a 2D character array.
-     * @return A list of integers indicating completed rows and columns.
-     * @author Jalal
-     */
-//    public HashMap<String, List<Integer>> getCoA(char[][] board) {
-//        System.out.println("I am in");
-//        return isCoA(board);
-//    }
 }

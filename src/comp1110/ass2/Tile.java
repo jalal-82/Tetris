@@ -96,6 +96,7 @@ public class Tile {
             allTiles.put("Y5", new ArrayList<>());
             allTiles.get("Y5").add(new char[][]{{' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '}});
         }
+
         this.generatedTiles = doGenerateTiles(dice);
 
     }
