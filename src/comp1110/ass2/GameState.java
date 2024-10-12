@@ -161,6 +161,13 @@ public class GameState {
     }
 
     /**
+     *
+     * @return true when a player has just unlocked a coa
+     */
+    public boolean isCOA() {
+        return  score.isCoaIndicator();
+    }
+    /**
      * Retrieves the current score from the score object.
      *
      * @return The current score as an integer.
