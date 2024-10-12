@@ -17,6 +17,8 @@ public class GameTemplate extends Application {
 	int currentPlayer = 0;
 	int controlPlayer = 0;
 	int maxPlayers = 0;
+	boolean trigger = false;//temp variable for coa logic, set to true to test
+
 
 		public void start(Stage stage) throws Exception {
 			if (stage == null) {
@@ -47,6 +49,9 @@ public class GameTemplate extends Application {
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
 				handleTilePlacement(p); // Handle the tile placement on the board and update the message
 				handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
+				if (trigger) {//temporary trigger variable fro devolping coa logic
+					gui.showPopup();
+				}
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
@@ -85,9 +90,23 @@ public class GameTemplate extends Application {
 				handleDiceChangeAction(action);
 			}
 		});
+		gui.setTrackTwice((s) -> {
+			gui.setMessage("Player " + currentPlayer + " select a track to advance twice");
+			gui.setControlPlayer(currentPlayer);
+		});
 
+		gui.setSingleTile((s) -> {
+			System.out.println("single working");
+		});
 		gui.setOnConfirm((s) -> {
-			if (s.contains(String.valueOf(currentPlayer))){
+
+			if (trigger) {
+				handleTrackSelectionCOA();
+				trigger = false;
+				reEstablishControlPlayer();
+				gui.setMessage( " player " + (controlPlayer) + " now select Track");
+			}
+			else if (s.contains(String.valueOf(currentPlayer))){
 				updateCurrentPlayer();
 				gui.setMessage("Player " + currentPlayer + "'s turn");
 				updatePlayerStateForNextTurn();
@@ -193,6 +212,28 @@ public class GameTemplate extends Application {
 		}
 	}
 
+	private void handleTrackSelectionCOA() {
+		if (gui.getSelectedTracks().size() > 1) {
+			gui.setMessage("Too many tracks selected, select only one");
+		} else if (gui.getSelectedTracks().isEmpty()) {
+			gui.setMessage("No track selected, please select a track");
+		} else {
+			gui.setMessage("select a track to advance twice");
+			int selectedTrackNum = gui.getSelectedTracks().get(0);
+			TrackType selectedTrackType = getTrackTypeFromInt(selectedTrackNum);
+			if (selectedTrackType == null) {
+				gui.setMessage("Invalid track selected");
+				return;
+			}
+			gameStates.get(currentPlayer).updateTrack(selectedTrackType);
+			gameStates.get(currentPlayer).updateTrack(selectedTrackType);
+			updateTrackInfo(currentPlayer, selectedTrackType);
+			handlePlayerControlUpdate();
+			gui.clearTrackSelection();
+
+		}
+	}
+
 	private TrackType getTrackTypeFromInt(int trackNum) {
 		return switch (trackNum) {
 			case 0 -> TrackType.RED;
@@ -221,14 +262,7 @@ public class GameTemplate extends Application {
 	private void handleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 		System.out.println(controlPlayer);
-		//re-establishes the control player
-		if (currentPlayer == maxPlayers - 1) {
-			controlPlayer = 0;
-			gui.setControlPlayer(0);
-		} else {
-			controlPlayer = currentPlayer + 1;
-			gui.setControlPlayer(currentPlayer + 1);
-		}
+		reEstablishControlPlayer();
 		gui.setMessage(p.getTileName() + " placed. player " + (controlPlayer) + " now select Track");
 		currentBoard.printBoard(currentBoard.getGameBoard());
 	}
@@ -238,8 +272,7 @@ public class GameTemplate extends Application {
 
 		HashMap<String, List<Integer>> completedMap = new HashMap<>();
 		currentState.updateScore(currentBoard, completedMap);
-		if (currentState.isCOA())
-			gui.setMessage("code to select special"); //FIXME
+
 		gui.setScore(currentPlayer, currentState.getScore());
 
 		gui.setAvailableDice(currentState.getAvailableDice());
@@ -375,6 +408,16 @@ public class GameTemplate extends Application {
 		gui.setControlPlayer(currentPlayer);
 	}
 
+	private void reEstablishControlPlayer() {
+		if (currentPlayer == maxPlayers - 1) {
+			controlPlayer = 0;
+			gui.setControlPlayer(0);
+		} else {
+			controlPlayer = currentPlayer + 1;
+			gui.setControlPlayer(currentPlayer + 1);
+		}
+	}
+
 	/**
 	 * Updates the current player's state, including re rolling dice and assigning new tiles.
 	 */
@@ -437,4 +480,9 @@ public class GameTemplate extends Application {
 		System.out.println(maxPlayers);
 		gui.setControlPlayer(0);
 	}
+
+
+
+
+
 }
