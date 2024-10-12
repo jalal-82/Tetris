@@ -216,7 +216,7 @@ public class GameGUI extends BorderPane {
                 selectDiceMode = true;
                 cycleToNextPlayer(); // Call the method to handle player cycling
             }
-            else if (onConfirm != null && selectDiceMode) {
+            else if (onConfirm != null) {
                 System.out.println("onConfirm not null");
                 System.out.println("Size is " + player_selector.getTabs().size());
 

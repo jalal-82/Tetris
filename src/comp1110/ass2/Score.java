@@ -7,6 +7,7 @@ import java.util.List;
 public class Score {
 
     private int score;
+    private boolean coaIndicator = false;
 
     /**
      * Checks if a specific row is complete (i.e., no empty spaces).
@@ -113,6 +114,7 @@ public class Score {
         for (int i = 0; i < rows; i++) {
             if (isCompleteRow(gameBoard, i)) {
                 // Add points based on whether the row is all windows
+                coaIndicator = true;
                 if (isAllWindowsRow(gameBoard, i)) {
                     score += 2;
                 } else {
@@ -132,6 +134,8 @@ public class Score {
         // Check each column
         for (int j = 0; j < cols; j++) {
             if (isCompleteColumn(gameBoard, j)) {
+                //sets coaIndicator to trigger ability selection
+                coaIndicator = true;
                 // Add points based on whether the column is all windows
                 if (isAllWindowsColumn(gameBoard, j)) {
                     score += 4;
@@ -162,9 +166,16 @@ public class Score {
      * @param completedMap
      */
     public void addPoints(char[][] gameBoard, HashMap<String, List<Integer>> completedMap){
+        coaIndicator = false;
         doAddPoints(gameBoard,completedMap);
     }
 
+    /**
+     * getter for coaIndicator
+     */
+    public boolean isCoaIndicator() {
+        return coaIndicator;
+    }
     /**
      * Adds two points to the score.
      * Intended for use by track classes.

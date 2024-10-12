@@ -46,7 +46,6 @@ public class GameTemplate extends Application {
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
 				handleTilePlacement(p); // Handle the tile placement on the board and update the message
 				handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
-				handlePlayerControlUpdate(); // Update the player control for the next turn
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
@@ -103,7 +102,17 @@ public class GameTemplate extends Application {
 
 		gui.setOnPass((s) -> {
 			handlePassTurnMessage(); // Handle message and turn skipping
-			handleTrackSelection();
+			if (currentPlayer == maxPlayers - 1) {
+				controlPlayer = 0;
+				gui.setControlPlayer(0);
+			} else {
+				controlPlayer = currentPlayer + 1;
+				gui.setControlPlayer(currentPlayer + 1);
+			}
+			gui.setMessage("player " + currentPlayer + " turn passed. Player " + (controlPlayer) + " now select Track");
+			//calls update gui to ensure all end of turn logic functions as normal
+			updateGUIState();
+
 		});
 
 		// Start the application:
@@ -171,8 +180,14 @@ public class GameTemplate extends Application {
 			} else {
 				gameStates.get(controlPlayer).updateTrack(selectedTrackType);
 				updateTrackInfo(controlPlayer, selectedTrackType);
-				controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
+				handlePlayerControlUpdate();
+				if (controlPlayer == currentPlayer)
+					gui.setMessage("player " + currentPlayer + " confirm end of turn");
+				else
+					gui.setMessage("player " + controlPlayer + " select track");
+				System.out.println(controlPlayer);
 				gui.setControlPlayer(controlPlayer);
+				gui.clearTrackSelection();
 			}
 		}
 	}
@@ -204,9 +219,16 @@ public class GameTemplate extends Application {
 
 	private void handleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
-		gui.setMessage(p.getTileName() + " placed. Other players should now select Track");
-
-		System.out.println("Board after tile for player " + currentPlayer);
+		System.out.println(controlPlayer);
+		//re-establishes the control player
+		if (currentPlayer == maxPlayers - 1) {
+			controlPlayer = 0;
+			gui.setControlPlayer(0);
+		} else {
+			controlPlayer = currentPlayer + 1;
+			gui.setControlPlayer(currentPlayer + 1);
+		}
+		gui.setMessage(p.getTileName() + " placed. player " + (controlPlayer) + " now select Track");
 		currentBoard.printBoard(currentBoard.getGameBoard());
 	}
 
@@ -215,6 +237,8 @@ public class GameTemplate extends Application {
 
 		HashMap<String, List<Integer>> completedMap = new HashMap<>();
 		currentState.updateScore(currentBoard, completedMap);
+		if (currentState.isCOA())
+			gui.setMessage("code to select special"); //FIXME
 		gui.setScore(currentPlayer, currentState.getScore());
 
 		gui.setAvailableDice(currentState.getAvailableDice());
@@ -224,9 +248,9 @@ public class GameTemplate extends Application {
 	}
 
 	private void handlePlayerControlUpdate() {
-		if (currentPlayer != maxPlayers - 1) {
-			gui.setControlPlayer(currentPlayer + 1);
-			controlPlayer = currentPlayer + 1;
+		if (controlPlayer != maxPlayers - 1) {
+			controlPlayer = controlPlayer + 1;
+			gui.setControlPlayer(controlPlayer);
 		} else {
 			gui.setControlPlayer(0);
 			controlPlayer = 0;
@@ -409,6 +433,7 @@ public class GameTemplate extends Application {
 				"Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
 
 		// Set the control to the first player
+		System.out.println(maxPlayers);
 		gui.setControlPlayer(0);
 	}
 }
