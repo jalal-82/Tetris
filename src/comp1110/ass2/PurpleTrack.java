@@ -54,7 +54,6 @@ public class PurpleTrack extends Track {
      * @author Hunter
      */
     public PurpleTrack(Score score) {
-
         super(score);
         nextAbility = 3;
         nextBonus = 1;

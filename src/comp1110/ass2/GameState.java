@@ -6,9 +6,9 @@ import comp1110.ass2.gui.*;
 
 public class GameState {
 
-    private Score score;
-    private Dices dice;
-    private Tile tiles;
+    private final Score score;
+    private final Dices dice;
+    private final Tile tiles;
     protected Track redTrack;
     protected Track blueTrack;
     protected Track greenTrack;
@@ -17,58 +17,38 @@ public class GameState {
 
     // Private methods
     /**
-     * Calls addTrack on the specified track.
+     * Core logic to update the track.
      *
      * @param track The track number to update.
      */
-    private void updateTrack(int track) {
+    private void doUpdateTrack(int track) {
         switch (track) {
-            case 0:
-                redTrack.addTrack();
-                break;
-            case 1:
-                blueTrack.addTrack();
-                break;
-            case 2:
-                purpleTrack.addTrack();
-                break;
-            case 3:
-                greenTrack.addTrack();
-                break;
-            case 4:
-                yellowTrack.addTrack();
-                break;
+            case 0 -> redTrack.addTrack();
+            case 1 -> blueTrack.addTrack();
+            case 2 -> purpleTrack.addTrack();
+            case 3 -> greenTrack.addTrack();
+            case 4 -> yellowTrack.addTrack();
         }
     }
 
     /**
-     * Checks if the tile selection is valid given the selected dice.
+     * Core logic to check if the tile selection is valid given the selected dice.
      *
      * @param selectedDice The list of selected dice.
      * @param tileName     The name of the tile.
      * @return True if the tile selection is valid, else false.
      */
-    private boolean isValidTileSelection(List<String> selectedDice, String tileName) {
+    private boolean doIsValidTileSelection(List<String> selectedDice, String tileName) {
         if (tileName == null)
             return false;
-        Track track = null;
-        switch (tileName.charAt(0)) {
-            case 'R':
-                track = redTrack;
-                break;
-            case 'B':
-                track = blueTrack;
-                break;
-            case 'P':
-                track = purpleTrack;
-                break;
-            case 'G':
-                track = greenTrack;
-                break;
-            case 'Y':
-                track = yellowTrack;
-                break;
-        }
+        Track track = switch (tileName.charAt(0)) {
+            case 'R' -> redTrack;
+            case 'B' -> blueTrack;
+            case 'P' -> purpleTrack;
+            case 'G' -> greenTrack;
+            case 'Y' -> yellowTrack;
+            default -> null;
+        };
         int diceOfTileColour = track.getBonus();
         for (String diceColor : selectedDice) {
             if (tileName.startsWith(diceColor) || Objects.equals(diceColor, "W"))
@@ -79,34 +59,24 @@ public class GameState {
     }
 
     /**
-     * Updates bonus when the tile is placed.
+     * Core logic to update bonus when the tile is placed.
      *
      * @param selectedDice The list of selected dice.
      * @param tileName     The name of the tile.
      */
-    private void updateBonus(List<String> selectedDice, String tileName) {
-        Track track = null;
-        switch (tileName.charAt(0)) {
-            case 'R':
-                track = redTrack;
-                break;
-            case 'B':
-                track = blueTrack;
-                break;
-            case 'P':
-                track = purpleTrack;
-                break;
-            case 'G':
-                track = greenTrack;
-                break;
-            case 'Y':
-                track = yellowTrack;
-                break;
-        }
+    private void doUpdateBonus(List<String> selectedDice, String tileName) {
+        Track track = switch (tileName.charAt(0)) {
+            case 'R' -> redTrack;
+            case 'B' -> blueTrack;
+            case 'P' -> purpleTrack;
+            case 'G' -> greenTrack;
+            case 'Y' -> yellowTrack;
+            default -> null;
+        };
         track.updateBonus(selectedDice, tileName);
     }
 
-    // Public interface
+    // Public methods
     /**
      * Constructor for the GameState class.
      *
@@ -124,24 +94,31 @@ public class GameState {
     }
 
     /**
-     * Getter for isValidTileSelection.
+     * Updates the track.
      *
-     * @param tileName  The name of the tile.
-     * @param gameBoard The current game board.
-     * @return True if valid else false.
+     * @param track The track number to update.
      */
-    public boolean getIsValidTileSelection(String tileName, GameBoard gameBoard) {
-        return isValidTileSelection(getSelectedDice(), tileName);
+    public void updateTrack(int track) {
+        doUpdateTrack(track);
     }
 
     /**
-     * Getter for updateBonus.
+     * Checks if the tile selection is valid.
      *
-     * @param tileName  The name of the tile.
-     * @param gameBoard The current game board.
+     * @param tileName The name of the tile.
+     * @return True if valid else false.
      */
-    public void getUpdateBonus(String tileName, GameBoard gameBoard) {
-        updateBonus(getSelectedDice(), tileName);
+    public boolean isValidTileSelection(String tileName) {
+        return doIsValidTileSelection(getSelectedDice(), tileName);
+    }
+
+    /**
+     * Updates bonus when the tile is placed.
+     *
+     * @param tileName The name of the tile.
+     */
+    public void updateBonus(String tileName) {
+        doUpdateBonus(getSelectedDice(), tileName);
     }
 
     /**
@@ -152,15 +129,6 @@ public class GameState {
      */
     public void updateScore(GameBoard gameBoard, HashMap<String, List<Integer>> completedMap) {
         score.addPoints(gameBoard.getGameBoard(), completedMap);
-    }
-
-    /**
-     * Getter for updateTrack.
-     *
-     * @param track The track number to update.
-     */
-    public void getUpdateTrack(int track) {
-        updateTrack(track);
     }
 
     /**
@@ -175,10 +143,9 @@ public class GameState {
     /**
      * Updates the dice and tiles for the next turn.
      *
-     * @param gui       The GameGUI object.
-     * @param gameBoard The GameBoard object.
+     * @param gui The GameGUI object.
      */
-    public void updateDiceAndTiles(GameGUI gui, GameBoard gameBoard) {
+    public void updateDiceAndTiles(GameGUI gui) {
         rerollDice();
         updateSelectedDice(gui.getSelectedDice());
         gui.setAvailableTiles(List.of(getTiles()));
@@ -366,5 +333,13 @@ public class GameState {
      */
     public char[][] getSelectedTile() {
         return tiles.getSelectedTile();
+    }
+
+    /**
+     * returns used Tiles in the game per player
+     * @return Hashmap of usedTiles
+     */
+    public Map<String, List<char[][]>> getUsedTiles(){
+        return tiles.getUsedTiles();
     }
 }

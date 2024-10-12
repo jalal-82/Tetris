@@ -23,7 +23,7 @@
 //        tileOne = new Tile(diceOne);
 //        scoreOne = new Score();
 //        gameStateOne = new GameState(scoreOne);
-//        gameBoardOne = new GameBoard(diceOne, tileOne);
+//        gameBoardOne = new GameBoard(tileOne);
 //
 //    }
 //

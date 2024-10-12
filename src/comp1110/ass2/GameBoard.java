@@ -2,6 +2,7 @@ package comp1110.ass2;
 
 import comp1110.ass2.gui.GameGUI;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -9,31 +10,28 @@ import java.util.Map;
 public class GameBoard {
 
     private char[][] gameBoard;
-    private GameState gameState;
+    private final GameState gameState;
 
     // Private methods
     /**
-     * Initializes the game board by filling it with '.' characters.
-     * This represents an empty board with no tiles placed.
+     * Core logic to initialize the game board.
      */
-    private void initializeBoard() {
+    private void doInitializeBoard() {
         gameBoard = new char[9][5];
-        for (int i = 0; i < gameBoard.length; i++) {
-            for (int j = 0; j < gameBoard[i].length; j++) {
-                gameBoard[i][j] = '.';
-            }
+        for (char[] chars : gameBoard) {
+            Arrays.fill(chars, '.');
         }
     }
 
     /**
-     * Checks if a tile placement of the selected tile is valid based on its position, overlap, and support.
+     * Core logic to check if a tile placement is valid.
      *
      * @param board The current game board.
-     * @param col   The column where the tile is to be placed.
      * @param row   The row where the tile is to be placed.
+     * @param col   The column where the tile is to be placed.
      * @return True if the tile placement is valid, false otherwise.
      */
-    private boolean isTilePlacementValid(char[][] board, int row, int col) {
+    private boolean doIsTilePlacementValid(char[][] board, int row, int col) {
         char[][] tile = gameState.getSelectedTile();
 
         if (tile == null) {
@@ -81,19 +79,20 @@ public class GameBoard {
     }
 
     /**
-     * Places the selected tile on the game board at the specified row and column.
+     * Core logic to place the tile.
      *
      * @param row The row where the tile will be placed.
      * @param col The column where the tile will be placed.
      */
-    private void placeTile(int row, int col) {
-        if (!isTilePlacementValid(gameBoard, row, col)) {
+    private void doPlaceTile(int row, int col) {
+        if (!doIsTilePlacementValid(gameBoard, row, col)) {
             System.out.println(gameState.getSelectedTileKey() + " placement is invalid");
             return;
         }
 
         // Remove the selected tile
         gameState.removeSelectedTile();
+        System.out.println("removed Tiles are :" + gameState.getUsedTiles());
 
         // Update available colors
         gameState.updateAvailableColors(gameState.getSelectedTileKey());
@@ -116,26 +115,26 @@ public class GameBoard {
     }
 
     /**
-     * Updates the CoA based on completed rows and columns.
+     * Core logic to update the CoA.
      *
      * @param gui           The GameGUI object.
      * @param currentPlayer The current player index.
      * @param completedMap  A map of completed rows and columns.
      */
-    private void updateCoA(GameGUI gui, int currentPlayer, HashMap<String, List<Integer>> completedMap) {
+    private void doUpdateCoA(GameGUI gui, int currentPlayer, HashMap<String, List<Integer>> completedMap) {
         if (!completedMap.isEmpty()) {
             List<Integer> rows = completedMap.get("completedRows");
-            for (int j = 0; j < rows.size(); j++) {
-                gui.setRowCoA(currentPlayer, rows.get(j), true);
+            for (Integer row : rows) {
+                gui.setRowCoA(currentPlayer, row, true);
             }
             List<Integer> cols = completedMap.get("completedCols");
-            for (int j = 0; j < cols.size(); j++) {
-                gui.setColumnCoA(currentPlayer, cols.get(j), true);
+            for (Integer col : cols) {
+                gui.setColumnCoA(currentPlayer, col, true);
             }
         }
     }
 
-    // Public interface
+    // Public methods
     /**
      * Constructor for GameBoard.
      *
@@ -143,16 +142,18 @@ public class GameBoard {
      */
     public GameBoard(GameState gameState) {
         this.gameState = gameState;
-        initializeBoard();
+        doInitializeBoard();
     }
 
     /**
-     * Updates the selected tile on the GUI.
+     * Checks if a tile placement is valid.
      *
-     * @param tile The tile to select.
+     * @param row The row to check.
+     * @param col The column to check.
+     * @return True if placement is valid, else false.
      */
-    public void updateSelectedTile(String tile) {
-        gameState.updateSelectedTile(tile);
+    public boolean isTilePlacementValid(int row, int col) {
+        return doIsTilePlacementValid(getGameBoard(), row, col);
     }
 
     /**
@@ -166,18 +167,7 @@ public class GameBoard {
     public void placeTileWithRotationWindows(int row, int col, int rotation, boolean[] windows) {
         gameState.applyWindows(windows);
         gameState.rotateTile(rotation);
-        placeTile(row, col);
-    }
-
-    /**
-     * Getter for isTilePlacementValid Method.
-     *
-     * @param row The row to check.
-     * @param col The column to check.
-     * @return True if placement is valid, else false.
-     */
-    public boolean getIsTilePlacementValid(int row, int col) {
-        return isTilePlacementValid(getGameBoard(), row, col);
+        doPlaceTile(row, col);
     }
 
     /**
@@ -195,9 +185,9 @@ public class GameBoard {
      * @param board A 2D character array representing the game board to print.
      */
     public void printBoard(char[][] board) {
-        for (int i = 0; i < board.length; i++) {
+        for (char[] chars : board) {
             for (int j = 0; j < board[0].length; j++) {
-                System.out.print(board[i][j] == '\u0000' ? '.' : board[i][j]);
+                System.out.print(chars[j] == '\u0000' ? '.' : chars[j]);
                 System.out.print(" ");
             }
             System.out.println();
@@ -210,9 +200,9 @@ public class GameBoard {
      * @param tile A 2D character array representing the tile to print.
      */
     public static void printTile(char[][] tile) {
-        for (int i = 0; i < tile.length; i++) {
+        for (char[] chars : tile) {
             for (int j = 0; j < tile[0].length; j++) {
-                System.out.print(tile[i][j] == '\u0000' ? '.' : tile[i][j]);
+                System.out.print(chars[j] == '\u0000' ? '.' : chars[j]);
                 System.out.print(" ");
             }
             System.out.println();
@@ -226,8 +216,8 @@ public class GameBoard {
      * @param currentPlayer The current player index.
      * @param completedMap  A map of completed rows and columns.
      */
-    public void getUpdateCoA(GameGUI gui, int currentPlayer, HashMap<String, List<Integer>> completedMap) {
-        updateCoA(gui, currentPlayer, completedMap);
+    public void updateCoA(GameGUI gui, int currentPlayer, HashMap<String, List<Integer>> completedMap) {
+        doUpdateCoA(gui, currentPlayer, completedMap);
     }
 
     /**
@@ -240,9 +230,9 @@ public class GameBoard {
      */
     public void placeSingleTile(int row, int col, int rotation, boolean[] windows) {
         gameState.updateSelectedTile("I1X");
-        if (isTilePlacementValid(gameBoard, row, col)) {
+        if (doIsTilePlacementValid(gameBoard, row, col)) {
             gameState.applyWindows(windows);
-            placeTile(row, col);
+            doPlaceTile(row, col);
         }
     }
 
@@ -251,7 +241,7 @@ public class GameBoard {
      *
      * @return A map of all tiles.
      */
-    public Map<String, List<char[][]>> getTilesFromGS() {
+    public Map<String, List<char[][]>> getTilesFromGameState() {
         return gameState.getAllTiles();
     }
 }

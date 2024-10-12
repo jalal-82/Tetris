@@ -192,49 +192,53 @@ public class GameGUI extends BorderPane {
         b_confirm = new Button("Confirm (player #)");
         controls.add(b_confirm, 0, 1);
 
-	b_confirm.setOnAction((e) -> {
-        System.out.println("GUI confirm called");
-		if (candidate != null && !selectDiceMode) {
-            System.out.println("candidate not null");
-		    Placement tmp = candidate;
-		    candidate = null;
-		    library_view.clearSelection();
-		    if (onTilePlaced != null)
-			onTilePlaced.accept(tmp);
-		    showState();
-            selectDiceMode = true;
-            // @Eileen: this switch the tab to next when press confirm button,
-            // @Eileen: then other player can select their dice to add on abilities.
-            playerLock = player_selector.getSelectionModel().getSelectedIndex(); //remember current player
-            player_selector.getSelectionModel().selectNext();
-		}
-        else if (candidate != null && selectDiceMode) {
-            setMessage("You can only pick a dice");
-        }
-		else if (onConfirm != null && selectDiceMode) {
-            System.out.println("onConfirm not null");
-            System.out.println("Size is "+player_selector.getTabs().size());
-            if (player_selector.getSelectionModel().isSelected(player_selector.getTabs().size()-1)) // check if it's the last
-                player_selector.getSelectionModel().selectFirst();
-            else
-                player_selector.getSelectionModel().selectNext();
-            if (player_selector.getSelectionModel().getSelectedIndex() == playerLock) {
-                onConfirm.accept("next");
-                selectDiceMode = false;
-                player_selector.getSelectionModel().selectNext();
-            } else {
-		        onConfirm.accept(b_confirm.getText());
+        b_confirm.setOnAction((e) -> {
+            System.out.println("GUI confirm called");
+            if (candidate != null && !selectDiceMode) {
+                System.out.println("candidate not null");
+                Placement tmp = candidate;
+                candidate = null;
+                library_view.clearSelection();
+                if (onTilePlaced != null)
+                    onTilePlaced.accept(tmp);
+                showState();
+                selectDiceMode = true;
+
+                // Switch the tab to next when confirm is pressed, so the next player can select dice for abilities
+                cycleToNextPlayer(); // Call the method to handle player cycling
             }
-		}
-//        else if
-        // test
-        System.out.println("now:" + player_selector.getSelectionModel().getSelectedIndex());
-	    });
+            else if (candidate != null && selectDiceMode) {
+                setMessage("You can only pick a dice");
+            }
+            else if (onConfirm != null && selectDiceMode) {
+                System.out.println("onConfirm not null");
+                System.out.println("Size is " + player_selector.getTabs().size());
+
+                // Cycle to next player; if it's the last player, wrap around to the first player
+                cycleToNextPlayer();
+
+                // Check if the current player is the same as the locked player
+                if (player_selector.getSelectionModel().getSelectedIndex() == playerLock) {
+                    onConfirm.accept("next");
+                    selectDiceMode = false;
+                    cycleToNextPlayer(); // Go to the next player
+                } else {
+                    onConfirm.accept(b_confirm.getText());
+                }
+            }
+
+            // Debugging output to check the current player
+            System.out.println("now:" + player_selector.getSelectionModel().getSelectedIndex());
+        });
+
 
 
         b_pass = new Button("Pass (player #)");
         controls.add(b_pass, 0, 2);
 	b_pass.setOnAction((e) -> {
+
+        // Remember the current player
+        cycleToNextPlayer();
 		if (onPass != null) {
 		    onPass.accept(b_pass.getText());
 		}
@@ -253,14 +257,19 @@ public class GameGUI extends BorderPane {
         controls.add(b_colour_change, 0, 0);
         current_player_controls = controls;
 
-//        b_error = new Button("Reroll and Generate (only when game breaks)");
-//        controls.add(b_error, 0, 3);
-//    b_error.setOnAction((e) -> {
-//        if (onError != null) {
-//            onError.accept(b_error.getText());
-//        }
-//        });
 
+
+    }
+    private void cycleToNextPlayer() {
+        // Remember the current player
+        playerLock = player_selector.getSelectionModel().getSelectedIndex();
+
+        // Move to the next player; if it's the last player, wrap around to the first player
+        if (playerLock == player_selector.getTabs().size() - 1) {
+            player_selector.getSelectionModel().selectFirst(); // Select player 0 if at the last player
+        } else {
+            player_selector.getSelectionModel().selectNext(); // Otherwise, select the next player
+        }
     }
 
     private void showState() {
