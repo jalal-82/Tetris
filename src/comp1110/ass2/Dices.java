@@ -67,7 +67,10 @@ public class Dices {
 
         // Adds all rolled dice to available colours before removing selected ones
         Collections.addAll(availableColours, rolledDice);
-        availableColours.removeAll(selectedDice);
+
+        for (String s : selectedDice) {
+            availableColours.remove(s);
+        }
 
         this.availableDice = availableColours;
     }

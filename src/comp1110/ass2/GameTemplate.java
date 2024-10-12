@@ -64,6 +64,7 @@ public class GameTemplate extends Application {
 
 		// Updates the selected tile when a tile is selected in the GUI
 		gui.setOnTileSelected(tileName -> {
+			currentState.updateSelectedDice(gui.getSelectedDice());
 			// Checks if the selection is valid given the selected dice. Only allows valid selections
 			if (currentState.isValidTileSelection(tileName)) {
 				gui.setMessage("Valid tile selected");
