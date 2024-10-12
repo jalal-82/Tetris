@@ -26,60 +26,11 @@ public class Game {
         }
     }
 
-    private void handleTrackSelection(GameGUI gui,GameState gameState, GameBoard gameBoard, int controlPlayer, int maxPlayers) {
-        if (gui.getSelectedTracks().size() > 1){
-            gui.setMessage("too many tracks selected, select only one");
-        } else if (!gameBoard.isInAvailableDice(gui.getSelectedTracks().get(0))) {
-            System.out.println(gui.getSelectedTracks());
-            System.out.println(gameBoard.getAvailableDice());
-            gui.setMessage("this track colour is not available");
-        }else {
-            gameState.getUpdateTrack(gui.getSelectedTracks().get(0));
-            updateTrackInfo(controlPlayer, gui.getSelectedTracks().get(0),gameState,gui);
-            controlPlayer = (controlPlayer == maxPlayers - 1) ? 0 : controlPlayer + 1;
-            gui.setControlPlayer(controlPlayer);
-        }
-    }
-
-    private void updateTrackInfo(int player, int track, GameState gameStateToUpdate, GameGUI gui ) {
-        String colour = "";
-        Track trackToUpdate = null;
-        switch (track) {
-            case 0:
-                colour = "Red";
-                trackToUpdate = gameStateToUpdate.redTrack;
-                break;
-            case 1:
-                colour = "Blue";
-                trackToUpdate = gameStateToUpdate.blueTrack;
-                break;
-            case 2:
-                colour = "Purple";
-                trackToUpdate = gameStateToUpdate.purpleTrack;
-                break;
-            case 3:
-                colour = "Green";
-                trackToUpdate = gameStateToUpdate.greenTrack;
-                break;
-            case 4:
-                colour = "Yellow";
-                trackToUpdate = gameStateToUpdate.yellowTrack;
-                break;
-        }
-
-        gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(), trackToUpdate.nextBonus, trackToUpdate.nextAbility);
-    }
 
     public void getUpdateGUIState(int currentPlayer, GameBoard gameboard,GameGUI gui){
         updateGUIState(currentPlayer,gameboard,gui);
     }
 
-    public void getHandleTrackSelection(GameGUI gui, GameState gameState, GameBoard gameBoard, int controlPlayer, int maxPlayers){
-        handleTrackSelection(gui,gameState, gameBoard,controlPlayer,maxPlayers);
-    }
 
-    public void getUpdateTrackInfo(int player, int track, GameState gameStateToUpdate, GameGUI gui){
-        updateTrackInfo(player,track,gameStateToUpdate,gui);
-    }
 
 }

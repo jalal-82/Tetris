@@ -37,7 +37,8 @@ public class GameTemplate extends Application {
 				Tile tile = new Tile(dices);
 				Score score = new Score();
 				gameStates.add(new GameState(score));
-				gameBoards.add(new GameBoard(dices, tile));
+//				gameBoards.add(new GameBoard(dices, tile));
+				gameBoards.add(new GameBoard(gameStates.get(i)));
 				for (int j = 0; j < 5; j++) {
 					updateTrackInfo(i, j);
 				}
@@ -46,8 +47,10 @@ public class GameTemplate extends Application {
 			currentState = gameStates.get(0);
 			currentBoard = gameBoards.get(0);
 			gui.setMessage("Start new game with " + np + " players");
-			gui.setAvailableTiles(List.of(currentBoard.getTiles()));
-			gui.setAvailableDice(List.of(currentBoard.getDice()));
+//			gui.setAvailableTiles(List.of(currentBoard.getTiles()));
+//			gui.setAvailableDice(List.of(currentBoard.getDice()));
+			gui.setAvailableTiles(List.of(currentState.getTiles()));
+			gui.setAvailableDice(List.of(currentState.getDice()));
 			gui.setAvailableActions(List.of("Reroll","Change selected to Red","Change selected to Blue","Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
 			gui.setControlPlayer(0);
 		});
@@ -76,8 +79,10 @@ public class GameTemplate extends Application {
 			gui.setScore(currentPlayer,currentState.getScore());
 
 			//resets the available dice to be all that the player hasn't used
-			gui.setAvailableDice(currentBoard.getAvailableDice());
-			System.out.println(currentBoard.getAvailableDice());
+//			gui.setAvailableDice(currentBoard.getAvailableDice());
+//			System.out.println(currentBoard.getAvailableDice());
+			gui.setAvailableDice(currentState.getAvailableDice());
+			System.out.println(currentState.getAvailableDice());
 
 //			update Coat of Arms
 			currentBoard.getUpdateCoA(gui,currentPlayer,completedMap);
@@ -108,8 +113,10 @@ public class GameTemplate extends Application {
 
 //updates the list of available dice
 	gui.setOnDiceSelectionChanged((i) -> {
-		currentBoard.updateSelectedDice(gui.getSelectedDice());
-		System.out.println(currentBoard.getSelectedDice());
+//		currentBoard.updateSelectedDice(gui.getSelectedDice());
+//		System.out.println(currentBoard.getSelectedDice());
+		currentState.updateSelectedDice(gui.getSelectedDice());
+		System.out.println(currentState.getSelectedDice());
 		System.out.println("here");
 	    });
 
@@ -133,9 +140,12 @@ public class GameTemplate extends Application {
 				gui.setMessage("Missing red ability, can't reroll");
 			else {
 				gui.setMessage("Player " + currentPlayer + " rerolled");
-				currentBoard.rerollDice();
-				gui.setAvailableTiles(List.of(currentBoard.getTiles()));
-				gui.setAvailableDice(List.of(currentBoard.getDice()));
+//				currentBoard.rerollDice();
+//				gui.setAvailableTiles(List.of(currentBoard.getTiles()));
+//				gui.setAvailableDice(List.of(currentBoard.getDice()));
+				currentState.rerollDice();
+				gui.setAvailableTiles(List.of(currentState.getTiles()));
+				gui.setAvailableDice(List.of(currentState.getDice()));
 				currentState.redTrack.updateAbility();
 			}
 		}
@@ -147,24 +157,29 @@ public class GameTemplate extends Application {
 			else {
 				String desiredColour = String.valueOf(action.charAt(19));
 				//determine all selected are the same colour
-				for (String s : currentBoard.getSelectedDice())
-					if (!(Objects.equals(currentBoard.getSelectedDice().get(0), s))) {
+//				for (String s : currentBoard.getSelectedDice())
+				for (String s : currentState.getSelectedDice())
+//					if (!(Objects.equals(currentBoard.getSelectedDice().get(0), s))) {
+					if (!(Objects.equals(currentState.getSelectedDice().get(0), s))) {
 						gui.setMessage("All selected die must be the same colour");
 						return;
 					}
 				//change all selected to the desired colour
 				currentState.greenTrack.updateAbility();//reduce ability count
 				//creates a string of the currently displayed dice
-				String[] currentDice = currentBoard.getAvailableDice().toArray(new String[currentBoard.getAvailableDice().size()]);
+//				String[] currentDice = currentBoard.getAvailableDice().toArray(new String[currentBoard.getAvailableDice().size()]);
+				String[] currentDice = currentState.getAvailableDice().toArray(new String[currentState.getAvailableDice().size()]);
 				for (int a : gui.getSelectedDice())
 					currentDice[a] = desiredColour;
 				//checks if there are 5 or less current dice and acts accordingly
 				if (currentDice.length == 5) {
-					currentBoard.setRolledDice(List.of(currentDice));
+//					currentBoard.setRolledDice(List.of(currentDice));
+					currentState.setRolledDice(List.of(currentDice));
 					System.out.println(Arrays.toString(currentDice));
 					gui.setAvailableDice(List.of(currentDice));
 				} else {
-					currentBoard.setAvailableDice(currentDice);
+//					currentBoard.setAvailableDice(currentDice);
+					currentState.setRolledDice(List.of(currentDice));
 					gui.setAvailableDice(List.of(currentDice));
 				}
 			}
@@ -180,7 +195,8 @@ public class GameTemplate extends Application {
 			currentPlayer = 0;
 		currentBoard = gameBoards.get(currentPlayer);
 		if (s.equals("next")) {
-			currentBoard.updateDiceAndTiles(gui,currentBoard);
+//			currentBoard.updateDiceAndTiles(gui,currentBoard);
+			currentState.updateDiceAndTiles(gui,currentBoard);
 			gui.setControlPlayer(currentPlayer);
 			return;
 		}
@@ -203,7 +219,8 @@ public class GameTemplate extends Application {
 
 		// implement reroll and new tiles for next player
 		currentBoard = gameBoards.get(currentPlayer);
-		currentBoard.updateDiceAndTiles(gui,currentBoard);
+//		currentBoard.updateDiceAndTiles(gui,currentBoard);
+		currentState.updateDiceAndTiles(gui,currentBoard);
 	});
 
 	/**
@@ -262,9 +279,11 @@ public class GameTemplate extends Application {
 	private void handleTrackSelection () {
 		if (gui.getSelectedTracks().size() > 1){
 			gui.setMessage("too many tracks selected, select only one");
-		} else if (!currentBoard.isInAvailableDice(gui.getSelectedTracks().get(0))) {
+//		} else if (!currentBoard.isInAvailableDice(gui.getSelectedTracks().get(0))) {
+		} else if (!currentState.isInAvailableDice(gui.getSelectedTracks().get(0))) {
 			System.out.println(gui.getSelectedTracks());
-			System.out.println(currentBoard.getAvailableDice());
+//			System.out.println(currentBoard.getAvailableDice());
+			System.out.println(currentState.getAvailableDice());
 			gui.setMessage("this track colour is not available");
 		} else {
 			gameStates.get(controlPlayer).getUpdateTrack(gui.getSelectedTracks().get(0));
