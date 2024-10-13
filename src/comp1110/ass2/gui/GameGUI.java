@@ -25,6 +25,7 @@ import javafx.geometry.Pos;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.input.MouseButton;
+import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
@@ -66,6 +67,8 @@ public class GameGUI extends BorderPane {
     private Consumer<String> onConfirm;
     private Consumer<String> onPass;
     private Consumer<String> onGameAction;
+    private Consumer<Boolean> onTrackTwice;
+    private Consumer<Boolean> onSingleTile;
     private Consumer<String> onError;
     //private Consumer<String> onReroll;
     //private Consumer<String> onColourChange;
@@ -813,4 +816,44 @@ public class GameGUI extends BorderPane {
     // 	onColourChange = handler;
     // }
 
+    public void setTrackTwice(Consumer<Boolean> handler) {
+        onTrackTwice = handler;
+    }
+
+    public void setSingleTile(Consumer<Boolean> handler) {
+        onSingleTile = handler;
+    }
+    public void showPopup() {
+        Stage popupStage = new Stage();
+        popupStage.initModality(Modality.APPLICATION_MODAL);
+        popupStage.setTitle("Bonus");
+
+        Button singleTile = new Button("single tile");
+        Button trackTwice = new Button("advance track twice");
+
+        singleTile.setOnAction(e -> {
+            if (onSingleTile != null) {
+                onSingleTile.accept(true);
+            }
+            popupStage.close();
+        });
+
+        trackTwice.setOnAction(e -> {
+            if (onTrackTwice != null) {
+                onTrackTwice.accept(true);
+            }
+            popupStage.close();
+        });
+
+        VBox layout = new VBox(10);
+        layout.getChildren().addAll(new Label("Coat of arms unlocked. Chose an option"), singleTile, trackTwice);
+        layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(20));
+
+        Scene scene = new Scene(layout);
+        popupStage.setScene(scene);
+        popupStage.showAndWait();
+
+
+    }
 }
