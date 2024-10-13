@@ -1,9 +1,11 @@
 package comp1110.ass2;
 
 import comp1110.ass2.gui.*;
+import javafx.animation.PauseTransition;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 import java.util.*;
 
@@ -120,15 +122,14 @@ public class GameTemplate extends Application {
 		});
 
 		gui.setOnPass((s) -> {
+			System.out.println("curr1: "+currentPlayer);
 			handlePassTurnMessage(); // Handle message and turn skipping
-			if (currentPlayer == maxPlayers - 1) {
-				controlPlayer = 0;
-				gui.setControlPlayer(0);
-			} else {
-				controlPlayer = currentPlayer + 1;
-				gui.setControlPlayer(currentPlayer + 1);
-			}
-			gui.setMessage("player " + currentPlayer + " turn passed. Player " + (controlPlayer) + " now select Track");
+//			curr1 = 0
+			updateCurrentPlayer();
+			System.out.println("curr2: "+currentPlayer);
+
+			updatePlayerStateForNextTurn();
+			System.out.println("curr3: "+currentPlayer);
 			//calls update gui to ensure all end of turn logic functions as normal
 			updateGUIState();
 
@@ -384,11 +385,15 @@ public class GameTemplate extends Application {
 	 * Displays the message that the player has skipped their turn and updates the GUI.
 	 */
 	private void handlePassTurnMessage() {
-		// Display message for current player skipping their turn
 		gui.setMessage("Player " + currentPlayer + " skips their turn");
+//		reset current player if it is the last player
+		int tmpCurrentPlayer = currentPlayer+1;
+		if (currentPlayer==maxPlayers-1){
+			tmpCurrentPlayer = 0;
+		}
 
 		// Update message for next player's turn
-		gui.setMessage("Now it's player " + currentPlayer + "'s turn");
+		gui.setMessage("Now it's player " + tmpCurrentPlayer + "'s turn");
 	}
 
 	/**
@@ -467,17 +472,25 @@ public class GameTemplate extends Application {
 		// Display a message for starting the game
 		gui.setMessage("Start new game with " + maxPlayers + " players");
 
-		// Set the available tiles and dice in the GUI
-		gui.setAvailableTiles(List.of(currentState.getTiles()));
-		gui.setAvailableDice(List.of(currentState.getDice()));
+		PauseTransition pause = new PauseTransition(Duration.seconds(2));
+		pause.setOnFinished(event -> {
+			// After the delay, update the message
+			gui.setMessage("Player 0's turn to place tile");
 
-		// Set available actions in the GUI
-		gui.setAvailableActions(List.of("Reroll", "Change selected to Red", "Change selected to Blue",
-				"Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
+			// Set the available tiles and dice in the GUI
+			gui.setAvailableTiles(List.of(currentState.getTiles()));
+			gui.setAvailableDice(List.of(currentState.getDice()));
 
-		// Set the control to the first player
-		System.out.println(maxPlayers);
-		gui.setControlPlayer(0);
+			// Set available actions in the GUI
+			gui.setAvailableActions(List.of("Reroll", "Change selected to Red", "Change selected to Blue",
+					"Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
+
+			// Set the control to the first player
+			gui.setControlPlayer(0);
+		});
+
+		// Start the delay
+		pause.play();
 	}
 
 
