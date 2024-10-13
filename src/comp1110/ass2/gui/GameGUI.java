@@ -77,14 +77,17 @@ public class GameGUI extends BorderPane {
     private int candidate_index = -1;
     private boolean selectDiceMode = false;
     private int playerLock = 0;
+
     private void makeSetupControls() {
         VBox controls = new VBox();
         controls.setSpacing(4);
+
         // controls.setAlignment(Pos.CENTER);
         ToggleGroup np = new ToggleGroup();
         FlowPane npPane = new FlowPane();
         npPane.setHgap(2);
         npPane.getChildren().add(new Text("Number of players:"));
+
         for (int i = 2; i <= 4; i++) {
             RadioButton b = new RadioButton(Integer.toString(i));
             b.setToggleGroup(np);
@@ -92,6 +95,30 @@ public class GameGUI extends BorderPane {
             npPane.getChildren().add(b);
         }
         controls.getChildren().add(npPane);
+
+        // Text fields for player names
+        VBox nameFields = new VBox();
+        nameFields.setSpacing(4);
+
+        // Create 4 text fields but show only based on selected number of players
+        TextField[] playerNames = new TextField[4];
+        for (int i = 0; i < 4; i++) {
+            TextField nameField = new TextField();
+            nameField.setPromptText("Player " + (i + 1) + " name");
+            nameFields.getChildren().add(nameField);
+            playerNames[i] = nameField;
+            nameField.setVisible(false); // initially hidden
+        }
+        controls.getChildren().add(nameFields);
+
+        // Add listener to show the appropriate number of text fields based on number of players
+        np.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            int numPlayers = (int) np.getSelectedToggle().getUserData();
+            for (int i = 0; i < 4; i++) {
+                playerNames[i].setVisible(i < numPlayers);
+            }
+        });
+
         FlowPane aiPane = new FlowPane();
         aiPane.setHgap(2);
         aiPane.getChildren().add(new Text("AI:"));
@@ -100,51 +127,53 @@ public class GameGUI extends BorderPane {
             aiPane.getChildren().add(b);
         }
         controls.getChildren().add(aiPane);
+
         FlowPane gsPane = new FlowPane();
         gsPane.setHgap(2);
         gsPane.getChildren().add(new Text("Init state:"));
         TextField initStateString = new TextField();
-        // initStateString.setPrefWidth(800);
         gsPane.getChildren().add(initStateString);
         controls.getChildren().add(gsPane);
+
         Button b_start = new Button("Start");
         b_start.setOnAction(e -> {
-		Toggle np_selected = np.getSelectedToggle();
-		boolean[] isAI = new boolean[4];
-		for (int i = 0; i < 4; i++)
-		    isAI[i] = ((CheckBox) (aiPane.getChildren().get(i + 1))).isSelected();
-		String gameString = initStateString.getText();
-		if (gameString.length() > 0) {
-		    doStart(0, gameString, isAI);
-		}
-		else if (np_selected != null) {
-		    int n = (Integer) np_selected.getUserData();
-		    //System.out.println("selected " + n + " players");
-		    doStart(n, null, isAI);
-		}
-	    });
+            Toggle np_selected = np.getSelectedToggle();
+            boolean[] isAI = new boolean[4];
+            for (int i = 0; i < 4; i++)
+                isAI[i] = ((CheckBox) (aiPane.getChildren().get(i + 1))).isSelected();
+            String gameString = initStateString.getText();
+            if (gameString.length() > 0) {
+                doStart(0, gameString, isAI, playerNames);
+            } else if (np_selected != null) {
+                int n = (Integer) np_selected.getUserData();
+                doStart(n, null, isAI, playerNames);
+            }
+        });
         controls.getChildren().add(b_start);
         game_setup_controls = controls;
     }
 
-    private void doStart(int nPlayers, String gameString, boolean[] isAI) {
+    private void doStart(int nPlayers, String gameString, boolean[] isAI, TextField[] playerNames) {
         player_selector.getTabs().clear();
         for (int i = 0; i < nPlayers; i++) {
-            Tab t = new Tab("Player " + Integer.toString(i));
+            String playerName = playerNames[i].getText();
+            if (playerName.isEmpty()) {
+                playerName = "Player " + (i + 1); // Default to "Player X" if no name provided
+            }
+            Tab t = new Tab(playerName);
             player_selector.getTabs().add(t);
         }
         control_view.getChildren().clear();
         control_view.getChildren().add(current_player_controls);
         player_selector.getSelectionModel().select(0);
         player_selector.getSelectionModel().selectedIndexProperty().addListener(
-            (property, old_value, new_value) -> {
-		showState();
-	    });
-	if (onStartGame != null)
-	    onStartGame.accept(nPlayers, isAI);
+                (property, old_value, new_value) -> {
+                    showState();
+                });
+        if (onStartGame != null)
+            onStartGame.accept(nPlayers, isAI);
         showState();
     }
-
     private Pane makeGameOverControls(int[] finalScores) {
         GridPane controls = new GridPane();
         controls.setAlignment(Pos.CENTER);
@@ -786,7 +815,6 @@ public class GameGUI extends BorderPane {
         selectDiceMode = !selectDiceMode;
     }
 
-    public void setOnError(Consumer<String> handler){ onError = handler; }
 
     /**
      * Set the event handler to be called when an item from the "Action"
@@ -823,6 +851,7 @@ public class GameGUI extends BorderPane {
     public void setSingleTile(Consumer<Boolean> handler) {
         onSingleTile = handler;
     }
+
     public void showPopup() {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);

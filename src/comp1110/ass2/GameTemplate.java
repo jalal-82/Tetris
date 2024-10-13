@@ -21,7 +21,6 @@ public class GameTemplate extends Application {
 	int maxPlayers = 0;
 	boolean trigger = false;//temp variable for coa logic, set to true to test
 
-
 		public void start(Stage stage) throws Exception {
 			if (stage == null) {
 				throw new Exception("Stage is not initialized.");
@@ -91,6 +90,7 @@ public class GameTemplate extends Application {
 				handleDiceChangeAction(action);
 			}
 		});
+
 		gui.setTrackTwice((s) -> {
 			gui.setMessage("Player " + currentPlayer + " select a track to advance twice");
 			gui.setControlPlayer(currentPlayer);
@@ -99,8 +99,8 @@ public class GameTemplate extends Application {
 		gui.setSingleTile((s) -> {
 			System.out.println("single working");
 		});
-		gui.setOnConfirm((s) -> {
 
+		gui.setOnConfirm((s) -> {
 			if (trigger) {
 				handleTrackSelectionCOA();
 				trigger = false;
@@ -111,8 +111,7 @@ public class GameTemplate extends Application {
 				updateCurrentPlayer();
 				gui.setMessage("Player " + currentPlayer + "'s turn");
 				updatePlayerStateForNextTurn();
-				gui.setAvailableTiles(List.of(currentState.getTiles()));
-				gui.setAvailableDice(List.of(currentState.getDice()));
+				setAvailableTilesAndDice();
 			}
 			else if (currentState.getAvailableDice().isEmpty()){
 				gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
@@ -122,17 +121,11 @@ public class GameTemplate extends Application {
 		});
 
 		gui.setOnPass((s) -> {
-			System.out.println("curr1: "+currentPlayer);
 			handlePassTurnMessage(); // Handle message and turn skipping
-//			curr1 = 0
 			updateCurrentPlayer();
-			System.out.println("curr2: "+currentPlayer);
-
 			updatePlayerStateForNextTurn();
-			System.out.println("curr3: "+currentPlayer);
 			//calls update gui to ensure all end of turn logic functions as normal
 			updateGUIState();
-
 		});
 
 		// Start the application:
@@ -309,8 +302,7 @@ public class GameTemplate extends Application {
 			currentState.rerollDice();
 
 			// Update the available tiles and dice in the GUI
-			gui.setAvailableTiles(List.of(currentState.getTiles()));
-			gui.setAvailableDice(List.of(currentState.getDice()));
+			setAvailableTilesAndDice();
 
 			// Update the red track ability
 			currentState.getRedTrack().updateAbility();
@@ -494,6 +486,10 @@ public class GameTemplate extends Application {
 	}
 
 
+	private void setAvailableTilesAndDice(){
+		gui.setAvailableTiles(List.of(currentState.getTiles()));
+		gui.setAvailableDice(List.of(currentState.getDice()));
+	}
 
 
 
