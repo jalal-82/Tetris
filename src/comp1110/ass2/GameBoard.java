@@ -4,6 +4,7 @@ import comp1110.ass2.gui.GameGUI;
 import comp1110.ass2.gui.Placement;
 
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -12,6 +13,8 @@ public class GameBoard {
 
     private char[][] gameBoard;
     private final GameState gameState;
+
+    public static List<Integer> usedTiles = new ArrayList<Integer>();
 
     // Private methods
     /**
@@ -77,6 +80,51 @@ public class GameBoard {
         }
 
         return hasSupport;
+    }
+
+    /**
+     * This method keep record of used large tile
+     * that can only be used once
+     * @param valid whether the tile placement is valid
+     * @return whether is placement valid
+     * @author Eileen
+     */
+    private boolean largeTileCheck(boolean valid) {
+        if (valid) {
+            String tile = gameState.getSelectedTileKey();
+            int pos = 0;
+            if (tile.matches(".[4|5]+.*")){
+                switch(tile.charAt(0)) {
+                    case 'R': break;
+                    case 'B':
+                        pos = 3;
+                        break;
+                    case 'P':
+                        pos = 6;
+                        break;
+                    case 'G':
+                        pos = 9;
+                        break;
+                    case 'Y':
+                        pos = 12;
+                        break;
+                }
+                if (tile.charAt(1)=='5')
+                    pos = pos+2;
+                else {
+                    try {
+                        char end = tile.charAt(2);
+                        if (end=='R')
+                            pos = pos+1;
+                    } catch (Exception e) {
+                        if (usedTiles.contains(pos))
+                            pos = pos+1;
+                    }
+                }
+                usedTiles.add(pos);
+            }
+        }
+        return valid;
     }
 
     /**
@@ -203,7 +251,7 @@ public class GameBoard {
      * @return True if placement is valid, else false.
      */
     public boolean isTilePlacementValid(int row, int col) {
-        return doIsTilePlacementValid(getGameBoard(), row, col);
+        return largeTileCheck(doIsTilePlacementValid(getGameBoard(), row, col));
     }
 
     /**

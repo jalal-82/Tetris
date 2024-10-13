@@ -1,5 +1,6 @@
 package comp1110.ass2.gui;
 
+import comp1110.ass2.GameBoard;
 import javafx.application.Platform;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
@@ -350,19 +351,41 @@ public class GameGUI extends BorderPane {
         Button fs = new Button("facade sheet");
         Popup popup = new Popup();
         Image image1 = new Image("file:assets/tile-names.png", true);
-        ImageView view = new ImageView(image1);
-        view.setFitHeight(500);
-        view.setFitWidth(500);
-        VBox vBox=new VBox (view);
-        Scene sc = new Scene(vBox, view.getFitHeight(), view.getFitWidth());
+        Pane root = new Pane();
+        root.setBackground(new Background(
+                new BackgroundImage(image1,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundRepeat.NO_REPEAT,
+                        BackgroundPosition.CENTER,
+                        new BackgroundSize(500,500,false,false,false,false))));
+        Scene sc = new Scene(root, 500,500);
         Stage st = new Stage();
         st.setTitle("facade sheet");
         st.setScene(sc);
+        st.setResizable(false);
+        int increment = 200;
+        int descent = 100;
+
         fs.setOnAction((e) -> {
+            // popup
             if (popup.isShowing()) {
                 popup.hide();
                 st.close();
             } else {
+                int xPo;
+                // generate red cross
+                for (int i = 0; i < 15; i++) {
+                    if (!GameBoard.usedTiles.contains(i))
+                        continue;
+                    Image imi = new Image("file:assets/red-line-symbol.png", true);
+                    ImageView redCross = new ImageView(imi);
+                    redCross.setFitHeight(100);
+                    redCross.setFitWidth(80);
+                    xPo = i%3;
+                    redCross.setX(increment+xPo*80);
+                    redCross.setY((i/3) * descent);
+                    root.getChildren().add(redCross);
+                }
                 st.show();
                 popup.show(st);
             }
