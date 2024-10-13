@@ -365,6 +365,7 @@ public class GameGUI extends BorderPane {
         st.setResizable(false);
         int increment = 200;
         int descent = 100;
+        Image imi = new Image("file:assets/red-line-symbol.png", true);
 
         fs.setOnAction((e) -> {
             // popup
@@ -377,13 +378,12 @@ public class GameGUI extends BorderPane {
                 for (int i = 0; i < 15; i++) {
                     if (!GameBoard.usedTiles.contains(i))
                         continue;
-                    Image imi = new Image("file:assets/red-line-symbol.png", true);
                     ImageView redCross = new ImageView(imi);
-                    redCross.setFitHeight(100);
-                    redCross.setFitWidth(80);
+                    redCross.setFitHeight(60);
+                    redCross.setFitWidth(60);
                     xPo = i%3;
                     redCross.setX(increment+xPo*80);
-                    redCross.setY((i/3) * descent);
+                    redCross.setY(10+(i/3) * descent);
                     root.getChildren().add(redCross);
                 }
                 st.show();
