@@ -104,7 +104,7 @@ public class GameGUI extends BorderPane {
         TextField[] playerNames = new TextField[4];
         for (int i = 0; i < 4; i++) {
             TextField nameField = new TextField();
-            nameField.setPromptText("Player " + (i + 1) + " name");
+            nameField.setPromptText("Player " + (i) + " name");
             nameFields.getChildren().add(nameField);
             playerNames[i] = nameField;
             nameField.setVisible(false); // initially hidden
@@ -158,7 +158,7 @@ public class GameGUI extends BorderPane {
         for (int i = 0; i < nPlayers; i++) {
             String playerName = playerNames[i].getText();
             if (playerName.isEmpty()) {
-                playerName = "Player " + (i + 1); // Default to "Player X" if no name provided
+                playerName = "Player " + (i); // Default to "Player X" if no name provided
             }
             Tab t = new Tab(playerName);
             player_selector.getTabs().add(t);

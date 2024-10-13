@@ -101,15 +101,71 @@ public class GameState {
         };
     }
 
-    // Public methods
+    private void doUpdateTrackInfo(GameGUI gui,int player, TrackType trackType, List<GameState> gameStates) {
+        String colour;
+        Track trackToUpdate;
+        GameState gameStateToUpdate = gameStates.get(player);
+
+        switch (trackType) {
+            case RED -> {
+                colour = "Red";
+                trackToUpdate = gameStateToUpdate.getRedTrack();
+            }
+            case BLUE -> {
+                colour = "Blue";
+                trackToUpdate = gameStateToUpdate.getBlueTrack();
+            }
+            case PURPLE -> {
+                colour = "Purple";
+                trackToUpdate = gameStateToUpdate.getPurpleTrack();
+            }
+            case GREEN -> {
+                colour = "Green";
+                trackToUpdate = gameStateToUpdate.getGreenTrack();
+            }
+            case YELLOW -> {
+                colour = "Yellow";
+                trackToUpdate = gameStateToUpdate.getYellowTrack();
+            }
+            default -> throw new IllegalArgumentException("Unknown track type");
+        }
+
+        gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(),
+                trackToUpdate.getNextBonus(), trackToUpdate.getNextAbility());
+    }
+
+
     /**
-     * Updates the track.
-     *
-//     * @param trackNum The track number to update.
+     * Handles the logic for the reroll action.
+     * Checks if the red ability is available, reroll dices, and updates the GUI.
      */
-//    public void updateTrack(int trackNum) {
-//        doUpdateTrack(trackNum);
-//    }
+    private void doHandleRerollAction(GameGUI gui, GameState currentState, int currentPlayer) {
+        // Check if the red ability is available
+        if (currentState.getRedTrack().getAbility() == 0) {
+            gui.setMessage("Missing red ability, can't reroll");
+        } else {
+            // Perform the reroll
+            gui.setMessage("Player " + currentPlayer + " rerolled");
+            currentState.rerollDice();
+
+            // Update the available tiles and dice in the GUI
+//            setAvailableTilesAndDice();
+            gui.setAvailableTiles(List.of(currentState.getTiles()));
+            gui.setAvailableDice(List.of(currentState.getDice()));
+
+            // Update the red track ability
+            currentState.getRedTrack().updateAbility();
+        }
+    }
+
+    // Public methods
+    public void handleRerollAction(GameGUI gui, GameState currentState, int currentPlayer){
+        doHandleRerollAction(gui,currentState,currentPlayer);
+    }
+
+    public void updateTrackInfo(GameGUI gui,int player, TrackType trackType, List<GameState> gameStates){
+        doUpdateTrackInfo(gui,player,trackType,gameStates);
+    }
 
     public void updateTrack(TrackType trackType) {
         switch (trackType) {

@@ -43,7 +43,8 @@ public class GameTemplate extends Application {
 
 		gui.setOnTilePlaced((p) -> {
 			// Validate the window configuration and check blue ability
-			if (!handleWindowValidation(p)) return;
+//			if (!handleWindowValidation(p)) return;
+			if (!currentBoard.handleWindowValidation(gui,p,currentState)) return;
 
 			// Check if the tile placement is valid on the board
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
@@ -82,7 +83,8 @@ public class GameTemplate extends Application {
 		gui.setOnGameAction((action) -> {
 			// Handle reroll logic
 			if (action.equals("Reroll")) {
-				handleRerollAction();
+				currentState.handleRerollAction(gui,currentState,currentPlayer);
+//				handleRerollAction();
 			}
 
 			// Handle dice change logic
@@ -134,47 +136,6 @@ public class GameTemplate extends Application {
 		stage.show();
 	}
 
-	private boolean allWindows(boolean[] windows) {
-		for (boolean value : windows) {
-			if (!value) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	private void updateTrackInfo(int player, TrackType trackType) {
-		String colour;
-		Track trackToUpdate;
-		GameState gameStateToUpdate = gameStates.get(player);
-
-		switch (trackType) {
-			case RED -> {
-				colour = "Red";
-				trackToUpdate = gameStateToUpdate.getRedTrack();
-			}
-			case BLUE -> {
-				colour = "Blue";
-				trackToUpdate = gameStateToUpdate.getBlueTrack();
-			}
-			case PURPLE -> {
-				colour = "Purple";
-				trackToUpdate = gameStateToUpdate.getPurpleTrack();
-			}
-			case GREEN -> {
-				colour = "Green";
-				trackToUpdate = gameStateToUpdate.getGreenTrack();
-			}
-			case YELLOW -> {
-				colour = "Yellow";
-				trackToUpdate = gameStateToUpdate.getYellowTrack();
-			}
-			default -> throw new IllegalArgumentException("Unknown track type");
-		}
-
-		gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(),
-				trackToUpdate.getNextBonus(), trackToUpdate.getNextAbility());
-	}
 
 	private void handleTrackSelection() {
 		if (gui.getSelectedTracks().size() > 1) {
@@ -192,7 +153,7 @@ public class GameTemplate extends Application {
 				gui.setMessage("This track colour is not available");
 			} else {
 				gameStates.get(controlPlayer).updateTrack(selectedTrackType);
-				updateTrackInfo(controlPlayer, selectedTrackType);
+				gameStates.get(controlPlayer).updateTrackInfo(gui,controlPlayer,selectedTrackType,gameStates);
 				handlePlayerControlUpdate();
 				if (controlPlayer == currentPlayer)
 					gui.setMessage("player " + currentPlayer + " confirm end of turn");
@@ -220,7 +181,8 @@ public class GameTemplate extends Application {
 			}
 			gameStates.get(currentPlayer).updateTrack(selectedTrackType);
 			gameStates.get(currentPlayer).updateTrack(selectedTrackType);
-			updateTrackInfo(currentPlayer, selectedTrackType);
+//			updateTrackInfo(currentPlayer, selectedTrackType);
+			gameStates.get(currentPlayer).updateTrackInfo(gui,currentPlayer,selectedTrackType,gameStates);
 			handlePlayerControlUpdate();
 			gui.clearTrackSelection();
 
@@ -240,17 +202,6 @@ public class GameTemplate extends Application {
 
 //	Jalal's improvement of readability
 //=============================================
-	private boolean handleWindowValidation(Placement p) {
-		if (allWindows(p.getWindows())) {
-			if (currentState.getBlueTrack().getAbility() > 0) {
-				currentState.getBlueTrack().updateAbility();
-			} else {
-				gui.setMessage("No blue ability available, choose a different window configuration");
-				return false;
-			}
-		}
-		return true;
-	}
 
 	private void handleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
@@ -286,27 +237,6 @@ public class GameTemplate extends Application {
 
 	private void updateGUIState() {
 		currentBoard.getUpdateGUIState(currentPlayer, gameBoards.get(currentPlayer), gui);
-	}
-
-	/**
-	 * Handles the logic for the reroll action.
-	 * Checks if the red ability is available, reroll dices, and updates the GUI.
-	 */
-	private void handleRerollAction() {
-		// Check if the red ability is available
-		if (currentState.getRedTrack().getAbility() == 0) {
-			gui.setMessage("Missing red ability, can't reroll");
-		} else {
-			// Perform the reroll
-			gui.setMessage("Player " + currentPlayer + " rerolled");
-			currentState.rerollDice();
-
-			// Update the available tiles and dice in the GUI
-			setAvailableTilesAndDice();
-
-			// Update the red track ability
-			currentState.getRedTrack().updateAbility();
-		}
 	}
 
 	// move this as well
@@ -442,7 +372,8 @@ public class GameTemplate extends Application {
 
 			// Initialize track information for each player
 			for (TrackType trackType : TrackType.values()) {
-				updateTrackInfo(i, trackType);
+//				updateTrackInfo(i, trackType);
+				gameStates.get(i).updateTrackInfo(gui,i,trackType,gameStates);
 			}
 		}
 	}

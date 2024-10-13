@@ -1,6 +1,7 @@
 package comp1110.ass2;
 
 import comp1110.ass2.gui.GameGUI;
+import comp1110.ass2.gui.Placement;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -157,6 +158,28 @@ public class GameBoard {
         }
     }
 
+    private boolean allWindows(boolean[] windows) {
+        for (boolean value : windows) {
+            if (!value) {
+                return false;
+            }
+        }
+        return true;
+    }
+    private boolean doHandleWindowValidation(GameGUI gui, Placement p, GameState currentState) {
+        if (allWindows(p.getWindows())) {
+            if (currentState.getBlueTrack().getAbility() > 0) {
+                currentState.getBlueTrack().updateAbility();
+            } else {
+                gui.setMessage("No blue ability available, choose a different window configuration");
+                return false;
+            }
+        }
+        return true;
+    }
+
+
+
     // Public methods
     /**
      * Constructor for GameBoard.
@@ -166,6 +189,10 @@ public class GameBoard {
     public GameBoard(GameState gameState) {
         this.gameState = gameState;
         doInitializeBoard();
+    }
+
+    public boolean handleWindowValidation(GameGUI gui, Placement p, GameState currentState){
+        return doHandleWindowValidation(gui,p,currentState);
     }
 
     /**
