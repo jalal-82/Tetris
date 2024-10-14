@@ -55,6 +55,8 @@ public class GameState {
     private boolean doIsValidTileSelection(List<String> selectedDice, String tileName) {
         if (tileName == null)
             return false;
+        if (tileName.equals("I1X"))
+            return true;
         Track track = getTrackByColor(tileName.charAt(0));
         int diceOfTileColour = track.getBonus();
         for (String diceColor : selectedDice) {

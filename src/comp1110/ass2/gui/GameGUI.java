@@ -237,9 +237,8 @@ public class GameGUI extends BorderPane {
         });
 
         b_confirm.setOnAction((e) -> {
-            System.out.println("GUI confirm called");
+            System.out.println("GUI confirm placement called");
             if (candidate != null) {
-                System.out.println("candidate not null");
                 Placement tmp = candidate;
                 candidate = null;
                 library_view.clearSelection();
@@ -250,8 +249,6 @@ public class GameGUI extends BorderPane {
                 cycleToNextPlayer(); // Call the method to handle player cycling
             }
             else if (onConfirm != null) {
-                System.out.println("onConfirm not null");
-                System.out.println("Size is " + player_selector.getTabs().size());
 
                 // Cycle to next player; if it's the last player, wrap around to the first player
                 cycleToNextPlayer();

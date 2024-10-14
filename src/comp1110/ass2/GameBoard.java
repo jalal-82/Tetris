@@ -198,6 +198,8 @@ public class GameBoard {
                         isWindow = true; // @Eileen: This is a window
                     }
                     String color = String.valueOf(c);
+                    if (String.valueOf(c).equals("I"))
+                        color = "Gray";
                     // adjust y-coordinate for GUI
                     int guiY = board.length - 1 - y;
                     gui.setFacadeSquare(currentPlayer, x, guiY, color, isWindow);

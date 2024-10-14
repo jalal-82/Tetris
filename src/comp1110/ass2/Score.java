@@ -1,13 +1,13 @@
 package comp1110.ass2;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 public class Score {
 
     private int score;
     private boolean coaIndicator = false;
+    private Set<Integer> scoredRows = new HashSet<>();
+    private Set<Integer> scoredColumns = new HashSet<>();
 
     /**
      * Checks if a specific row is complete (i.e., no empty spaces).
@@ -107,14 +107,14 @@ public class Score {
         int rows = gameBoard.length;
         int cols = gameBoard[0].length;
 
-        completedMap.put("completedRows", new ArrayList<>());
-        completedMap.put("completedCols", new ArrayList<>());
+        completedMap.putIfAbsent("completedRows", new ArrayList<>());
+        completedMap.putIfAbsent("completedCols", new ArrayList<>());
 
         // Check each row
         for (int i = 0; i < rows; i++) {
             if (isCompleteRow(gameBoard, i)) {
                 // Add points based on whether the row is all windows
-                coaIndicator = true;
+
                 if (isAllWindowsRow(gameBoard, i)) {
                     score += 2;
                 } else {
@@ -122,9 +122,24 @@ public class Score {
                 }
 
                 switch (i) {
-                    case 7 -> completedMap.get("completedRows").add(1);
-                    case 5 -> completedMap.get("completedRows").add(3);
-                    case 3 -> completedMap.get("completedRows").add(5);
+                    case 7 -> {
+                        if (!completedMap.get("completedRows").contains(1)) {
+                            completedMap.get("completedRows").add(1);
+                            coaIndicator = true;
+                        }
+                    }
+                    case 5 -> {
+                        if (!completedMap.get("completedRows").contains(3)) {
+                            completedMap.get("completedRows").add(3);
+                            coaIndicator = true;
+                        }
+                    }
+                    case 3 -> {
+                        if (!completedMap.get("completedRows").contains(5)) {
+                            completedMap.get("completedRows").add(5);
+                            coaIndicator = true;
+                        }
+                    }
                     default -> {
                     } // If i is not 7, 5, or 3, do nothing
                 }
@@ -134,8 +149,6 @@ public class Score {
         // Check each column
         for (int j = 0; j < cols; j++) {
             if (isCompleteColumn(gameBoard, j)) {
-                //sets coaIndicator to trigger ability selection
-                coaIndicator = true;
                 // Add points based on whether the column is all windows
                 if (isAllWindowsColumn(gameBoard, j)) {
                     score += 4;
@@ -143,8 +156,10 @@ public class Score {
                     score += 2;
                 }
 
-                if (j == 1 || j == 3) {
+                if ((j == 1 || j == 3) && !completedMap.get("completedCols").contains(j)) {
                     completedMap.get("completedCols").add(j);
+                    //sets coaIndicator to trigger ability selection
+                    coaIndicator = true;
                 }
             }
         }
@@ -166,15 +181,19 @@ public class Score {
      * @param completedMap
      */
     public void addPoints(char[][] gameBoard, HashMap<String, List<Integer>> completedMap){
-        coaIndicator = false;
         doAddPoints(gameBoard,completedMap);
     }
 
     /**
-     * getter for coaIndicator
+     * returns the current coaIndicator value before resetting it to false
      */
     public boolean isCoaIndicator() {
-        return coaIndicator;
+        boolean returnValue = coaIndicator;
+        System.out.println("isCoaIndicator called, returning: " + returnValue);
+        coaIndicator = false;
+        System.out.println("reset, returning: " + coaIndicator);
+
+        return returnValue;
     }
     /**
      * Adds two points to the score.
