@@ -6,6 +6,7 @@ public class Score {
 
     private int score;
     private boolean coaIndicator = false;
+    //variables to store which rows/columns have already been checked
     private Set<Integer> scoredRows = new HashSet<>();
     private Set<Integer> scoredColumns = new HashSet<>();
 
@@ -112,7 +113,8 @@ public class Score {
 
         // Check each row
         for (int i = 0; i < rows; i++) {
-            if (isCompleteRow(gameBoard, i)) {
+            //checks points haven't already been added for a specific row before adding them
+            if (isCompleteRow(gameBoard, i) && !scoredRows.contains(i)) {
                 // Add points based on whether the row is all windows
 
                 if (isAllWindowsRow(gameBoard, i)) {
@@ -120,6 +122,7 @@ public class Score {
                 } else {
                     score += 1;
                 }
+                scoredRows.add(i);
 
                 switch (i) {
                     case 7 -> {
@@ -148,13 +151,15 @@ public class Score {
 
         // Check each column
         for (int j = 0; j < cols; j++) {
-            if (isCompleteColumn(gameBoard, j)) {
+            //checks if a column is complete and points haven't been added for it yet
+            if (isCompleteColumn(gameBoard, j) && !scoredColumns.contains(j)) {
                 // Add points based on whether the column is all windows
                 if (isAllWindowsColumn(gameBoard, j)) {
                     score += 4;
                 } else {
                     score += 2;
                 }
+                scoredColumns.add(j);
 
                 if ((j == 1 || j == 3) && !completedMap.get("completedCols").contains(j)) {
                     completedMap.get("completedCols").add(j);
