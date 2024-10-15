@@ -116,6 +116,8 @@ public class GameTemplate extends Application {
 				updatePlayerStateForNextTurn();
 				gui.setAvailableTiles(List.of(currentState.getTiles()));
 				gui.setAvailableDice(List.of(currentState.getDice()));
+				// unlock pass button
+				gui.setSelectDiceMode(false);
 			}
 			//failing that it handles track selection
 			else if (currentState.getAvailableDice().isEmpty()){
@@ -212,6 +214,7 @@ public class GameTemplate extends Application {
 					gui.setMessage("player " + controlPlayer + " select track");
 				gui.setControlPlayer(controlPlayer);
 				gui.clearTrackSelection();
+				System.out.println("track Done");
 			}
 		}
 	}
@@ -280,6 +283,8 @@ public class GameTemplate extends Application {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 		reEstablishControlPlayer();
 		gui.setMessage(p.getTileName() + " placed. player " + (controlPlayer) + " now select Track");
+		gui.setSelectDiceMode(true);
+
 	}
 
 	private void handleScoreAndBonusUpdate(Placement p) {

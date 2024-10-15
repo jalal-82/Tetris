@@ -245,7 +245,7 @@ public class GameGUI extends BorderPane {
                 if (onTilePlaced != null)
                     onTilePlaced.accept(tmp);
                 showState();
-                selectDiceMode = true;
+//                selectDiceMode = true;
                 cycleToNextPlayer(); // Call the method to handle player cycling
             }
             else if (onConfirm != null) {
@@ -256,7 +256,7 @@ public class GameGUI extends BorderPane {
                 // Check if the current player is the same as the locked player
                 if (player_selector.getSelectionModel().getSelectedIndex() == playerLock) {
                     onConfirm.accept("next");
-                    selectDiceMode = false;
+//                    selectDiceMode = false;
                     cycleToNextPlayer(); // Go to the next player
                 } else {
                     onConfirm.accept(b_confirm.getText());
@@ -273,6 +273,8 @@ public class GameGUI extends BorderPane {
         b_pass = new Button("Pass (player #)");
         controls.add(b_pass, 0, 2);
 	b_pass.setOnAction((e) -> {
+        if (selectDiceMode)
+            return;
 
         // Remember the current player
         cycleToNextPlayer();
@@ -831,8 +833,8 @@ public class GameGUI extends BorderPane {
      * Set the value of selectDiceMode to the opposite.
      * @author: Eileen
      */
-    public void setSelectDiceMode() {
-        selectDiceMode = !selectDiceMode;
+    public void setSelectDiceMode(boolean b) {
+        selectDiceMode = b;
     }
 
 
