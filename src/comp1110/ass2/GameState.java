@@ -206,6 +206,7 @@ public class GameState {
      */
     public void updateBonus(String tileName) {
         doUpdateBonus(getSelectedDice(), tileName);
+
     }
 
     /**

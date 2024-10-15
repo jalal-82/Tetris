@@ -265,12 +265,25 @@ public class GameTemplate extends Application {
 		};
 	}
 
+	private TrackType getTrackTypeFromTileName(String tileName) {
+		return switch (tileName.charAt(0)){
+			case 'R' -> TrackType.RED;
+			case 'B' -> TrackType.BLUE;
+			case 'P' -> TrackType.PURPLE;
+			case 'G' -> TrackType.GREEN;
+			case 'Y' -> TrackType.YELLOW;
+			default -> null;
+		};
+
+	}
+
 //	Jalal's improvement of readability
 //=============================================
 	private boolean handleWindowValidation(Placement p) {
 		if (allWindows(p.getWindows())) {
 			if (currentState.getBlueTrack().getAbility() > 0) {
 				currentState.getBlueTrack().updateAbility();
+				updateTrackInfo(currentPlayer, TrackType.BLUE);
 			} else {
 				gui.setMessage("No blue ability available, choose a different window configuration");
 				return false;
@@ -289,6 +302,7 @@ public class GameTemplate extends Application {
 
 	private void handleScoreAndBonusUpdate(Placement p) {
 		currentState.updateBonus(p.getTileName());
+        updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
 		System.out.println(currentPlayer + "current players score = " + currentState.getScore());
 		HashMap<String, List<Integer>> completedMap = new HashMap<>();
 		currentState.updateScore(currentBoard, completedMap);
@@ -332,6 +346,7 @@ public class GameTemplate extends Application {
 
 			// Update the red track ability
 			currentState.getRedTrack().updateAbility();
+			updateTrackInfo(currentPlayer, TrackType.RED);
 		}
 	}
 
@@ -360,6 +375,7 @@ public class GameTemplate extends Application {
 
 		// Update the green track ability
 		currentState.getGreenTrack().updateAbility();
+		updateTrackInfo(currentPlayer, TrackType.YELLOW);
 	}
 
 	// maybe this as well
