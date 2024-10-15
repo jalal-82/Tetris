@@ -24,7 +24,6 @@ public class Track {
     private void initializeTrack() {
         switch (trackType) {
             case BLUE:
-                addAbility();
                 nextAbility = 2;
                 nextBonus = 1;
                 break;
