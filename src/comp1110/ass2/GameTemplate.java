@@ -17,8 +17,9 @@ public class GameTemplate extends Application {
 	int currentPlayer = 0;
 	int controlPlayer = 0;
 	int maxPlayers = 0;
-	boolean coaTrigger = true;//temp variable for coa logic, set to true to test
-	boolean templateTrigger = false;
+	boolean coaTrigger = false;//temp variable for coa logic, set to true to test
+	boolean trackTwiceTrigger = false; //trigger used to determine the player should be updating their track by two
+	boolean coaUsedTrigger = false;//trigger used to see if this round is the result of the coa ability
 
 		public void start(Stage stage) throws Exception {
 			if (stage == null) {
@@ -47,12 +48,26 @@ public class GameTemplate extends Application {
 
 			// Check if the tile placement is valid on the board
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
+				//first see if the single tile is being used outside the coa case, this allows the player to still place another tile
+				if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
+					currentState.purpleTrack.updateAbility();
+					updateTrackInfo(currentPlayer, TrackType.PURPLE);
+					handleSingleTilePlacement(p);
+					gui.cycleBackToCurrent(maxPlayers);
+					gui.setMessage("Single tile placed, continue with turn");
+					if (currentState.purpleTrack.getTrack() == 0)
+						gui.setAvailableTiles(List.of(currentState.getTiles())); // updates the tiles to not include single tile
+					return;
+				}
 				handleTilePlacement(p); // Handle the tile placement on the board and update the message
 				handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
 				//check if player just unlocked a coa, if so, supply them with options
 				if (currentState.isCOA()) {
+					coaUsedTrigger = true;
 					gui.showPopup();
 				}
+
+
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
@@ -91,21 +106,23 @@ public class GameTemplate extends Application {
 		});
 		//sets the logic for if a player chooses to advance their track twice
 		gui.setTrackTwice((s) -> {
+			gui.cycleBackToCurrent(maxPlayers);
 			//the trigger will influence the confirm button's behaviour once the tracks have been selected
-			templateTrigger = true;
+			trackTwiceTrigger = true;
 			gui.setMessage("Player " + currentPlayer + " select a track to advance twice");
 			gui.setControlPlayer(currentPlayer);
 		});
 //sets the logic for if the player chooses to place a single tile
 		gui.setSingleTile((s) -> {
+			gui.cycleBackToCurrent(maxPlayers);
 			handleSingleTileCOA();
 		});
 		gui.setOnConfirm((s) -> {
 //if the template trigger is active, it will handle coa track selection
-			if (templateTrigger) {
+			if (trackTwiceTrigger) {
 				System.out.println("on confirm non tile placement");
 				handleTrackSelectionCOA();
-				templateTrigger = false;
+				trackTwiceTrigger = false;
 				reEstablishControlPlayer();
 				gui.setMessage( " player " + (controlPlayer) + " now select Track");
 			}
@@ -123,6 +140,7 @@ public class GameTemplate extends Application {
 			else if (currentState.getAvailableDice().isEmpty()){
 				gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
 			} else {
+				coaUsedTrigger = false;
 				handleTrackSelection();
 			}
 		});
@@ -161,7 +179,8 @@ public class GameTemplate extends Application {
 		String colour;
 		Track trackToUpdate;
 		GameState gameStateToUpdate = gameStates.get(player);
-
+		if (trackType == null)
+			return;
 		switch (trackType) {
 			case RED -> {
 				colour = "Red";
@@ -300,9 +319,16 @@ public class GameTemplate extends Application {
 
 	}
 
+	private void handleSingleTilePlacement(Placement p) {
+		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+		updateGUIState();
+	}
+
 	private void handleScoreAndBonusUpdate(Placement p) {
 		currentState.updateBonus(p.getTileName());
-        updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
+		//check it's not a single tile
+		if (!p.getTileName().contains("I"))
+        	updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
 		System.out.println(currentPlayer + "current players score = " + currentState.getScore());
 		HashMap<String, List<Integer>> completedMap = new HashMap<>();
 		currentState.updateScore(currentBoard, completedMap);

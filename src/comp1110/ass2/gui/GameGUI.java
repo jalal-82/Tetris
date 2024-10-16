@@ -874,6 +874,16 @@ public class GameGUI extends BorderPane {
         onSingleTile = handler;
     }
 
+    /**
+     * returns the player window to the currentPlayer if current logic selects the next player
+     * @param maxPlayers max number of players
+     */
+    public void cycleBackToCurrent(int maxPlayers) {
+        for (int i = 1; i < maxPlayers; i++) {
+            cycleToNextPlayer();
+        }
+    }
+
     public void showPopup() {
         Stage popupStage = new Stage();
         popupStage.initModality(Modality.APPLICATION_MODAL);

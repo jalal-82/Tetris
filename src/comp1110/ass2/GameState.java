@@ -55,7 +55,7 @@ public class GameState {
     private boolean doIsValidTileSelection(List<String> selectedDice, String tileName) {
         if (tileName == null)
             return false;
-        if (tileName.equals("I1X"))
+        if (tileName.equals("I1X")||tileName.equals("I1O"))
             return true;
         Track track = getTrackByColor(tileName.charAt(0));
         int diceOfTileColour = track.getBonus();
@@ -371,7 +371,14 @@ public class GameState {
      * @return An array of strings representing the generated tiles.
      */
     public String[] getTiles() {
-        return tiles.generateTiles(dice);
+        String[] generatedTiles = tiles.generateTiles(dice);
+        //adds single tile if purple ability is active
+        if (this.purpleTrack.getAbility() > 0) {
+            String[] tilesPlusSingle = Arrays.copyOf(generatedTiles, generatedTiles.length + 1);
+            tilesPlusSingle[tilesPlusSingle.length - 1] = "I1X";
+            return tilesPlusSingle;
+        }
+        return generatedTiles;
     }
 
     /**

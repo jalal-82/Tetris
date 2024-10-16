@@ -91,7 +91,11 @@ public class BuildingView extends GridPane {
         }
 
         public Color getFXColor() {
-            return this.colour.getFXColor();
+            if (this.colour != null) {
+                return this.colour.getFXColor();
+            } else {
+                return Color.GREY;
+            }
         }
     }
 

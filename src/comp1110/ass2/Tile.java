@@ -24,6 +24,9 @@ public class Tile {
         usedTiles = new HashMap<>();
         this.dice = dice.getAllDice();
         {
+            allTiles.put("I1O", new ArrayList<>());
+            allTiles.get("I1O").add(new char[][]{{'I'}});
+
             allTiles.put("I1X", new ArrayList<>());
             allTiles.get("I1X").add(new char[][]{{'I'}});
 
