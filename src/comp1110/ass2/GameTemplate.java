@@ -372,10 +372,10 @@ public class GameTemplate extends Application {
 
 		// Change selected dice to the desired color
 		changeSelectedDiceToColour(desiredColour);
-
+		gui.setAvailableTiles(List.of(currentState.getTiles()));
 		// Update the green track ability
 		currentState.getGreenTrack().updateAbility();
-		updateTrackInfo(currentPlayer, TrackType.YELLOW);
+		updateTrackInfo(currentPlayer, TrackType.GREEN);
 	}
 
 	// maybe this as well
