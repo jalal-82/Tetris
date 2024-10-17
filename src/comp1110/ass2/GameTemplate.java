@@ -108,7 +108,10 @@ public class GameTemplate extends Application {
 			if (action.contains("Change")) {
 				handleDiceChangeAction(action);
 			}
+
+
 		});
+
 		//sets the logic for if a player chooses to advance their track twice
 		gui.setTrackTwice((s) -> {
 			gui.cycleBackToCurrent(maxPlayers);
@@ -117,19 +120,20 @@ public class GameTemplate extends Application {
 			gui.setMessage("Player " + currentPlayer + " select a track to advance twice");
 			gui.setControlPlayer(currentPlayer);
 		});
-//sets the logic for if the player chooses to place a single tile
+
+		//sets the logic for if the player chooses to place a single tile
 		gui.setSingleTile((s) -> {
 			gui.cycleBackToCurrent(maxPlayers);
 			handleSingleTileCOA();
 		});
+
 		gui.setOnConfirm((s) -> {
-//if the template trigger is active, it will handle coa track selection
+		//if the template trigger is active, it will handle coa track selection
 			if (trackTwiceTrigger) {
 				System.out.println("on confirm non tile placement");
 				handleTrackSelectionCOA();
 				trackTwiceTrigger = false;
 				reEstablishControlPlayer();
-//				gui.setMessage( " player " + (controlPlayer) + " now select Track");
 				gui.setMessage((gui.getPlayerNames().get(controlPlayer)) + " now select Track");
 			}
 			//if not, and it is the current player,it confirms end of turn
@@ -143,6 +147,7 @@ public class GameTemplate extends Application {
 					}
 				}
 			}
+
 			//failing that it handles track selection
 			else {
 				coaUsedTrigger = false;
