@@ -66,10 +66,9 @@ public class GameTemplate extends Application {
 				handleTilePlacement(p); // Handle the tile placement on the board and update the message
 				handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
 				//check if player just unlocked a coa, if so, supply them with options
-				if (coaTrigger) {
+				if (currentState.isCOA()) {
 					coaUsedTrigger = true;
 					gui.showPopup();
-					coaTrigger = false;
 				}
 				if (currentState.getAvailableDice().isEmpty())
 					startNextTurn();
