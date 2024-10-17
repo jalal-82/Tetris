@@ -20,6 +20,8 @@ public class GameTemplate extends Application {
 	boolean coaTrigger = false;//temp variable for coa logic, set to true to test
 	boolean trackTwiceTrigger = false; //trigger used to determine the player should be updating their track by two
 	boolean coaUsedTrigger = false;//trigger used to see if this round is the result of the coa ability
+	List<String> allRed = new ArrayList<>();
+
 
 		public void start(Stage stage) throws Exception {
 			if (stage == null) {
@@ -66,8 +68,8 @@ public class GameTemplate extends Application {
 					coaUsedTrigger = true;
 					gui.showPopup();
 				}
-
-
+				if (currentState.getAvailableDice().isEmpty())
+					startNextTurn();
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
@@ -128,18 +130,11 @@ public class GameTemplate extends Application {
 			}
 			//if not, and it is the current player,it confirms end of turn
 			else if (s.contains(String.valueOf(currentPlayer))){
-				updateCurrentPlayer();
-				gui.setMessage("Player " + currentPlayer + "'s turn");
-				updatePlayerStateForNextTurn();
-				gui.setAvailableTiles(List.of(currentState.getTiles()));
-				gui.setAvailableDice(List.of(currentState.getDice()));
-				// unlock pass button
-				gui.setSelectDiceMode(false);
+				startNextTurn();
 			}
 			//failing that it handles track selection
-			else if (currentState.getAvailableDice().isEmpty()){
-				gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
-			} else {
+			else {
+				System.out.println(currentState.getAvailableDice());
 				coaUsedTrigger = false;
 				handleTrackSelection();
 			}
@@ -434,9 +429,10 @@ public class GameTemplate extends Application {
 		for (int index : selectedDiceIndices) {
 			currentDice.set(index, desiredColour);
 		}
-
+		String[] currentS = currentDice.toArray(new String[currentDice.size() - 1]);
 		// Update the rolled dice in the GameState and GUI
 		currentState.setRolledDice(currentDice);
+		currentState.setAvailableDice(currentS);//this ensures that if the ability is used again it knows what was previously changed
 		gui.setAvailableDice(currentDice);
 	}
 
@@ -490,6 +486,18 @@ public class GameTemplate extends Application {
 		currentState.updateDiceAndTiles(gui);
 	}
 
+	/**
+	 * implements logic to start the next turn
+	 */
+	private void startNextTurn() {
+		updateCurrentPlayer();
+		gui.setMessage("Player " + currentPlayer + "'s turn");
+		updatePlayerStateForNextTurn();
+		gui.setAvailableTiles(List.of(currentState.getTiles()));
+		gui.setAvailableDice(List.of(currentState.getDice()));
+		// unlock pass button
+		gui.setSelectDiceMode(false);
+	}
 	/**
 	 * Initializes the game states and boards for the given number of players.
 	 * Sets up tracks and creates GameState and GameBoard objects for each player.
