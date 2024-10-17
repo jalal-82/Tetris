@@ -40,7 +40,16 @@ public class Track {
      */
     private void initializeTrack() {
         switch (trackType) {
-            case BLUE, RED -> {
+            case RED -> {
+                for (int i = 0; i < 8; i++) {
+                    addTrack();
+                }
+                nextAbility = 2;
+                nextBonus = 1;
+                this.addAbility();
+                this.addAbility();
+            }
+            case BLUE -> {
                 nextAbility = 2;
                 nextBonus = 1;
             }

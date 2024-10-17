@@ -258,6 +258,7 @@ public class GameTemplate extends Application {
 			} else {
 				gameStates.get(controlPlayer).updateTrack(selectedTrackType);
 				updateTrackInfo(controlPlayer, selectedTrackType);
+				gui.setScore(controlPlayer, gameStates.get(controlPlayer).getScore());
 				handlePlayerControlUpdate();
 				if (controlPlayer == currentPlayer)
 //					gui.setMessage("player " + currentPlayer + " confirm end of turn");
@@ -300,9 +301,10 @@ public class GameTemplate extends Application {
 				gui.setMessage("Invalid track selected");
 				return;
 			}
-			gameStates.get(currentPlayer).updateTrack(selectedTrackType);
+			gameStates.get(currentPlayer).updateTrack(selectedTrackType);//updateTrack twice to add 2 points
 			gameStates.get(currentPlayer).updateTrack(selectedTrackType);
 			updateTrackInfo(currentPlayer, selectedTrackType);
+			gui.setScore(currentPlayer, currentState.getScore());
 			handlePlayerControlUpdate();
 			gui.clearTrackSelection();
 

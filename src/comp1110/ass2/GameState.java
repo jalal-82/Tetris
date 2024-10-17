@@ -15,7 +15,7 @@ public class GameState {
     protected Track greenTrack;
     protected Track yellowTrack;
     protected Track purpleTrack;
-    private final int[] bonuses = {2, 0,0,0,0};
+    private int[] bonuses = {0,0,0,0,0}; //is updated throughout the game, used to give generateTiles easy access to bonus counts
 
 
     // Constructor
