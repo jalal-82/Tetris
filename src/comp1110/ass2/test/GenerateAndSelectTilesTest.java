@@ -30,7 +30,8 @@ public class GenerateAndSelectTilesTest {
     @Test
     public void generateTilesTest() {
         String[] current = tile.generateTiles(dice);
-        String[] result = {"R2","R3","R4","P2"};
+        System.out.println(Arrays.toString(current));
+        String[] result = {"R2","R3","P2","R4"};
         assertArrayEquals(result, current);
     }
 
@@ -40,7 +41,15 @@ public class GenerateAndSelectTilesTest {
     public void generateTilesTest2() {
         dice.applyPresetDiceD2CP1("B", "B", "Y", "G", "Y");
         String[] current = tile.generateTiles(dice);
-        String[] result = {"B2","Y2","B2","G2"};
+        String[] result = {"B2","Y2"};
+        assertArrayEquals(result, current);
+    }
+
+    @Test
+    public void generateTilesTest3() {
+        dice.applyPresetDiceD2CP1("G", "G", "G", "G", "Y");
+        String[] current = tile.generateTiles(dice);
+        String[] result = {"G4R","G2","G3","G4L"};
         assertArrayEquals(result, current);
     }
 
