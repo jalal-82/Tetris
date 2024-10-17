@@ -238,21 +238,55 @@ public class GameTemplate extends Application {
 	}
 
 	/**
+	 * Checks if the selected track has already reached its limit of 9.
+	 *
+	 * @param player    The player whose track is being checked.
+	 * @param trackType The type of track being checked.
+	 */
+	private boolean isTrackMaxed(int player, TrackType trackType) {
+		Track trackToCheck;
+		GameState gameStateToCheck = gameStates.get(player);
+		if (trackType == null)
+			return false;
+		switch (trackType) {
+			case RED -> {
+				trackToCheck = gameStateToCheck.getRedTrack();
+			}
+			case BLUE -> {
+				trackToCheck = gameStateToCheck.getBlueTrack();
+			}
+			case PURPLE -> {
+				trackToCheck = gameStateToCheck.getPurpleTrack();
+			}
+			case GREEN -> {
+				trackToCheck = gameStateToCheck.getGreenTrack();
+			}
+			case YELLOW -> {
+				trackToCheck = gameStateToCheck.getYellowTrack();
+			}
+			default -> throw new IllegalArgumentException("Unknown track type");
+		}
+
+		return trackToCheck.getTrack() >= 9;
+	}
+
+	/**
 	 * Handles the selection of a track when COA is used.
 	 * Allows the player to advance their selected track twice.
 	 */
 	private void handleTrackSelection() {
+		int selectedTrackNum = gui.getSelectedTracks().get(0);
+		TrackType selectedTrackType = getTrackTypeFromInt(selectedTrackNum);
 		if (gui.getSelectedTracks().size() > 1) {
 			gui.setMessage("Too many tracks selected, select only one");
 		} else if (gui.getSelectedTracks().isEmpty()) {
 			gui.setMessage("No track selected, please select a track");
-		} else {
-			int selectedTrackNum = gui.getSelectedTracks().get(0);
-			TrackType selectedTrackType = getTrackTypeFromInt(selectedTrackNum);
-			if (selectedTrackType == null) {
-				gui.setMessage("Invalid track selected");
-				return;
-			}
+		} else if (selectedTrackType == null || isTrackMaxed(controlPlayer, selectedTrackType )) {
+			gui.setMessage("Invalid track selected, try another");
+			gui.cycleBackToCurrent(maxPlayers);
+		}else {
+
+
 			if (!currentState.isInAvailableDice(selectedTrackType)) {
 				gui.setMessage("This track colour is not available");
 			} else {
@@ -261,10 +295,8 @@ public class GameTemplate extends Application {
 				gui.setScore(controlPlayer, gameStates.get(controlPlayer).getScore());
 				handlePlayerControlUpdate();
 				if (controlPlayer == currentPlayer)
-//					gui.setMessage("player " + currentPlayer + " confirm end of turn");
 					gui.setMessage(gui.getPlayerNames().get(currentPlayer) + " confirm end of turn");
 				else
-//					gui.setMessage("player " + controlPlayer + " select track");
 					gui.setMessage(gui.getPlayerNames().get(controlPlayer) + " select track");
 				gui.setControlPlayer(controlPlayer);
 				gui.clearTrackSelection();
@@ -290,24 +322,22 @@ public class GameTemplate extends Application {
 	 * Allows the player to advance their selected track twice. Provides feedback based on track selection.
 	 */
 	private void handleTrackSelectionCOA() {
+		int selectedTrackNum = gui.getSelectedTracks().get(0);
+		TrackType selectedTrackType = getTrackTypeFromInt(selectedTrackNum);
 		if (gui.getSelectedTracks().size() > 1) {
 			gui.setMessage("Too many tracks selected, select only one");
 		} else if (gui.getSelectedTracks().isEmpty()) {
 			gui.setMessage("No track selected, please select a track");
-		} else {
-			int selectedTrackNum = gui.getSelectedTracks().get(0);
-			TrackType selectedTrackType = getTrackTypeFromInt(selectedTrackNum);
-			if (selectedTrackType == null) {
-				gui.setMessage("Invalid track selected");
-				return;
-			}
+		} else if (selectedTrackType == null || isTrackMaxed(controlPlayer, selectedTrackType )) {
+		gui.setMessage("Invalid track selected, try another");
+		gui.cycleBackToCurrent(maxPlayers); }
+		else {
 			gameStates.get(currentPlayer).updateTrack(selectedTrackType);//updateTrack twice to add 2 points
 			gameStates.get(currentPlayer).updateTrack(selectedTrackType);
 			updateTrackInfo(currentPlayer, selectedTrackType);
 			gui.setScore(currentPlayer, currentState.getScore());
 			handlePlayerControlUpdate();
 			gui.clearTrackSelection();
-
 		}
 	}
 
