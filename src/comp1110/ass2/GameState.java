@@ -9,11 +9,14 @@ public class GameState {
     private final Score score;
     private final Dices dice;
     private final Tile tiles;
+
     protected Track redTrack;
     protected Track blueTrack;
     protected Track greenTrack;
     protected Track yellowTrack;
     protected Track purpleTrack;
+    private int[] bonuses = {2, 0,0,0,0};
+
 
     // Constructor
     /**
@@ -78,8 +81,23 @@ public class GameState {
         if (track != null) {
             track.updateBonus(selectedDice, tileName);
         }
+        bonuses[0] = redTrack.getBonus();
+        bonuses[1] = blueTrack.getBonus();
+        bonuses[2] = purpleTrack.getBonus();
+        bonuses[3] = greenTrack.getBonus();
+        bonuses[4] = yellowTrack.getBonus();
     }
 
+    private int getIntByTileName(String tilename) {
+        return switch (tilename.charAt(0)) {
+            case 'R' -> 0;
+            case 'B' -> 1;
+            case 'P' -> 2;
+            case 'G' -> 3;
+            case 'Y' -> 4;
+            default -> throw new IllegalStateException("Unexpected value: " + tilename.charAt(0));
+        };
+    }
     // Helper methods to get track by color or number
     private Track getTrackByColor(char color) {
         return switch (color) {
@@ -371,7 +389,7 @@ public class GameState {
      * @return An array of strings representing the generated tiles.
      */
     public String[] getTiles() {
-        String[] generatedTiles = tiles.generateTiles(dice);
+        String[] generatedTiles = tiles.generateTiles(dice, this.bonuses);
         //adds single tile if purple ability is active
         if (this.purpleTrack.getAbility() > 0) {
             String[] tilesPlusSingle = Arrays.copyOf(generatedTiles, generatedTiles.length + 1);

@@ -100,7 +100,7 @@ public class Tile {
             allTiles.get("Y5").add(new char[][]{{' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '}});
         }
 
-        this.generatedTiles = doGenerateTiles(dice);
+        this.generatedTiles = doGenerateTiles(dice, new int[5]);
 
     }
 
@@ -155,7 +155,7 @@ public class Tile {
      * @param rolledDices The Dice object used to determine which tiles will be generated.
      * @return An array of strings representing the generated tiles.
      */
-    private String[] doGenerateTiles(Dices rolledDices) {
+    private String[] doGenerateTiles(Dices rolledDices, int[] bonuses) {
         Set<String> result = new HashSet<>(); // Use a Set to avoid duplicates
         String[] color = {"R", "B", "P", "G", "Y"};
         int[] colorsNum = new int[5]; // Number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
@@ -163,6 +163,9 @@ public class Tile {
 
         // Count the dice for each color and wilds
         String[] dices = rolledDices.getAllDice();
+        for (int i = 0; i < bonuses.length; i++) {
+            colorsNum[i] = colorsNum[i] + bonuses[i];
+        }
         for (String s : dices) {
             if (s.equals("W")) {
                 wildCount++;
@@ -291,8 +294,8 @@ public class Tile {
      * @param rolledDices The Dice object used to determine which tiles will be generated.
      * @return An array of strings representing the generated tiles.
      */
-    public String[] generateTiles(Dices rolledDices) {
-        return doGenerateTiles(rolledDices);
+    public String[] generateTiles(Dices rolledDices, int[] bonuses) {
+        return doGenerateTiles(rolledDices, bonuses);
     }
 
     /**
