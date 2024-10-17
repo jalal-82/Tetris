@@ -30,6 +30,7 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
+import java.util.ArrayList;
 import java.util.function.Consumer;
 import java.util.function.BiConsumer;
 import java.util.function.IntConsumer;
@@ -78,6 +79,7 @@ public class GameGUI extends BorderPane {
     private int candidate_index = -1;
     private boolean selectDiceMode = false;
     private int playerLock = 0;
+    private List<String> playerNamesList = new ArrayList<>();
 
     private void makeSetupControls() {
         VBox controls = new VBox();
@@ -155,12 +157,16 @@ public class GameGUI extends BorderPane {
     }
 
     private void doStart(int nPlayers, String gameString, boolean[] isAI, TextField[] playerNames) {
+        playerNamesList.clear();
         player_selector.getTabs().clear();
+
         for (int i = 0; i < nPlayers; i++) {
             String playerName = playerNames[i].getText();
             if (playerName.isEmpty()) {
                 playerName = "Player " + (i); // Default to "Player X" if no name provided
             }
+            playerNamesList.add(playerName);
+
             Tab t = new Tab(playerName);
             player_selector.getTabs().add(t);
         }
@@ -175,6 +181,7 @@ public class GameGUI extends BorderPane {
             onStartGame.accept(nPlayers, isAI);
         showState();
     }
+
     private Pane makeGameOverControls(int[] finalScores) {
         GridPane controls = new GridPane();
         controls.setAlignment(Pos.CENTER);
@@ -915,6 +922,9 @@ public class GameGUI extends BorderPane {
         popupStage.setScene(scene);
         popupStage.showAndWait();
 
+    }
 
+    public List<String> getPlayerNames() {
+        return new ArrayList<>(playerNamesList); // Return a copy to avoid external modification
     }
 }
