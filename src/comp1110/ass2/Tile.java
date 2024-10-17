@@ -11,6 +11,7 @@ public class Tile {
     private char[][] selectedTile;
     private String selectedTileKey;
     private final Map<String, List<char[][]>> usedTiles;
+    private int R4Counter = 0;
 
     // Constructor
     /**
@@ -100,8 +101,7 @@ public class Tile {
             allTiles.get("Y5").add(new char[][]{{' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '}});
         }
 
-        this.generatedTiles = doGenerateTiles(dice, new int[5]);
-
+        this.generatedTiles = doGenerateTiles(dice);
     }
 
     // Private methods
@@ -155,7 +155,7 @@ public class Tile {
      * @param rolledDices The Dice object used to determine which tiles will be generated.
      * @return An array of strings representing the generated tiles.
      */
-    private String[] doGenerateTiles(Dices rolledDices, int[] bonuses) {
+    private String[] doGenerateTiles(Dices rolledDices) {
         Set<String> result = new HashSet<>(); // Use a Set to avoid duplicates
         String[] color = {"R", "B", "P", "G", "Y"};
         int[] colorsNum = new int[5]; // Number of dice of "Red", "Blue", "Purple", "Green", "Yellow"
@@ -163,9 +163,6 @@ public class Tile {
 
         // Count the dice for each color and wilds
         String[] dices = rolledDices.getAllDice();
-        for (int i = 0; i < bonuses.length; i++) {
-            colorsNum[i] = colorsNum[i] + bonuses[i];
-        }
         for (String s : dices) {
             if (s.equals("W")) {
                 wildCount++;
@@ -179,22 +176,38 @@ public class Tile {
             }
         }
 
-        rolledDices.setColorCount(colorsNum, wildCount);
+        // For each tileKey in allTiles
+        for (String tileKey : allTiles.keySet()) {
+            // Get the color of the tile (first character)
+            char tileColor = tileKey.charAt(0);
+            String tileColorStr = String.valueOf(tileColor);
 
-        int totalDice = Arrays.stream(colorsNum).sum() + wildCount;
+            // Get the size of the tile by extracting digits from the key
+            String sizeStr = tileKey.replaceAll("[^0-9]", "");
+            if (sizeStr.isEmpty()) {
+                continue; // Skip if no size found
+            }
+            int tileSize = Integer.parseInt(sizeStr);
 
-        // For each color, calculate possible tiles considering wild dice
-        for (int i = 0; i < color.length; i++) {
-            int diceCount = colorsNum[i];
-            int maxDiceForColor = diceCount + wildCount;
-            int maxTileSize = Math.min(maxDiceForColor, totalDice);
-
-            // Generate tiles based on the possible dice count for each color
-            for (int tileSize = 2; tileSize <= maxTileSize; tileSize++) {
-                String tileKey = color[i] + tileSize;
-                if (allTiles.containsKey(tileKey)) {
-                    result.add(tileKey);
+            // Find the index of the tile color in the color array
+            int colorIndex = -1;
+            for (int i = 0; i < color.length; i++) {
+                if (color[i].equals(tileColorStr)) {
+                    colorIndex = i;
+                    break;
                 }
+            }
+
+            if (colorIndex == -1) {
+                continue; // Unknown color
+            }
+
+            int diceCount = colorsNum[colorIndex];
+            int maxDiceForColor = diceCount + wildCount;
+
+            // Check if we have enough dice (including wild dice) to form the tile
+            if (maxDiceForColor >= tileSize) {
+                result.add(tileKey);
             }
         }
 
@@ -294,8 +307,8 @@ public class Tile {
      * @param rolledDices The Dice object used to determine which tiles will be generated.
      * @return An array of strings representing the generated tiles.
      */
-    public String[] generateTiles(Dices rolledDices, int[] bonuses) {
-        return doGenerateTiles(rolledDices, bonuses);
+    public String[] generateTiles(Dices rolledDices) {
+        return doGenerateTiles(rolledDices);
     }
 
     /**
@@ -377,15 +390,27 @@ public class Tile {
      * @param key The key of the tile to remove.
      */
     public void removeTile(String key) {
-        if (key != null && allTiles.containsKey(key)) {
-            if (key.contains("4") || key.contains("5")) {
-                // Get the tiles from allTiles
+        if (key == null || !allTiles.containsKey(key)) {
+            return; // If the key is null or doesn't exist, exit early.
+        }
+        // Special case for R4
+        if (key.equals("R4")) {
+            R4Counter++;
+            if (R4Counter == 2) {
+                // Get the tiles from allTiles, move them to usedTiles, and remove from allTiles
                 List<char[][]> tiles = allTiles.get(key);
-                // Move it to usedTiles
                 usedTiles.put(key, tiles);
-                // Remove from allTiles
                 allTiles.remove(key);
             }
+            return;
+        }
+
+        // General case for keys containing '4' or '5'
+        if (key.contains("4") || key.contains("5")) {
+            // Get the tiles from allTiles, move them to usedTiles, and remove from allTiles
+            List<char[][]> tiles = allTiles.get(key);
+            usedTiles.put(key, tiles);
+            allTiles.remove(key);
         }
     }
 

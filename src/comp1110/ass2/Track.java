@@ -28,16 +28,19 @@ public class Track {
                 nextBonus = 1;
                 break;
             case RED:
-                this.addBonus();
-                this.addBonus();
+                this.setBonus(2);
                 nextAbility = 2;
                 nextBonus = 1;
                 break;
             case PURPLE:
+//                this.addAbility();
                 nextAbility = 3;
                 nextBonus = 1;
                 break;
             case GREEN:
+                this.addAbility();
+                this.addAbility();
+                this.addAbility();
                 nextAbility = 4;
                 nextBonus = 1;
                 break;

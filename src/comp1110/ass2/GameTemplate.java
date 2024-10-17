@@ -20,7 +20,7 @@ public class GameTemplate extends Application {
 	boolean coaTrigger = false;//temp variable for coa logic, set to true to test
 	boolean trackTwiceTrigger = false; //trigger used to determine the player should be updating their track by two
 	boolean coaUsedTrigger = false;//trigger used to see if this round is the result of the coa ability
-
+	int[] playerScores;
 
 	public void start(Stage stage) throws Exception {
 			if (stage == null) {
@@ -35,19 +35,18 @@ public class GameTemplate extends Application {
 		gui.setOnStartGame((np, isAI) -> {
 			maxPlayers = np; // Set the number of players
 
+			playerScores = new int[np];
+
 			initializeGameStatesAndBoards(np); // Initialize game states and boards for all players
 
 			setupInitialGameState(); // Set the current player to the first player and update the GUI
 
 			setupGameUI(); // Display message and available actions for the start of the game
 
-
 		});
 
 		// Places the tile on the board in our backend logic then updates the GUI
 		gui.setOnTilePlaced((p) -> {
-			System.out.println("player names are "+gui.getPlayerNames());
-
 			// Validate the window configuration and check blue ability
 			if (!handleWindowValidation(p)) return;
 
@@ -135,6 +134,13 @@ public class GameTemplate extends Application {
 			//if not, and it is the current player,it confirms end of turn
 			else if (s.contains(String.valueOf(currentPlayer))){
 				startNextTurn();
+				if (currentPlayer==0){
+					for (int i=0;i<playerScores.length;i++){
+						if (playerScores[i] == 12){
+							gui.endGame(playerScores);
+						}
+					}
+				}
 			}
 			//failing that it handles track selection
 			else {
@@ -297,8 +303,6 @@ public class GameTemplate extends Application {
 
 	}
 
-//	Jalal's improvement of readability
-//=============================================
 	private boolean handleWindowValidation(Placement p) {
 		if (allWindows(p.getWindows())) {
 			if (currentState.getBlueTrack().getAbility() > 0) {
@@ -315,7 +319,6 @@ public class GameTemplate extends Application {
 	private void handleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 		reEstablishControlPlayer();
-//		gui.setMessage(p.getTileName() + " placed. player " + (controlPlayer) + " now select Track");
 		gui.setMessage(p.getTileName() + " placed. " + (gui.getPlayerNames().get(controlPlayer)) + " now select Track");
 		gui.setSelectDiceMode(true);
 
@@ -329,7 +332,7 @@ public class GameTemplate extends Application {
 		if (!p.getTileName().contains("I"))
 			updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
 		updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
-		System.out.println(currentPlayer + "current players score = " + currentState.getScore());
+//		System.out.println(currentPlayer + "current players score = " + currentState.getScore());
 		HashMap<String, List<Integer>> completedMap = new HashMap<>();
 		currentState.updateScore(currentBoard, completedMap);
 
@@ -363,7 +366,6 @@ public class GameTemplate extends Application {
 			gui.setMessage("Missing red ability, can't reroll");
 		} else {
 			// Perform the reroll
-//			gui.setMessage("Player " + currentPlayer + " rerolled");
 			gui.setMessage(gui.getPlayerNames().get(currentPlayer) + " rerolled");
 			currentState.rerollDice();
 
@@ -422,7 +424,6 @@ public class GameTemplate extends Application {
 		return true;
 	}
 
-	// move this to gameState
 	/**
 	 * Changes the selected dice to the desired color and updates the GameState and GUI.
 	 */
@@ -448,11 +449,9 @@ public class GameTemplate extends Application {
 	 */
 	private void handlePassTurnMessage() {
 		// Display message for current player skipping their turn
-//		gui.setMessage("Player " + currentPlayer + " skips their turn");
 		gui.setMessage(gui.getPlayerNames().get(currentPlayer) + " skips their turn");
 
 		// Update message for next player's turn
-//		gui.setMessage("Now it's player " + currentPlayer + "'s turn");
 		gui.setMessage("Now it's " + gui.getPlayerNames().get(currentPlayer) + "'s turn");
 	}
 
@@ -500,7 +499,7 @@ public class GameTemplate extends Application {
 	 */
 	private void startNextTurn() {
 		updateCurrentPlayer();
-		gui.setMessage("Player " + currentPlayer + "'s turn");
+		gui.setMessage(gui.getPlayerNames().get(currentPlayer) + "'s turn");
 		updatePlayerStateForNextTurn();
 		gui.setAvailableTiles(List.of(currentState.getTiles()));
 		gui.setAvailableDice(List.of(currentState.getDice()));
