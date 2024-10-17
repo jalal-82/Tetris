@@ -17,25 +17,33 @@ public class GameTemplate extends Application {
 	int currentPlayer = 0;
 	int controlPlayer = 0;
 	int maxPlayers = 0;
-	boolean coaTrigger = false;//temp variable for coa logic, set to true to test
-	boolean trackTwiceTrigger = false; //trigger used to determine the player should be updating their track by two
-	boolean coaUsedTrigger = false;//trigger used to see if this round is the result of the coa ability
-	boolean yellowAbilityTrigger = false;
-	int[] playerScores;
+	boolean coaTrigger = false; // Trigger for coa logic, set to true to test
+	boolean trackTwiceTrigger = false; // Trigger for advancing track twice
+	boolean coaUsedTrigger = false; // Trigger for tracking if COA ability is used
+	boolean yellowAbilityTrigger = false; // Trigger for yellow ability
+	int[] playerScores; // Array for storing player scores
 
+	/**
+	 * The entry point for the application.
+	 * Initializes the GUI, game states, boards, and starts the game.
+	 *
+	 * @param stage The primary stage for the application.
+	 * @throws Exception If the stage is not initialized properly.
+	 */
 	public void start(Stage stage) throws Exception {
-			if (stage == null) {
-				throw new Exception("Stage is not initialized.");
-			}
+		if (stage == null) {
+			throw new Exception("Stage is not initialized.");
+		}
+
 		gui = new GameGUI();
 		gameStates = new ArrayList<>();
 		gameBoards = new ArrayList<>();
 
 		Scene scene = new Scene(gui, GameGUI.WINDOW_WIDTH, GameGUI.WINDOW_HEIGHT);
 
+		// Handle the start of the game
 		gui.setOnStartGame((np, isAI) -> {
-			maxPlayers = np; // Set the number of players
-
+			maxPlayers = np;
 			playerScores = new int[np];
 
 			initializeGameStatesAndBoards(np); // Initialize game states and boards for all players
@@ -43,7 +51,6 @@ public class GameTemplate extends Application {
 			setupInitialGameState(); // Set the current player to the first player and update the GUI
 
 			setupGameUI(); // Display message and available actions for the start of the game
-
 		});
 
 		// Places the tile on the board in our backend logic then updates the GUI
@@ -53,33 +60,32 @@ public class GameTemplate extends Application {
 
 			// Check if the tile placement is valid on the board
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
+				// Handle the placement under yellow ability - Work in Progress
 				if (yellowAbilityTrigger) {
-					// Handle the placement under yellow ability
 					currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
-					// Deduct yellow ability
 					currentState.getYellowTrack().updateAbility();
 					updateTrackInfo(currentPlayer, TrackType.YELLOW);
 					yellowAbilityTrigger = false;
-					// Update the score and bonuses
 					handleScoreAndBonusUpdate(p);
 					gui.setMessage(p.getTileName() + " placed using yellow ability. Your turn ends.");
-					// End the turn
 					startNextTurn();
-				} else if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
-					// Existing logic for single tile placement
+				}
+				// Handle single tile placement with the purple track ability
+				else if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
 					currentState.purpleTrack.updateAbility();
 					updateTrackInfo(currentPlayer, TrackType.PURPLE);
 					handleSingleTilePlacement(p);
 					gui.cycleBackToCurrent(maxPlayers);
 					gui.setMessage("Single tile placed, continue with turn");
 					if (currentState.purpleTrack.getTrack() == 0)
-						gui.setAvailableTiles(List.of(currentState.getTiles())); // updates the tiles to not include single tile
+						gui.setAvailableTiles(List.of(currentState.getTiles()));
 					return;
-				} else {
-					// Existing logic for regular tile placement
-					handleTilePlacement(p); // Handle the tile placement on the board and update the message
-					handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
-					// Check if player just unlocked a coa, if so, supply them with options
+				}
+				// Handle regular tile placement
+				else {
+					handleTilePlacement(p);
+					handleScoreAndBonusUpdate(p);
+					// If player unlocked a COA ability, show options
 					if (currentState.isCOA()) {
 						coaUsedTrigger = true;
 						gui.showPopup();
@@ -90,19 +96,17 @@ public class GameTemplate extends Application {
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
+
 			// Update the GUI with the latest board and game state
 			updateGUIState();
 		});
 
-		// Updates the list of available dice
-		gui.setOnDiceSelectionChanged((i) -> {
-			currentState.updateSelectedDice(gui.getSelectedDice());
-		});
+		// Updates the list of available dice based on dice selection
+		gui.setOnDiceSelectionChanged((i) -> currentState.updateSelectedDice(gui.getSelectedDice()));
 
-		// Updates the selected tile when a tile is selected in the GUI
+		// Handles tile selection and validation
 		gui.setOnTileSelected(tileName -> {
 			currentState.updateSelectedDice(gui.getSelectedDice());
-			// Checks if the selection is valid given the selected dice. Only allows valid selections
 			if (currentState.isValidTileSelection(tileName)) {
 				gui.setMessage("Valid tile selected");
 				currentState.updateSelectedTile(tileName);
@@ -112,71 +116,55 @@ public class GameTemplate extends Application {
 			}
 		});
 
+		// Handles various game actions such as rolling and using abilities
 		gui.setOnGameAction((action) -> {
-			// Handle reroll logic
 			if (action.equals("Reroll")) {
 				handleRerollAction();
-			}
-
-			// Handle dice change logic
-			if (action.contains("Change")) {
+			} else if (action.contains("Change")) {
 				handleDiceChangeAction(action);
-			}
-
-//			Handle Yellow Ability
-			if (action.contains("Retrieve")) {
+			} else if (action.contains("Retrieve")) {
 				handleYellowAbility();
 			}
-
 		});
-
-		//sets the logic for if a player chooses to advance their track twice
+// Logic for advancing the track twice
 		gui.setTrackTwice((s) -> {
 			gui.cycleBackToCurrent(maxPlayers);
-			//the trigger will influence the confirm button's behaviour once the tracks have been selected
 			trackTwiceTrigger = true;
 			gui.setMessage("Player " + currentPlayer + " select a track to advance twice");
 			gui.setControlPlayer(currentPlayer);
 		});
 
-		//sets the logic for if the player chooses to place a single tile
+		// Logic for placing a single tile
 		gui.setSingleTile((s) -> {
 			gui.cycleBackToCurrent(maxPlayers);
 			handleSingleTileCOA();
 		});
 
+		// Handles track or end of turn confirmation
 		gui.setOnConfirm((s) -> {
-
-		//if the template trigger is active, it will handle coa track selection
 			if (trackTwiceTrigger) {
-				System.out.println("on confirm non tile placement");
 				handleTrackSelectionCOA();
 				trackTwiceTrigger = false;
 				reEstablishControlPlayer();
 				gui.setMessage((gui.getPlayerNames().get(controlPlayer)) + " now select Track");
-			}
-			//if not, and it is the current player,it confirms end of turn
-			else if (s.contains(String.valueOf(currentPlayer))){
+			} else if (s.contains(String.valueOf(currentPlayer))) {
 				startNextTurn();
-				if (currentPlayer==0){
-					System.out.println("all players scores are "+ Arrays.toString(playerScores));
-					for (int i=0;i<playerScores.length;i++){
-						if (playerScores[i] >= 12){
+				if (currentPlayer == 0) {
+					for (int playerScore : playerScores) {
+						if (playerScore >= 12) {
 							gui.endGame(playerScores);
 						}
 					}
 				}
-			}
-
-			//failing that it handles track selection
-			else {
+			} else {
 				coaUsedTrigger = false;
 				handleTrackSelection();
 			}
 		});
 
+		// Handle passing the turn
 		gui.setOnPass((s) -> {
-			handlePassTurnMessage(); // Handle message and turn skipping
+			handlePassTurnMessage();
 			if (currentPlayer == maxPlayers - 1) {
 				controlPlayer = 0;
 				gui.setControlPlayer(0);
@@ -185,9 +173,7 @@ public class GameTemplate extends Application {
 				gui.setControlPlayer(currentPlayer + 1);
 			}
 			gui.setMessage(gui.getPlayerNames().get(currentPlayer) + " turn passed. " + (gui.getPlayerNames().get(controlPlayer)) + " now select Track");
-			//calls update gui to ensure all end of turn logic functions as normal
 			updateGUIState();
-
 		});
 
 		// Start the application:
@@ -196,6 +182,12 @@ public class GameTemplate extends Application {
 		stage.show();
 	}
 
+	/**
+	 * Checks if all windows are true (open).
+	 *
+	 * @param windows The array of window booleans.
+	 * @return true if all windows are open, otherwise false.
+	 */
 	private boolean allWindows(boolean[] windows) {
 		for (boolean value : windows) {
 			if (!value) {
@@ -205,6 +197,12 @@ public class GameTemplate extends Application {
 		return true;
 	}
 
+	/**
+	 * Updates the track information on the GUI for the specified player and track type.
+	 *
+	 * @param player    The player whose track is being updated.
+	 * @param trackType The type of track being updated.
+	 */
 	private void updateTrackInfo(int player, TrackType trackType) {
 		String colour;
 		Track trackToUpdate;
@@ -239,6 +237,10 @@ public class GameTemplate extends Application {
 				trackToUpdate.getNextBonus(), trackToUpdate.getNextAbility());
 	}
 
+	/**
+	 * Handles the selection of a track when COA is used.
+	 * Allows the player to advance their selected track twice.
+	 */
 	private void handleTrackSelection() {
 		if (gui.getSelectedTracks().size() > 1) {
 			gui.setMessage("Too many tracks selected, select only one");
@@ -270,9 +272,9 @@ public class GameTemplate extends Application {
 		}
 	}
 
-
 	/**
-	 * this method sets the window up for the player to place a single tile
+	 * Handles the logic for the player to place a single tile using the COA (Council of Architects) ability.
+	 * It limits the available tiles to the single tile option ("I1X") and instructs the player to place it.
 	 */
 	private void handleSingleTileCOA() {
 		gui.setControlPlayer(currentPlayer);
@@ -283,7 +285,8 @@ public class GameTemplate extends Application {
 	}
 
 	/**
-	 * adds two points to the players selected track when using coa ability
+	 * Handles the logic for selecting a track when using the COA (Council of Architects) ability.
+	 * Allows the player to advance their selected track twice. Provides feedback based on track selection.
 	 */
 	private void handleTrackSelectionCOA() {
 		if (gui.getSelectedTracks().size() > 1) {
@@ -306,6 +309,12 @@ public class GameTemplate extends Application {
 		}
 	}
 
+	/**
+	 * Converts an integer to its corresponding TrackType.
+	 *
+	 * @param trackNum The integer representation of the track.
+	 * @return The corresponding TrackType, or null if the integer is invalid.
+	 */
 	private TrackType getTrackTypeFromInt(int trackNum) {
 		return switch (trackNum) {
 			case 0 -> TrackType.RED;
@@ -317,6 +326,12 @@ public class GameTemplate extends Application {
 		};
 	}
 
+	/**
+	 * Converts the first character of a tile name to its corresponding TrackType.
+	 *
+	 * @param tileName The name of the tile.
+	 * @return The corresponding TrackType, or null if the tile name does not match any known types.
+	 */
 	private TrackType getTrackTypeFromTileName(String tileName) {
 		return switch (tileName.charAt(0)){
 			case 'R' -> TrackType.RED;
@@ -329,6 +344,13 @@ public class GameTemplate extends Application {
 
 	}
 
+	/**
+	 * Validates the window configuration for tile placement, particularly for blue ability use.
+	 * If all windows are true (open), it checks if the blue ability can be used and updates accordingly.
+	 *
+	 * @param p The placement being validated.
+	 * @return true if the window configuration is valid, false otherwise.
+	 */
 	private boolean handleWindowValidation(Placement p) {
 		if (allWindows(p.getWindows())) {
 			if (currentState.getBlueTrack().getAbility() > 0) {
@@ -342,13 +364,19 @@ public class GameTemplate extends Application {
 		return true;
 	}
 
+	/**
+	 * Handles tile placement on the board. This method places the tile with rotation and window information,
+	 * removes the placed tile from all game boards, and updates the control to the next player.
+	 *
+	 * @param p The placement object containing tile information.
+	 */
 	private void handleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 
 //		remove the tile placed from each gameBoard
-		for (int i=0;i<gameStates.size();i++){
-			gameStates.get(i).updateSelectedTile(gameStates.get(currentPlayer).getSelectedTileKey());
-			gameStates.get(i).removeSelectedTile();
+		for (GameState gameState : gameStates) {
+			gameState.updateSelectedTile(gameStates.get(currentPlayer).getSelectedTileKey());
+			gameState.removeSelectedTile();
 		}
 
 		reEstablishControlPlayer();
@@ -357,17 +385,27 @@ public class GameTemplate extends Application {
 
 	}
 
+	/**
+	 * Handles the placement of a single tile, updating the board and the GUI state accordingly.
+	 *
+	 * @param p The placement object for the single tile.
+	 */
 	private void handleSingleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 		updateGUIState();
 	}
 
+	/**
+	 * Updates the player's score and bonus after tile placement. It updates track information based on the placed tile,
+	 * calculates bonuses, and updates the GUI with the player's score.
+	 *
+	 * @param p The placement object for the tile.
+	 */
 	private void handleScoreAndBonusUpdate(Placement p) {
 		currentState.updateBonus(p.getTileName());
 		if (!p.getTileName().contains("I"))
 			updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
 		updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
-//		System.out.println(currentPlayer + "current players score = " + currentState.getScore());
 		HashMap<String, List<Integer>> completedMap = new HashMap<>();
 		currentState.updateScore(currentBoard, completedMap);
 
@@ -379,6 +417,10 @@ public class GameTemplate extends Application {
 		playerScores[currentPlayer]=currentState.getScore();
 	}
 
+	/**
+	 * Updates the control to the next player. If the current player is not the last, it advances to the next;
+	 * otherwise, it resets control to the first player.
+	 */
 	private void handlePlayerControlUpdate() {
 		if (controlPlayer != maxPlayers - 1) {
 			controlPlayer = controlPlayer + 1;
@@ -389,6 +431,9 @@ public class GameTemplate extends Application {
 		}
 	}
 
+	/**
+	 * Updates the GIU State
+	 */
 	private void updateGUIState() {
 		currentBoard.getUpdateGUIState(currentPlayer, gameBoards.get(currentPlayer), gui);
 	}
@@ -416,6 +461,11 @@ public class GameTemplate extends Application {
 		}
 	}
 
+	/**
+	 * Handles the logic for using the yellow ability.
+	 * If the yellow ability is available, it allows the player to place a size 4 or 5 tile,
+	 * and sets the dice to all wild ("W") dice. Otherwise, informs the player that the ability is unavailable.
+	 */
 	private void handleYellowAbility(){
 		if (currentState.getYellowTrack().getAbility() == 0) {
 			gui.setMessage("This ability is not currently available, keep playing to unlock yellow ability");
@@ -518,6 +568,10 @@ public class GameTemplate extends Application {
 		gui.setControlPlayer(currentPlayer);
 	}
 
+	/**
+	 * Re-establishes the control for the next player. If the current player is the last player,
+	 * control is reset to the first player. Otherwise, it moves to the next player.
+	 */
 	private void reEstablishControlPlayer() {
 		if (currentPlayer == maxPlayers - 1) {
 			controlPlayer = 0;

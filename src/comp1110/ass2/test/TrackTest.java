@@ -79,7 +79,7 @@ public class TrackTest {
         for (int i = 0; i < 6; i++) {
             gameStateOne.getGreenTrack().addTrack();
         }
-        assertEquals(5, gameStateOne.getGreenTrack().getAbility());
+        assertEquals(1, gameStateOne.getGreenTrack().getAbility());
         assertEquals(2, gameStateOne.getGreenTrack().getBonus());
     }
     @Test

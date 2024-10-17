@@ -6,8 +6,6 @@ public class Tile {
 
     // Fields
     private final Map<String, List<char[][]>> allTiles;
-    private final String[] dice;
-    private final String[] generatedTiles;
     private char[][] selectedTile;
     private String selectedTileKey;
     private final Map<String, List<char[][]>> usedTiles;
@@ -20,13 +18,11 @@ public class Tile {
      * Constructor that initializes the Tile object. It generates all the possible tiles and
      * also generates tiles based on the provided dice roll.
      *
-     * @param dice The Dice object used to determine which tiles will be generated.
      */
-    public Tile(Dices dice) {
+    public Tile() {
         allTiles = new HashMap<>();
         usedTiles = new HashMap<>();
         size4And5Tiles = new ArrayList<>();
-        this.dice = dice.getAllDice();
         {
             allTiles.put("I1O", new ArrayList<>());
             allTiles.get("I1O").add(new char[][]{{'I'}});
@@ -81,7 +77,6 @@ public class Tile {
             addTile("G5", new char[][]{{' ', 'G', ' '}, {'G', 'G', 'G'}, {' ', 'G', ' '}});
             addTile("Y5", new char[][]{{' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '}});
         }
-        this.generatedTiles = doGenerateTiles(dice, new int[5]);
     }
 
     // Private methods
@@ -328,14 +323,6 @@ public class Tile {
         doUpdateSelectedTile(key);
     }
 
-    /**
-     * Gets the generated tiles.
-     *
-     * @return A copy of the generated tiles array.
-     */
-    public String[] getGeneratedTiles() {
-        return generatedTiles != null ? generatedTiles.clone() : new String[0];
-    }
 
     /**
      * Gets the key of the selected tile.
@@ -424,14 +411,11 @@ public class Tile {
         }
     }
 
-    /**
-     * returns used Tiles in the game per player
-     * @return Hashmap of usedTiles
-     */
-    public Map<String, List<char[][]>> getUsedTiles(){
-        return usedTiles;
-    }
 
+    /**
+     * returns list of size 4 and 5 tileNames
+     * @return
+     */
     public List<String> getSize4And5Tiles(){
         return size4And5Tiles;
     }

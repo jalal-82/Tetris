@@ -15,7 +15,7 @@ public class GameState {
     protected Track greenTrack;
     protected Track yellowTrack;
     protected Track purpleTrack;
-    private int[] bonuses = {2, 0,0,0,0};
+    private final int[] bonuses = {2, 0,0,0,0};
 
 
     // Constructor
@@ -32,21 +32,10 @@ public class GameState {
         this.yellowTrack = new Track(TrackType.YELLOW, score);
         this.purpleTrack = new Track(TrackType.PURPLE, score);
         this.dice = new Dices();
-        this.tiles = new Tile(dice);
+        this.tiles = new Tile();
     }
 
     // Private methods
-    /**
-     * Core logic to update the track.
-     *
-     * @param trackNum The track number to update.
-     */
-    private void doUpdateTrack(int trackNum) {
-        Track track = getTrackByNumber(trackNum);
-        if (track != null) {
-            track.addTrack();
-        }
-    }
 
     /**
      * Core logic to check if the tile selection is valid given the selected dice.
@@ -88,16 +77,6 @@ public class GameState {
         bonuses[4] = yellowTrack.getBonus();
     }
 
-    private int getIntByTileName(String tilename) {
-        return switch (tilename.charAt(0)) {
-            case 'R' -> 0;
-            case 'B' -> 1;
-            case 'P' -> 2;
-            case 'G' -> 3;
-            case 'Y' -> 4;
-            default -> throw new IllegalStateException("Unexpected value: " + tilename.charAt(0));
-        };
-    }
     // Helper methods to get track by color or number
     private Track getTrackByColor(char color) {
         return switch (color) {
@@ -110,100 +89,16 @@ public class GameState {
         };
     }
 
-    private Track getTrackByNumber(int trackNum) {
-        return switch (trackNum) {
-            case 0 -> redTrack;
-            case 1 -> blueTrack;
-            case 2 -> purpleTrack;
-            case 3 -> greenTrack;
-            case 4 -> yellowTrack;
-            default -> null;
-        };
-    }
-
-    private void doUpdateTrackInfo(GameGUI gui,int player, TrackType trackType, List<GameState> gameStates) {
-        String colour;
-        Track trackToUpdate;
-        GameState gameStateToUpdate = gameStates.get(player);
-
-        switch (trackType) {
-            case RED -> {
-                colour = "Red";
-                trackToUpdate = gameStateToUpdate.getRedTrack();
-            }
-            case BLUE -> {
-                colour = "Blue";
-                trackToUpdate = gameStateToUpdate.getBlueTrack();
-            }
-            case PURPLE -> {
-                colour = "Purple";
-                trackToUpdate = gameStateToUpdate.getPurpleTrack();
-            }
-            case GREEN -> {
-                colour = "Green";
-                trackToUpdate = gameStateToUpdate.getGreenTrack();
-            }
-            case YELLOW -> {
-                colour = "Yellow";
-                trackToUpdate = gameStateToUpdate.getYellowTrack();
-            }
-            default -> throw new IllegalArgumentException("Unknown track type");
-        }
-
-        gui.setTrackInfo(player, colour, trackToUpdate.getTrack(), trackToUpdate.getBonus(), trackToUpdate.getAbility(),
-                trackToUpdate.getNextBonus(), trackToUpdate.getNextAbility());
-    }
-
-
-    /**
-     * Handles the logic for the reroll action.
-     * Checks if the red ability is available, reroll dices, and updates the GUI.
-     */
-    private void doHandleRerollAction(GameGUI gui, GameState currentState, int currentPlayer) {
-        // Check if the red ability is available
-        if (currentState.getRedTrack().getAbility() == 0) {
-            gui.setMessage("Missing red ability, can't reroll");
-        } else {
-            // Perform the reroll
-            gui.setMessage("Player " + currentPlayer + " rerolled");
-            currentState.rerollDice();
-
-            // Update the available tiles and dice in the GUI
-//            setAvailableTilesAndDice();
-            gui.setAvailableTiles(List.of(currentState.getTiles()));
-            gui.setAvailableDice(List.of(currentState.getDice()));
-
-            // Update the red track ability
-            currentState.getRedTrack().updateAbility();
-        }
-    }
 
     // Public methods
-    public void handleRerollAction(GameGUI gui, GameState currentState, int currentPlayer){
-        doHandleRerollAction(gui,currentState,currentPlayer);
-    }
-
-    public void updateTrackInfo(GameGUI gui,int player, TrackType trackType, List<GameState> gameStates){
-        doUpdateTrackInfo(gui,player,trackType,gameStates);
-    }
 
     public void updateTrack(TrackType trackType) {
         switch (trackType) {
-            case RED:
-                redTrack.addTrack();
-                break;
-            case BLUE:
-                blueTrack.addTrack();
-                break;
-            case GREEN:
-                greenTrack.addTrack();
-                break;
-            case PURPLE:
-                purpleTrack.addTrack();
-                break;
-            case YELLOW:
-                yellowTrack.addTrack();
-                break;
+            case RED -> redTrack.addTrack();
+            case BLUE -> blueTrack.addTrack();
+            case GREEN -> greenTrack.addTrack();
+            case PURPLE -> purpleTrack.addTrack();
+            case YELLOW -> yellowTrack.addTrack();
         }
     }
 
@@ -295,7 +190,7 @@ public class GameState {
     }
 
     /**
-     * Rerolls the dice for the next turn.
+     * Rolls the dice for the next turn.
      */
     public void rerollDice() {
         dice.rollDice();
@@ -320,13 +215,9 @@ public class GameState {
         return dice.getAllDice();
     }
 
-    /**
-     * Checks if the selected track is in the available dice.
-     *
-//     * @param trackNum The track number to check.
-     * @return True if the selected track is in the currently available dice.
-     */
-//    public boolean isInAvailableDice(int trackNum) {
+
+    // Delete this pls
+    //    public boolean isInAvailableDice(int trackNum) {
 //        if (getAvailableDice().contains("W"))
 //            return true;
 //        String colour = "";
@@ -350,27 +241,23 @@ public class GameState {
 //        return getAvailableDice().contains(colour);
 //    }
 
+    /**
+     * Checks if the given track type is available in the current dice roll.
+     * It returns true if the corresponding color for the track is available or if a wildcard ("W") dice is present.
+     *
+     * @param trackType The type of track to check (RED, BLUE, GREEN, YELLOW, PURPLE).
+     * @return true if the corresponding color dice or a wildcard ("W") dice is available, false otherwise.
+     */
     public boolean isInAvailableDice(TrackType trackType) {
         if (getAvailableDice().contains("W"))
             return true;
-        String colour = "";
-        switch (trackType) {
-            case RED:
-                colour = "R";
-                break;
-            case BLUE:
-                colour = "B";
-                break;
-            case GREEN:
-                colour = "G";
-                break;
-            case YELLOW:
-                colour = "Y";
-                break;
-            case PURPLE:
-                colour = "P";
-                break;
-        }
+        String colour = switch (trackType) {
+            case RED -> "R";
+            case BLUE -> "B";
+            case GREEN -> "G";
+            case YELLOW -> "Y";
+            case PURPLE -> "P";
+        };
         return getAvailableDice().contains(colour);
     }
 
@@ -409,14 +296,6 @@ public class GameState {
     }
 
     // Tile-related methods
-    /**
-     * Retrieves the Tile object.
-     *
-     * @return The Tile object.
-     */
-    public Tile getTilesObject() {
-        return tiles;
-    }
 
     /**
      * Updates the selected tile.
@@ -479,15 +358,11 @@ public class GameState {
         return tiles.getSelectedTile();
     }
 
-    /**
-     * Returns used Tiles in the game per player.
-     *
-     * @return HashMap of usedTiles.
-     */
-    public Map<String, List<char[][]>> getUsedTiles() {
-        return tiles.getUsedTiles();
-    }
 
+    /**
+     * Returns String list of all size 4 and 5 tiles
+     * @return List<String></String>
+     */
     public List<String> getSize4and5Tiles(){return tiles.getSize4And5Tiles();}
 
     // Getters for tracks

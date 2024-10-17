@@ -15,36 +15,42 @@ public class ApplyWindowsAndRotateTest {
     Dices dice;
     Tile tile;
 
+    /**
+     * This method sets up the dice and tile objects before each test case.
+     * It configures a preset dice set for use and prepares a selected set of dice indices.
+     */
     @BeforeEach
     public void setup() {
         dice = new Dices();
         dice.applyPresetDiceD2CP1("R", "R", "R", "W", "P");
-        tile = new Tile(dice);
-        List<Integer> setOfDice =  Arrays.asList(0,0,0,3,4);
+        tile = new Tile();
+        List<Integer> setOfDice = Arrays.asList(0, 0, 0, 3, 4);
         dice.setSelectedDice(setOfDice);
     }
 
-    // This test case evaluate the applyWindows() method under Tile class.
-    // It checks the value of variable selectedTile after calling the
-    // method.
-    // It succeeds because the method correctly updates the selectedTile.
+    /**
+     * This test case evaluates the `applyWindows()` method under the Tile class.
+     * It verifies if the `selectedTile` is correctly updated with the window configurations applied.
+     * The test is successful if the resulting tile matches the expected output.
+     */
     @Test
     public void applyWindowsTest() {
         tile.updateSelectedTile("R3");
-        tile.applyWindows(new boolean[] {true,true,false});
+        tile.applyWindows(new boolean[] {true, true, false});
         char[][] result = new char[][] {{' ', 'R'}, {'S', 'S'}};
         assertArrayEquals(result, tile.getSelectedTile());
     }
 
-    // This test case evaluate the rotateTile() method under Tile class.
-    // It checks the value of variable selectedTile after calling the
-    // method.
-    // It succeeds because the method correctly rotates the selectedTile.
+    /**
+     * This test case evaluates the `rotateTile()` method under the Tile class.
+     * It verifies if the `selectedTile` is correctly rotated based on the input rotation.
+     * The test is successful if the rotated tile matches the expected output.
+     */
     @Test
     public void rotateTileTest() {
         tile.updateSelectedTile("B3");
         tile.rotateTile(1);
-        assertArrayEquals(new char[][] { {'B', ' '}, {'B', 'B'} }, tile.getSelectedTile());
+        assertArrayEquals(new char[][] {{'B', ' '}, {'B', 'B'}}, tile.getSelectedTile());
     }
 
 }

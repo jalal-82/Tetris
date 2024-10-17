@@ -6,6 +6,7 @@ public class Score {
 
     private int score;
     private boolean coaIndicator = false;
+
     //variables to store which rows/columns have already been checked
     private final Set<Integer> scoredRows = new HashSet<>();
     private final Set<Integer> scoredColumns = new HashSet<>();
@@ -45,7 +46,7 @@ public class Score {
      */
     private boolean isAllWindowsRow(char[][] board, int row) {
         for (int j = 0; j < board[row].length; j++) {
-            if (!isWindow(board[row][j])) {
+            if (isWindowInverted(board[row][j])) {
                 return false;  // Found a non-window tile
             }
         }
@@ -79,7 +80,7 @@ public class Score {
      */
     private boolean isAllWindowsColumn(char[][] board, int col) {
         for (char[] chars : board) {
-            if (!isWindow(chars[col])) {
+            if (isWindowInverted(chars[col])) {
                 return false;  // Found a non-window tile
             }
         }
@@ -93,8 +94,8 @@ public class Score {
      * @return true if the tile is a window, false otherwise.
      * @author Jalal
      */
-    private boolean isWindow(char tile) {
-        return tile == 'S' || tile == 'C' || tile == 'Q' || tile == 'H' || tile == 'Z';
+    private boolean isWindowInverted(char tile) {
+        return tile != 'S' && tile != 'C' && tile != 'Q' && tile != 'H' && tile != 'Z';
     }
 
     /**
@@ -152,7 +153,7 @@ public class Score {
                         }
                     }
                     default -> {
-                    } // If I is not 7, 5, or 3, do nothing
+                    } // If I will be not 7, 5, or 3, do nothing
                 }
             }
         }
@@ -183,8 +184,8 @@ public class Score {
 
     /**
      * Updates the score counter by reading the gameBoard and checking if rows and coloums are completed
-     * @param gameBoard
-     * @param completedMap
+     * @param gameBoard: Gameboard
+     * @param completedMap: completedMap
      */
     public void addPoints(char[][] gameBoard, HashMap<String, List<Integer>> completedMap){
         doAddPoints(gameBoard,completedMap);
@@ -192,27 +193,24 @@ public class Score {
 
     /**
      * returns the current coaIndicator value before resetting it to false
+     * @author: Hunter
      */
     public boolean isCoaIndicator() {
         boolean returnValue = coaIndicator;
         System.out.println("isCoaIndicator called, returning: " + returnValue);
         coaIndicator = false;
-        System.out.println("reset, returning: " + coaIndicator);
-
         return returnValue;
     }
+
     /**
      * Adds two points to the score.
      * Intended for use by track classes.
      *
      * @author Jalal
      */
-
     public void addTwoToScore() {
         this.score += 2;
     }
-
-
 
     /**
      * Gets the current score.

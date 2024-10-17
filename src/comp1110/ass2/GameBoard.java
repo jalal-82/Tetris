@@ -1,20 +1,17 @@
 package comp1110.ass2;
 
 import comp1110.ass2.gui.GameGUI;
-import comp1110.ass2.gui.Placement;
 
 import java.util.Arrays;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class GameBoard {
 
     private char[][] gameBoard;
     private final GameState gameState;
-
-    public static List<Integer> usedTiles = new ArrayList<Integer>();
+    public static List<Integer> usedTiles = new ArrayList<>();
 
     // Private methods
     /**
@@ -183,7 +180,12 @@ public class GameBoard {
         }
     }
 
-
+    /**
+     * Updates the GUI State for the Current Player
+     * @param currentPlayer The Current Player that placed a tile
+     * @param gameboard The Current Player's game board
+     * @param gui Frontend Stage GUI
+     */
     private void updateGUIState(int currentPlayer, GameBoard gameboard, GameGUI gui) {
         System.out.println("currPlayer in updateGUI "+currentPlayer);
         char[][] board = gameboard.getGameBoard();
@@ -208,15 +210,6 @@ public class GameBoard {
         }
     }
 
-    private boolean allWindows(boolean[] windows) {
-        for (boolean value : windows) {
-            if (!value) {
-                return false;
-            }
-        }
-        return true;
-    }
-
     // Public methods
     /**
      * Constructor for GameBoard.
@@ -227,7 +220,6 @@ public class GameBoard {
         this.gameState = gameState;
         doInitializeBoard();
     }
-
 
     /**
      * Checks if a tile placement is valid.
@@ -264,36 +256,6 @@ public class GameBoard {
     }
 
     /**
-     * Prints the current game board to the console.
-     *
-     * @param board A 2D character array representing the game board to print.
-     */
-    public void printBoard(char[][] board) {
-        for (char[] chars : board) {
-            for (int j = 0; j < board[0].length; j++) {
-                System.out.print(chars[j] == '\u0000' ? '.' : chars[j]);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-    }
-
-    /**
-     * Prints a tile to the console.
-     *
-     * @param tile A 2D character array representing the tile to print.
-     */
-    public static void printTile(char[][] tile) {
-        for (char[] chars : tile) {
-            for (int j = 0; j < tile[0].length; j++) {
-                System.out.print(chars[j] == '\u0000' ? '.' : chars[j]);
-                System.out.print(" ");
-            }
-            System.out.println();
-        }
-    }
-
-    /**
      * Updates the CoA for the current player.
      *
      * @param gui           The GameGUI object.
@@ -305,30 +267,11 @@ public class GameBoard {
     }
 
     /**
-     * Places a single tile on the board.
-     *
-     * @param row      The row where the tile will be placed.
-     * @param col      The column where the tile will be placed.
-     * @param rotation The degree of rotation to apply to the tile.
-     * @param windows  The windows to apply.
+     * Getter for Update GUI State
+     * @param currentPlayer The Current Player that placed a tile
+     * @param gameboard The Current Player's game board
+     * @param gui Frontend Stage GUI
      */
-    public void placeSingleTile(int row, int col, int rotation, boolean[] windows) {
-        gameState.updateSelectedTile("I1X");
-        if (doIsTilePlacementValid(gameBoard, row, col)) {
-            gameState.applyWindows(windows);
-            doPlaceTile(row, col);
-        }
-    }
-
-    /**
-     * Retrieves all tiles from the GameState.
-     *
-     * @return A map of all tiles.
-     */
-    public Map<String, List<char[][]>> getTilesFromGameState() {
-        return gameState.getAllTiles();
-    }
-
     public void getUpdateGUIState(int currentPlayer, GameBoard gameboard,GameGUI gui){
         updateGUIState(currentPlayer,gameboard,gui);
     }
