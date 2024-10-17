@@ -141,7 +141,7 @@ public class GameBoard {
 
         // Remove the selected tile
 //        gameState.removeSelectedTile();
-        System.out.println("removed Tiles are :" + gameState.getUsedTiles());
+//        System.out.println("removed Tiles are :" + gameState.getUsedTiles());
 
         // Update available colors
         gameState.updateAvailableColors(gameState.getSelectedTileKey());
@@ -216,19 +216,6 @@ public class GameBoard {
         }
         return true;
     }
-    private boolean doHandleWindowValidation(GameGUI gui, Placement p, GameState currentState) {
-        if (allWindows(p.getWindows())) {
-            if (currentState.getBlueTrack().getAbility() > 0) {
-                currentState.getBlueTrack().updateAbility();
-            } else {
-                gui.setMessage("No blue ability available, choose a different window configuration");
-                return false;
-            }
-        }
-        return true;
-    }
-
-
 
     // Public methods
     /**
@@ -241,9 +228,6 @@ public class GameBoard {
         doInitializeBoard();
     }
 
-    public boolean handleWindowValidation(GameGUI gui, Placement p, GameState currentState){
-        return doHandleWindowValidation(gui,p,currentState);
-    }
 
     /**
      * Checks if a tile placement is valid.

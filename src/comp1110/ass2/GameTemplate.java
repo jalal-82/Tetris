@@ -146,6 +146,7 @@ public class GameTemplate extends Application {
 		});
 
 		gui.setOnConfirm((s) -> {
+
 		//if the template trigger is active, it will handle coa track selection
 			if (trackTwiceTrigger) {
 				System.out.println("on confirm non tile placement");
@@ -158,8 +159,9 @@ public class GameTemplate extends Application {
 			else if (s.contains(String.valueOf(currentPlayer))){
 				startNextTurn();
 				if (currentPlayer==0){
+					System.out.println("all players scores are "+ Arrays.toString(playerScores));
 					for (int i=0;i<playerScores.length;i++){
-						if (playerScores[i] == 12){
+						if (playerScores[i] >= 12){
 							gui.endGame(playerScores);
 						}
 					}
@@ -342,6 +344,7 @@ public class GameTemplate extends Application {
 
 	private void handleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+
 //		remove the tile placed from each gameBoard
 		for (int i=0;i<gameStates.size();i++){
 			gameStates.get(i).updateSelectedTile(gameStates.get(currentPlayer).getSelectedTileKey());
@@ -372,6 +375,8 @@ public class GameTemplate extends Application {
 		if (!p.getTileName().contains("1"))
 			gui.setAvailableDice(currentState.getAvailableDice());
 		currentBoard.updateCoA(gui, currentPlayer, completedMap);
+//		add current score to playerScores
+		playerScores[currentPlayer]=currentState.getScore();
 	}
 
 	private void handlePlayerControlUpdate() {
@@ -411,7 +416,6 @@ public class GameTemplate extends Application {
 		}
 	}
 
-
 	private void handleYellowAbility(){
 		if (currentState.getYellowTrack().getAbility() == 0) {
 			gui.setMessage("This ability is not currently available, keep playing to unlock yellow ability");
@@ -423,7 +427,6 @@ public class GameTemplate extends Application {
 		}
 
 	}
-
 
 	/**
 	 * Handles the logic for the dice change action.
@@ -452,7 +455,6 @@ public class GameTemplate extends Application {
 		updateTrackInfo(currentPlayer, TrackType.GREEN);
 	}
 
-	// maybe this as well
 	/**
 	 * Validates that all selected dice are the same color.
 	 * Returns true if valid, otherwise false.
@@ -538,7 +540,6 @@ public class GameTemplate extends Application {
 		currentState.updateDiceAndTiles(gui);
 	}
 
-
 	/**
 	 * implements logic to start the next turn
 	 */
@@ -551,6 +552,7 @@ public class GameTemplate extends Application {
 		// unlock pass button
 		gui.setSelectDiceMode(false);
 	}
+
 	/**
 	 * Initializes the game states and boards for the given number of players.
 	 * Sets up tracks and creates GameState and GameBoard objects for each player.
@@ -600,10 +602,4 @@ public class GameTemplate extends Application {
 		// Set the control to the first player
 		gui.setControlPlayer(0);
 	}
-
-
-
-
-
-
 }

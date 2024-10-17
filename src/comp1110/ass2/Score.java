@@ -7,8 +7,16 @@ public class Score {
     private int score;
     private boolean coaIndicator = false;
     //variables to store which rows/columns have already been checked
-    private Set<Integer> scoredRows = new HashSet<>();
-    private Set<Integer> scoredColumns = new HashSet<>();
+    private final Set<Integer> scoredRows = new HashSet<>();
+    private final Set<Integer> scoredColumns = new HashSet<>();
+
+    /**
+     * Constructs a new Score with an initial score of 0.
+     * @author Jalal
+     */
+    public Score() {
+        this.score = 0;
+    }
 
     /**
      * Checks if a specific row is complete (i.e., no empty spaces).
@@ -144,7 +152,7 @@ public class Score {
                         }
                     }
                     default -> {
-                    } // If i is not 7, 5, or 3, do nothing
+                    } // If I is not 7, 5, or 3, do nothing
                 }
             }
         }
@@ -172,13 +180,6 @@ public class Score {
 
 //          Public Methods
 //===================================
-    /**
-     * Constructs a new Score with an initial score of 0.
-     * @author Jalal
-     */
-    public Score() {
-        this.score = 0;
-    }
 
     /**
      * Updates the score counter by reading the gameBoard and checking if rows and coloums are completed
@@ -206,9 +207,12 @@ public class Score {
      *
      * @author Jalal
      */
+
     public void addTwoToScore() {
         this.score += 2;
     }
+
+
 
     /**
      * Gets the current score.

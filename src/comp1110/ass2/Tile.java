@@ -406,7 +406,7 @@ public class Tile {
 
         if (key.equals("P4")) {
             P4Counter++;
-            if (R4Counter == 2) {
+            if (P4Counter == 2) {
                 // Get the tiles from allTiles, move them to usedTiles, and remove from allTiles
                 List<char[][]> tiles = allTiles.get(key);
                 usedTiles.put(key, tiles);
