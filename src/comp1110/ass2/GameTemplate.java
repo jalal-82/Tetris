@@ -17,7 +17,7 @@ public class GameTemplate extends Application {
 	int currentPlayer = 0;
 	int controlPlayer = 0;
 	int maxPlayers = 0;
-	boolean coaTrigger = true;//temp variable for coa logic, set to true to test
+	boolean coaTrigger = false;//temp variable for coa logic, set to true to test
 	boolean trackTwiceTrigger = false; //trigger used to determine the player should be updating their track by two
 	boolean coaUsedTrigger = false;//trigger used to see if this round is the result of the coa ability
 
@@ -67,10 +67,9 @@ public class GameTemplate extends Application {
 				handleTilePlacement(p); // Handle the tile placement on the board and update the message
 				handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
 				//check if player just unlocked a coa, if so, supply them with options
-				if (coaTrigger) {
+				if (currentState.isCOA()) {
 					coaUsedTrigger = true;
 					gui.showPopup();
-					coaTrigger = false;
 				}
 				if (currentState.getAvailableDice().isEmpty())
 					startNextTurn();
