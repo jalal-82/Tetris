@@ -18,10 +18,11 @@ public class GameTemplate extends Application {
 	int controlPlayer = 0;
 	int maxPlayers = 0;
 	boolean coaTrigger = true;//temp variable for coa logic, set to true to test
-	boolean templateTrigger = false;
+	boolean trackTwiceTrigger = false; //trigger used to determine the player should be updating their track by two
+	boolean coaUsedTrigger = false;//trigger used to see if this round is the result of the coa ability
 
 
-		public void start(Stage stage) throws Exception {
+	public void start(Stage stage) throws Exception {
 			if (stage == null) {
 				throw new Exception("Stage is not initialized.");
 			}
@@ -52,12 +53,27 @@ public class GameTemplate extends Application {
 
 			// Check if the tile placement is valid on the board
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
+				//first see if the single tile is being used outside the coa case, this allows the player to still place another tile
+				if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
+					currentState.purpleTrack.updateAbility();
+					updateTrackInfo(currentPlayer, TrackType.PURPLE);
+					handleSingleTilePlacement(p);
+					gui.cycleBackToCurrent(maxPlayers);
+					gui.setMessage("Single tile placed, continue with turn");
+					if (currentState.purpleTrack.getTrack() == 0)
+						gui.setAvailableTiles(List.of(currentState.getTiles())); // updates the tiles to not include single tile
+					return;
+				}
 				handleTilePlacement(p); // Handle the tile placement on the board and update the message
 				handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
 				//check if player just unlocked a coa, if so, supply them with options
-				if (currentState.isCOA()) {
+				if (coaTrigger) {
+					coaUsedTrigger = true;
 					gui.showPopup();
+					coaTrigger = false;
 				}
+				if (currentState.getAvailableDice().isEmpty())
+					startNextTurn();
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
@@ -96,41 +112,34 @@ public class GameTemplate extends Application {
 		});
 		//sets the logic for if a player chooses to advance their track twice
 		gui.setTrackTwice((s) -> {
+			gui.cycleBackToCurrent(maxPlayers);
 			//the trigger will influence the confirm button's behaviour once the tracks have been selected
-			templateTrigger = true;
+			trackTwiceTrigger = true;
 			gui.setMessage("Player " + currentPlayer + " select a track to advance twice");
 			gui.setControlPlayer(currentPlayer);
 		});
 //sets the logic for if the player chooses to place a single tile
 		gui.setSingleTile((s) -> {
+			gui.cycleBackToCurrent(maxPlayers);
 			handleSingleTileCOA();
 		});
 		gui.setOnConfirm((s) -> {
 //if the template trigger is active, it will handle coa track selection
-			if (templateTrigger) {
+			if (trackTwiceTrigger) {
 				System.out.println("on confirm non tile placement");
 				handleTrackSelectionCOA();
-				templateTrigger = false;
+				trackTwiceTrigger = false;
 				reEstablishControlPlayer();
 //				gui.setMessage( " player " + (controlPlayer) + " now select Track");
-				gui.setMessage((gui.getPlayerNames().get(currentPlayer)) + " now select Track");
+				gui.setMessage((gui.getPlayerNames().get(controlPlayer)) + " now select Track");
 			}
 			//if not, and it is the current player,it confirms end of turn
 			else if (s.contains(String.valueOf(currentPlayer))){
-				updateCurrentPlayer();
-//				gui.setMessage("Player " + currentPlayer + "'s turn");
-				gui.setMessage(gui.getPlayerNames().get(currentPlayer) + "'s turn");
-				updatePlayerStateForNextTurn();
-				gui.setAvailableTiles(List.of(currentState.getTiles()));
-				gui.setAvailableDice(List.of(currentState.getDice()));
-				// unlock pass button
-				gui.setSelectDiceMode(false);
+				startNextTurn();
 			}
 			//failing that it handles track selection
-			else if (currentState.getAvailableDice().isEmpty()){
-//				gui.setMessage("No dice available for track selection, player " + currentPlayer + " confirm end of turn");
-				gui.setMessage("No dice available for track selection, " + gui.getPlayerNames().get(currentPlayer) + " confirm end of turn");
-			} else {
+			else {
+				coaUsedTrigger = false;
 				handleTrackSelection();
 			}
 		});
@@ -170,7 +179,8 @@ public class GameTemplate extends Application {
 		String colour;
 		Track trackToUpdate;
 		GameState gameStateToUpdate = gameStates.get(player);
-
+		if (trackType == null)
+			return;
 		switch (trackType) {
 			case RED -> {
 				colour = "Red";
@@ -311,10 +321,15 @@ public class GameTemplate extends Application {
 		gui.setSelectDiceMode(true);
 
 	}
-
+	private void handleSingleTilePlacement(Placement p) {
+		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+		updateGUIState();
+	}
 	private void handleScoreAndBonusUpdate(Placement p) {
 		currentState.updateBonus(p.getTileName());
-        updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
+		if (!p.getTileName().contains("I"))
+			updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
+		updateTrackInfo(currentPlayer, getTrackTypeFromTileName(p.getTileName()));
 		System.out.println(currentPlayer + "current players score = " + currentState.getScore());
 		HashMap<String, List<Integer>> completedMap = new HashMap<>();
 		currentState.updateScore(currentBoard, completedMap);
@@ -421,9 +436,10 @@ public class GameTemplate extends Application {
 		for (int index : selectedDiceIndices) {
 			currentDice.set(index, desiredColour);
 		}
-
+		String[] currentS = currentDice.toArray(new String[currentDice.size() - 1]);
 		// Update the rolled dice in the GameState and GUI
 		currentState.setRolledDice(currentDice);
+		currentState.setAvailableDice(currentS);//this ensures that if the ability is used again it knows what was previously changed
 		gui.setAvailableDice(currentDice);
 	}
 
@@ -479,6 +495,19 @@ public class GameTemplate extends Application {
 		currentState.updateDiceAndTiles(gui);
 	}
 
+
+	/**
+	 * implements logic to start the next turn
+	 */
+	private void startNextTurn() {
+		updateCurrentPlayer();
+		gui.setMessage("Player " + currentPlayer + "'s turn");
+		updatePlayerStateForNextTurn();
+		gui.setAvailableTiles(List.of(currentState.getTiles()));
+		gui.setAvailableDice(List.of(currentState.getDice()));
+		// unlock pass button
+		gui.setSelectDiceMode(false);
+	}
 	/**
 	 * Initializes the game states and boards for the given number of players.
 	 * Sets up tracks and creates GameState and GameBoard objects for each player.
