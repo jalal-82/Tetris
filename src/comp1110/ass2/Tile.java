@@ -12,6 +12,7 @@ public class Tile {
     private String selectedTileKey;
     private final Map<String, List<char[][]>> usedTiles;
     private int R4Counter = 0;
+    private int P4Counter = 0;
     private final List<String> size4And5Tiles;
 
     // Constructor
@@ -26,7 +27,6 @@ public class Tile {
         usedTiles = new HashMap<>();
         size4And5Tiles = new ArrayList<>();
         this.dice = dice.getAllDice();
-
         {
             allTiles.put("I1O", new ArrayList<>());
             allTiles.get("I1O").add(new char[][]{{'I'}});
@@ -395,6 +395,17 @@ public class Tile {
         // Special case for R4
         if (key.equals("R4")) {
             R4Counter++;
+            if (R4Counter == 2) {
+                // Get the tiles from allTiles, move them to usedTiles, and remove from allTiles
+                List<char[][]> tiles = allTiles.get(key);
+                usedTiles.put(key, tiles);
+                allTiles.remove(key);
+            }
+            return;
+        }
+
+        if (key.equals("P4")) {
+            P4Counter++;
             if (R4Counter == 2) {
                 // Get the tiles from allTiles, move them to usedTiles, and remove from allTiles
                 List<char[][]> tiles = allTiles.get(key);
