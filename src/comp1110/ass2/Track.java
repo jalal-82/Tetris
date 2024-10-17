@@ -28,7 +28,7 @@ public class Track {
                 nextBonus = 1;
                 break;
             case RED:
-                this.setBonus(2);
+//                this.setBonus(2);
                 nextAbility = 2;
                 nextBonus = 1;
                 break;
@@ -41,11 +41,12 @@ public class Track {
                 this.addAbility();
                 this.addAbility();
                 this.addAbility();
+                this.addAbility();
                 nextAbility = 4;
                 nextBonus = 1;
                 break;
             case YELLOW:
-                this.addAbility();
+//                this.addAbility();
                 nextAbility = 3;
                 nextBonus = 1;
                 break;

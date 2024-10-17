@@ -182,7 +182,6 @@ public class GameTemplate extends Application {
 				controlPlayer = currentPlayer + 1;
 				gui.setControlPlayer(currentPlayer + 1);
 			}
-//			gui.setMessage("player " + currentPlayer + " turn passed. Player " + (controlPlayer) + " now select Track");
 			gui.setMessage(gui.getPlayerNames().get(currentPlayer) + " turn passed. " + (gui.getPlayerNames().get(controlPlayer)) + " now select Track");
 			//calls update gui to ensure all end of turn logic functions as normal
 			updateGUIState();
@@ -343,15 +342,23 @@ public class GameTemplate extends Application {
 
 	private void handleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+//		remove the tile placed from each gameBoard
+		for (int i=0;i<gameStates.size();i++){
+			gameStates.get(i).updateSelectedTile(gameStates.get(currentPlayer).getSelectedTileKey());
+			gameStates.get(i).removeSelectedTile();
+		}
+
 		reEstablishControlPlayer();
 		gui.setMessage(p.getTileName() + " placed. " + (gui.getPlayerNames().get(controlPlayer)) + " now select Track");
 		gui.setSelectDiceMode(true);
 
 	}
+
 	private void handleSingleTilePlacement(Placement p) {
 		currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
 		updateGUIState();
 	}
+
 	private void handleScoreAndBonusUpdate(Placement p) {
 		currentState.updateBonus(p.getTileName());
 		if (!p.getTileName().contains("I"))
@@ -411,7 +418,7 @@ public class GameTemplate extends Application {
 		} else {
 			yellowAbilityTrigger = true;
 			gui.setAvailableTiles(currentState.getSize4and5Tiles());
-			gui.setAvailableDice(List.of(new String[]{"R", "R", "R", "R", "W"}));
+			gui.setAvailableDice(List.of(new String[]{"W", "W", "W", "W", "W"}));
 			gui.setMessage("Select and place a size 4 or 5 tile using your yellow ability.");
 		}
 
