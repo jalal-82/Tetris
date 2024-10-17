@@ -488,6 +488,8 @@ public class GameState {
         return tiles.getUsedTiles();
     }
 
+    public List<String> getSize4and5Tiles(){return tiles.getSize4And5Tiles();}
+
     // Getters for tracks
     public Track getRedTrack() {
         return redTrack;

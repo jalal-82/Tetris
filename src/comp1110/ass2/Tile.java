@@ -12,6 +12,7 @@ public class Tile {
     private String selectedTileKey;
     private final Map<String, List<char[][]>> usedTiles;
     private int R4Counter = 0;
+    private final List<String> size4And5Tiles;
 
     // Constructor
     /**
@@ -23,7 +24,9 @@ public class Tile {
     public Tile(Dices dice) {
         allTiles = new HashMap<>();
         usedTiles = new HashMap<>();
+        size4And5Tiles = new ArrayList<>();
         this.dice = dice.getAllDice();
+
         {
             allTiles.put("I1O", new ArrayList<>());
             allTiles.get("I1O").add(new char[][]{{'I'}});
@@ -61,50 +64,43 @@ public class Tile {
             allTiles.put("Y3", new ArrayList<>());
             allTiles.get("Y3").add(new char[][]{{' ', 'Y'}, {'Y', 'Y'}});
 
-            allTiles.put("R4", new ArrayList<>());
-            allTiles.get("R4").add(new char[][]{{'R', 'R'}, {'R', 'R'}});
+            // Add size 4 tiles
+            addTile("R4", new char[][]{{'R', 'R'}, {'R', 'R'}});
+            addTile("B4L", new char[][]{{' ', 'B'}, {' ', 'B'}, {'B', 'B'}});
+            addTile("B4R", new char[][]{{'B', ' '}, {'B', ' '}, {'B', 'B'}});
+            addTile("P4", new char[][]{{'P'}, {'P'}, {'P'}, {'P'}});
+            addTile("G4L", new char[][]{{' ', 'G'}, {'G', 'G'}, {' ', 'G'}});
+            addTile("G4R", new char[][]{{'G', ' '}, {'G', 'G'}, {'G', ' '}});
+            addTile("Y4L", new char[][]{{' ', 'Y'}, {'Y', 'Y'}, {'Y', ' '}});
+            addTile("Y4R", new char[][]{{'Y', ' '}, {'Y', 'Y'}, {' ', 'Y'}});
 
-            allTiles.put("B4L", new ArrayList<>());
-            allTiles.get("B4L").add(new char[][]{{' ', 'B'}, {' ', 'B'}, {'B', 'B'}});
-
-            allTiles.put("B4R", new ArrayList<>());
-            allTiles.get("B4R").add(new char[][]{{'B', ' '}, {'B', ' '}, {'B', 'B'}});
-
-            allTiles.put("P4", new ArrayList<>());
-            allTiles.get("P4").add(new char[][]{{'P'}, {'P'}, {'P'}, {'P'}});
-
-            allTiles.put("G4L", new ArrayList<>());
-            allTiles.get("G4L").add(new char[][]{{' ', 'G'}, {'G', 'G'}, {' ', 'G'}});
-
-            allTiles.put("G4R", new ArrayList<>());
-            allTiles.get("G4R").add(new char[][]{{'G', ' '}, {'G', 'G'}, {'G', ' '}});
-
-            allTiles.put("Y4L", new ArrayList<>());
-            allTiles.get("Y4L").add(new char[][]{{' ', 'Y'}, {'Y', 'Y'}, {'Y', ' '}});
-
-            allTiles.put("Y4R", new ArrayList<>());
-            allTiles.get("Y4R").add(new char[][]{{'Y', ' '}, {'Y', 'Y'}, {' ', 'Y'}});
-
-            allTiles.put("R5", new ArrayList<>());
-            allTiles.get("R5").add(new char[][]{{' ', 'R', 'R'}, {'R', 'R', 'R'}});
-
-            allTiles.put("B5", new ArrayList<>());
-            allTiles.get("B5").add(new char[][]{{' ', 'B', ' '}, {' ', 'B', ' '}, {'B', 'B', 'B'}});
-
-            allTiles.put("P5", new ArrayList<>());
-            allTiles.get("P5").add(new char[][]{{'P', 'P', 'P', 'P', 'P'}});
-
-            allTiles.put("G5", new ArrayList<>());
-            allTiles.get("G5").add(new char[][]{{' ', 'G', ' '}, {'G', 'G', 'G'}, {' ', 'G', ' '}});
-
-            allTiles.put("Y5", new ArrayList<>());
-            allTiles.get("Y5").add(new char[][]{{' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '}});
+            // Add size 5 tiles
+            addTile("R5", new char[][]{{' ', 'R', 'R'}, {'R', 'R', 'R'}});
+            addTile("B5", new char[][]{{' ', 'B', ' '}, {' ', 'B', ' '}, {'B', 'B', 'B'}});
+            addTile("P5", new char[][]{{'P', 'P', 'P', 'P', 'P'}});
+            addTile("G5", new char[][]{{' ', 'G', ' '}, {'G', 'G', 'G'}, {' ', 'G', ' '}});
+            addTile("Y5", new char[][]{{' ', ' ', 'Y'}, {'Y', 'Y', 'Y'}, {'Y', ' ', ' '}});
         }
-
         this.generatedTiles = doGenerateTiles(dice, new int[5]);
     }
 
     // Private methods
+    /**
+     * Helper method to add a tile and, if it's a size 4 or size 5 tile, also add its name to size4And5Tiles.
+     *
+     * @param key The name of the tile.
+     * @param tile The tile's shape.
+     */
+    private void addTile(String key, char[][] tile) {
+        allTiles.put(key, new ArrayList<>());
+        allTiles.get(key).add(tile);
+
+        // Add to size4And5Tiles if it's a size 4 or 5 tile
+        if (key.contains("4") || key.contains("5")) {
+            size4And5Tiles.add(key);
+        }
+    }
+
     /**
      * Core logic for checking whether the given tile is a valid selection from the set of generated tiles.
      *
@@ -423,5 +419,9 @@ public class Tile {
      */
     public Map<String, List<char[][]>> getUsedTiles(){
         return usedTiles;
+    }
+
+    public List<String> getSize4And5Tiles(){
+        return size4And5Tiles;
     }
 }

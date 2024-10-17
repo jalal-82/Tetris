@@ -20,6 +20,7 @@ public class GameTemplate extends Application {
 	boolean coaTrigger = false;//temp variable for coa logic, set to true to test
 	boolean trackTwiceTrigger = false; //trigger used to determine the player should be updating their track by two
 	boolean coaUsedTrigger = false;//trigger used to see if this round is the result of the coa ability
+	boolean yellowAbilityTrigger = false;
 	int[] playerScores;
 
 	public void start(Stage stage) throws Exception {
@@ -52,8 +53,20 @@ public class GameTemplate extends Application {
 
 			// Check if the tile placement is valid on the board
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
-				//first see if the single tile is being used outside the coa case, this allows the player to still place another tile
-				if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
+				if (yellowAbilityTrigger) {
+					// Handle the placement under yellow ability
+					currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
+					// Deduct yellow ability
+					currentState.getYellowTrack().updateAbility();
+					updateTrackInfo(currentPlayer, TrackType.YELLOW);
+					yellowAbilityTrigger = false;
+					// Update the score and bonuses
+					handleScoreAndBonusUpdate(p);
+					gui.setMessage(p.getTileName() + " placed using yellow ability. Your turn ends.");
+					// End the turn
+					startNextTurn();
+				} else if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
+					// Existing logic for single tile placement
 					currentState.purpleTrack.updateAbility();
 					updateTrackInfo(currentPlayer, TrackType.PURPLE);
 					handleSingleTilePlacement(p);
@@ -62,16 +75,18 @@ public class GameTemplate extends Application {
 					if (currentState.purpleTrack.getTrack() == 0)
 						gui.setAvailableTiles(List.of(currentState.getTiles())); // updates the tiles to not include single tile
 					return;
+				} else {
+					// Existing logic for regular tile placement
+					handleTilePlacement(p); // Handle the tile placement on the board and update the message
+					handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
+					// Check if player just unlocked a coa, if so, supply them with options
+					if (currentState.isCOA()) {
+						coaUsedTrigger = true;
+						gui.showPopup();
+					}
+					if (currentState.getAvailableDice().isEmpty())
+						startNextTurn();
 				}
-				handleTilePlacement(p); // Handle the tile placement on the board and update the message
-				handleScoreAndBonusUpdate(p); // Update the score, bonus, and available dice
-				//check if player just unlocked a coa, if so, supply them with options
-				if (currentState.isCOA()) {
-					coaUsedTrigger = true;
-					gui.showPopup();
-				}
-				if (currentState.getAvailableDice().isEmpty())
-					startNextTurn();
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
 			}
@@ -108,6 +123,10 @@ public class GameTemplate extends Application {
 				handleDiceChangeAction(action);
 			}
 
+//			Handle Yellow Ability
+			if (action.contains("Retrieve")) {
+				handleYellowAbility();
+			}
 
 		});
 
@@ -250,6 +269,7 @@ public class GameTemplate extends Application {
 		}
 	}
 
+
 	/**
 	 * this method sets the window up for the player to place a single tile
 	 */
@@ -384,7 +404,20 @@ public class GameTemplate extends Application {
 		}
 	}
 
-	// move this as well
+
+	private void handleYellowAbility(){
+		if (currentState.getYellowTrack().getAbility() == 0) {
+			gui.setMessage("This ability is not currently available, keep playing to unlock yellow ability");
+		} else {
+			yellowAbilityTrigger = true;
+			gui.setAvailableTiles(currentState.getSize4and5Tiles());
+			gui.setAvailableDice(List.of(new String[]{"R", "R", "R", "R", "W"}));
+			gui.setMessage("Select and place a size 4 or 5 tile using your yellow ability.");
+		}
+
+	}
+
+
 	/**
 	 * Handles the logic for the dice change action.
 	 * Validates selected dice and changes them to the desired color, then updates the GUI.
@@ -555,7 +588,7 @@ public class GameTemplate extends Application {
 
 		// Set available actions in the GUI
 		gui.setAvailableActions(List.of("Reroll", "Change selected to Red", "Change selected to Blue",
-				"Change selected to Purple", "Change selected to Green", "Change selected to Yellow"));
+				"Change selected to Purple", "Change selected to Green", "Change selected to Yellow", "Retrieve Size 4 or 5 Tile"));
 
 		// Set the control to the first player
 		gui.setControlPlayer(0);

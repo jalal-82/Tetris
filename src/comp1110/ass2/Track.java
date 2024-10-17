@@ -45,6 +45,7 @@ public class Track {
                 nextBonus = 1;
                 break;
             case YELLOW:
+                this.addAbility();
                 nextAbility = 3;
                 nextBonus = 1;
                 break;
