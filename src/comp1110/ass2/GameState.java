@@ -157,7 +157,6 @@ public class GameState {
         rerollDice();
         updateSelectedDice(gui.getSelectedDice());
         gui.setAvailableTiles(List.of(getTiles()));
-        System.out.println(List.of(getTiles()));
         gui.setAvailableDice(List.of(getDice()));
     }
 

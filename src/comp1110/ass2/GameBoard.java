@@ -36,7 +36,6 @@ public class GameBoard {
         char[][] tile = gameState.getSelectedTile();
 
         if (tile == null) {
-            System.out.println("Error: No tile is selected.");
             return false;
         }
 
@@ -132,13 +131,12 @@ public class GameBoard {
      */
     private void doPlaceTile(int row, int col) {
         if (!doIsTilePlacementValid(gameBoard, row, col)) {
-            System.out.println(gameState.getSelectedTileKey() + " placement is invalid");
             return;
         }
 
+
         // Update available colors
         gameState.updateAvailableColors(gameState.getSelectedTileKey());
-
         char[][] tile = gameState.getSelectedTile();
         int tileRows = tile.length;
         int tileCols = tile[0].length;
@@ -183,7 +181,6 @@ public class GameBoard {
      * @param gui Frontend Stage GUI
      */
     private void updateGUIState(int currentPlayer, GameBoard gameboard, GameGUI gui) {
-        System.out.println("currPlayer in updateGUI "+currentPlayer);
         char[][] board = gameboard.getGameBoard();
         for (int y = 0; y < board.length; y++) { // @Eileen: y is gameboard row
             for (int x = 0; x < board[y].length; x++) { // @Eileen: x is gameboard column

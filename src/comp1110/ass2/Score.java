@@ -197,7 +197,6 @@ public class Score {
      */
     public boolean isCoaIndicator() {
         boolean returnValue = coaIndicator;
-        System.out.println("isCoaIndicator called, returning: " + returnValue);
         coaIndicator = false;
         return returnValue;
     }

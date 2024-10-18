@@ -92,6 +92,7 @@ public class Track {
             case RED -> updateRedTrack();
             case PURPLE -> updatePurpleTrack();
             case GREEN -> updateGreenTrack();
+            case YELLOW -> updateYellowTrack();
         }
     }
 

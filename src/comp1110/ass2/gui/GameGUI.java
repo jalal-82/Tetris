@@ -235,7 +235,6 @@ public class GameGUI extends BorderPane {
         });
 
         b_confirm.setOnAction((e) -> {
-            System.out.println("GUI confirm placement called");
             if (candidate != null) {
                 Placement tmp = candidate;
                 candidate = null;
@@ -243,7 +242,6 @@ public class GameGUI extends BorderPane {
                 if (onTilePlaced != null)
                     onTilePlaced.accept(tmp);
                 showState();
-//                selectDiceMode = true;
                 cycleToNextPlayer(); // Call the method to handle player cycling
             }
             else if (onConfirm != null) {
@@ -262,8 +260,6 @@ public class GameGUI extends BorderPane {
                 }
             }
 
-            // Debugging output to check the current player
-            System.out.println("now:" + player_selector.getSelectionModel().getSelectedIndex());
         });
 
 

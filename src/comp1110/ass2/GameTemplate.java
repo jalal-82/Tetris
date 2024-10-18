@@ -295,7 +295,6 @@ public class GameTemplate extends Application {
 					gui.setMessage(gui.getPlayerNames().get(controlPlayer) + " select track");
 				gui.setControlPlayer(controlPlayer);
 				gui.clearTrackSelection();
-				System.out.println("track Done");
 			}
 		}
 	}
