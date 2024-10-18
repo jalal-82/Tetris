@@ -72,9 +72,6 @@ public class GameGUI extends BorderPane {
     private Consumer<Boolean> onTrackTwice;
     private Consumer<Boolean> onSingleTile;
     private Consumer<String> onError;
-    //private Consumer<String> onReroll;
-    //private Consumer<String> onColourChange;
-
     private Placement candidate = null;
     private int candidate_index = -1;
     private boolean selectDiceMode = false;
@@ -221,12 +218,6 @@ public class GameGUI extends BorderPane {
         controls.setHgap(3);
         controls.setVgap(3);
         controls.setPadding(new Insets(3, 3, 3, 3));
-        // b_reroll = new Button("Reroll");
-        // controls.add(b_reroll, 0, 0);
-	// b_reroll.setOnAction((e) -> {
-	// 	if (onReroll != null)
-	// 	    onReroll.accept(b_reroll.getText());
-	//     });
         b_confirm = new Button("Confirm (player #)");
         controls.add(b_confirm, 0, 1);
         b_confirm.setOnAction((e) -> {
@@ -290,16 +281,6 @@ public class GameGUI extends BorderPane {
 		}
 	    });
         b_colour_change = new MenuButton("Action...");
-        // for (int i = 0; i < 5; i++) {
-        //     Colour c = Colour.values()[i];
-        //     MenuItem toC = new MenuItem("to " + c.toString());
-	//     toC.setOnAction((e) -> {
-	// 	    if (onColourChange != null)
-	// 		onColourChange.accept(toC.getText());
-	// 	});
-        //     // coa_XX.setTextFill(c.getFXColor());
-        //     b_colour_change.getItems().add(toC);
-        // }
         controls.add(b_colour_change, 0, 0);
         current_player_controls = controls;
 
@@ -320,7 +301,6 @@ public class GameGUI extends BorderPane {
 
     private void showState() {
 	int i = player_selector.getSelectionModel().getSelectedIndex();
-	// System.out.println("i = " + i);
 	if (candidate != null && (i == candidate_index))
 	    building_view.show(i, candidate, false);
 	else
@@ -344,8 +324,6 @@ public class GameGUI extends BorderPane {
         player_selector.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         left.getChildren().add(player_selector);
         GridPane player_pane = new GridPane();
-        //player_pane.setBorder(boxBorder);
-        //player_pane.setSpacing(4);
         player_pane.setHgap(10);
         player_pane.setVgap(4);
         player_pane.setPadding(new Insets(2, 2, 2, 2));
@@ -430,11 +408,9 @@ public class GameGUI extends BorderPane {
         });
         player_pane.add(ab, 0, 2);
 
-        //player_pane.setHgrow(player_view, Priority.ALWAYS);
         building_view = new BuildingView(BUILDING_WIDTH, BUILDING_HEIGHT);
         building_view.setFocusTraversable(true);
         player_pane.add(building_view, 1, 0, 1, 2);
-        //player_pane.setHgrow(building_view, Priority.ALWAYS);
         for (int x = 0; x < BUILDING_WIDTH; x++)
             for (int y = 0; y < BUILDING_HEIGHT; y++) {
                 final int fx = x;
@@ -442,7 +418,6 @@ public class GameGUI extends BorderPane {
                 building_view.getSquare(x, y).setOnMouseClicked(e -> {
 			if (candidate != null) {
 			    if (e.getButton() == MouseButton.SECONDARY) {
-				// interaction_state.setBrick(fx, fy);
 			    }
 			    else {
 				candidate.setPosition(fx, fy);
@@ -853,25 +828,6 @@ public class GameGUI extends BorderPane {
     public void setOnGameAction(Consumer<String> handler) {
 	onGameAction = handler;
     }
-
-    // /**
-    //  * Set the event handler to be called when the "Reroll" button is
-    //  * pressed. The event handler will receive one argument, which is
-    //  * the current label of the button.
-    //  */
-    // public void setOnReroll(Consumer<String> handler) {
-    // 	onReroll = handler;
-    // }
-
-    // /**
-    //  * Set the event handler to be called when an item from the "Change"
-    //  * menu button is select The event handler will receive one argument,
-    //  * which is the label of the item (i.e., one of "to Red", "to Blue",
-    //  * etc)
-    //  */
-    // public void setOnColourChange(Consumer<String> handler) {
-    // 	onColourChange = handler;
-    // }
 
     public void setTrackTwice(Consumer<Boolean> handler) {
         onTrackTwice = handler;

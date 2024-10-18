@@ -17,7 +17,6 @@ public class GameTemplate extends Application {
 	int currentPlayer = 0;
 	int controlPlayer = 0;
 	int maxPlayers = 0;
-	boolean coaTrigger = false; // Trigger for coa logic, set to true to test
 	boolean trackTwiceTrigger = false; // Trigger for advancing track twice
 	boolean coaUsedTrigger = false; // Trigger for tracking if COA ability is used
 	boolean yellowAbilityTrigger = false; // Trigger for yellow ability

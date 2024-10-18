@@ -136,10 +136,6 @@ public class GameBoard {
             return;
         }
 
-        // Remove the selected tile
-//        gameState.removeSelectedTile();
-//        System.out.println("removed Tiles are :" + gameState.getUsedTiles());
-
         // Update available colors
         gameState.updateAvailableColors(gameState.getSelectedTileKey());
 
