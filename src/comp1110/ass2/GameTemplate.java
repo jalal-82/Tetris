@@ -89,6 +89,7 @@ public class GameTemplate extends Application {
 				}
 			} else {
 				gui.setMessage(p.getTileName() + " Placement invalid");
+				gui.cycleBackToCurrent(maxPlayers);
 			}
 
 			// Update the GUI with the latest board and game state
