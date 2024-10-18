@@ -215,30 +215,6 @@ public class GameState {
     }
 
 
-    // Delete this pls
-    //    public boolean isInAvailableDice(int trackNum) {
-//        if (getAvailableDice().contains("W"))
-//            return true;
-//        String colour = "";
-//        switch (trackNum) {
-//            case 0:
-//                colour = "R";
-//                break;
-//            case 1:
-//                colour = "B";
-//                break;
-//            case 2:
-//                colour = "P";
-//                break;
-//            case 3:
-//                colour = "G";
-//                break;
-//            case 4:
-//                colour = "Y";
-//                break;
-//        }
-//        return getAvailableDice().contains(colour);
-//    }
 
     /**
      * Checks if the given track type is available in the current dice roll.
