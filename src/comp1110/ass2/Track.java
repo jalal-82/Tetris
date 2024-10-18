@@ -41,9 +41,6 @@ public class Track {
     private void initializeTrack() {
         switch (trackType) {
             case RED -> {
-                for (int i = 0; i < 8; i++) {
-                    addTrack();
-                }
                 nextAbility = 2;
                 nextBonus = 1;
                 this.addAbility();
