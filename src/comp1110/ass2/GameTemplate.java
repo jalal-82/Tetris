@@ -57,21 +57,16 @@ public class GameTemplate extends Application {
 		gui.setOnTilePlaced((p) -> {
 			// Validate the window configuration and check blue ability
 			if (!handleWindowValidation(p)) return;
-
+			if (yellowAbilityTrigger) {
+				currentState.yellowTrack.updateAbility();
+				updateTrackInfo(currentPlayer, TrackType.YELLOW);
+				yellowAbilityTrigger = false;
+			}
 			// Check if the tile placement is valid on the board
 			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
-				// Handle the placement under yellow ability - Work in Progress
-				if (yellowAbilityTrigger) {
-					currentBoard.placeTileWithRotationWindows(p.getY(), p.getX(), p.getRotation(), p.getWindows());
-					currentState.getYellowTrack().updateAbility();
-					updateTrackInfo(currentPlayer, TrackType.YELLOW);
-					yellowAbilityTrigger = false;
-					handleScoreAndBonusUpdate(p);
-					gui.setMessage(p.getTileName() + " placed using yellow ability. Your turn ends.");
-					startNextTurn();
-				}
+
 				// Handle single tile placement with the purple track ability
-				else if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
+				if (p.getTileName().equals("I1X") && !coaUsedTrigger) {
 					currentState.purpleTrack.updateAbility();
 					updateTrackInfo(currentPlayer, TrackType.PURPLE);
 					handleSingleTilePlacement(p);
@@ -152,6 +147,7 @@ public class GameTemplate extends Application {
 				if (currentPlayer == 0) {
 					for (int playerScore : playerScores) {
 						if (playerScore >= 12) {
+							gui.setMessage("End game");
 							gui.endGame(playerScores);
 						}
 					}
@@ -505,6 +501,8 @@ public class GameTemplate extends Application {
 			yellowAbilityTrigger = true;
 			gui.setAvailableTiles(currentState.getSize4and5Tiles());
 			gui.setAvailableDice(List.of(new String[]{"W", "W", "W", "W", "W"}));
+			currentState.setAvailableDice(new String[]{"W", "W", "W", "W", "W"});
+			currentState.setRolledDice(List.of(new String[]{"W", "W", "W", "W", "W"}));
 			gui.setMessage("Select and place a size 4 or 5 tile using your yellow ability.");
 		}
 
