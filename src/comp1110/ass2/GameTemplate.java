@@ -62,7 +62,7 @@ public class GameTemplate extends Application {
 				yellowAbilityTrigger = false;
 			}
 			// Check if the tile placement is valid on the board
-			if (currentBoard.isTilePlacementValid(p.getY(), p.getX())) {
+			if (currentBoard.isTilePlacementValid(p.getY(), p.getX(), p.getRotation())) {
 
 				// Handle single tile placement with the purple track ability
 				if (p.getTileName().equals("I1X") && !coaUsedTrigger) {

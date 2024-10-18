@@ -54,8 +54,8 @@ public class PlaceTileTest {
     @Test
     public void testTileY3PlacementInvalidAt_1_0_NoRotation() {
         gameStateOne.updateSelectedTile("Y3");
-        gameStateOne.rotateTile(0);
-        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(1, 0);
+
+        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(1, 0, 0);
         assertFalse(isValidPlacement);
     }
 
@@ -66,8 +66,7 @@ public class PlaceTileTest {
     @Test
     public void testTileY3PlacementValidAt_1_0_Rotate3Times() {
         gameStateOne.updateSelectedTile("Y3"); // Select tile "Y3
-        gameStateOne.rotateTile(3);
-        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(1, 0);
+        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(1, 0, 3);
         assertTrue(isValidPlacement);
     }
 
@@ -78,8 +77,7 @@ public class PlaceTileTest {
     @Test
     public void testTileY3PlacementInvalidAt_2_0_Rotate3Times() {
         gameStateOne.updateSelectedTile("Y3");
-        gameStateOne.rotateTile(3);
-        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(2, 0);
+        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(2, 0, 3);
         assertFalse(isValidPlacement);
     }
 
@@ -90,8 +88,7 @@ public class PlaceTileTest {
     @Test
     public void testTileY3PlacementValidAt_2_0_Rotate1Time() {
         gameStateOne.updateSelectedTile("Y3");
-        gameStateOne.rotateTile(1);
-        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(2, 0);
+        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(2, 0, 1);
         assertTrue(isValidPlacement);
     }
 
@@ -102,8 +99,7 @@ public class PlaceTileTest {
     @Test
     public void testTileY3PlacementInvalidAt_1_1_Rotate3Times() {
         gameStateOne.updateSelectedTile("Y3");
-        gameStateOne.rotateTile(3);
-        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(1, 1);
+        boolean isValidPlacement = gameBoardOne.isTilePlacementValid(1, 1, 3);
         assertFalse(isValidPlacement);
     }
 }

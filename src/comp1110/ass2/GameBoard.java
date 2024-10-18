@@ -221,7 +221,8 @@ public class GameBoard {
      * @param col The column to check.
      * @return True if placement is valid, else false.
      */
-    public boolean isTilePlacementValid(int row, int col) {
+    public boolean isTilePlacementValid(int row, int col, int rotation) {
+        gameState.rotateTile(rotation);
         return largeTileCheck(doIsTilePlacementValid(getGameBoard(), row, col));
     }
 
@@ -235,7 +236,6 @@ public class GameBoard {
      */
     public void placeTileWithRotationWindows(int row, int col, int rotation, boolean[] windows) {
         gameState.applyWindows(windows);
-        gameState.rotateTile(rotation);
         doPlaceTile(row, col);
     }
 
